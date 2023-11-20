@@ -11,5 +11,5 @@ export const getUserByEmail = (email: string) => {
 };
 
 export const sessionToken = (userId: number, token: string) => {
-  return Session.create({ userId, token });
+  return Session.updateOne({ userId }, { token }, { upsert: true });
 };
