@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const patientSchema = new mongoose.Schema({
-  nome: {
+  name: {
     type: String,
     minlength: 5,
     maxlength: 30,
@@ -22,21 +22,21 @@ const patientSchema = new mongoose.Schema({
   },
   rg: {
     type: String,
-    minlength: 9,
-    maxlength: 9,
+    minlength: 7,
+    maxlength: 7,
     required: true,
     unique: true,
   },
-  dataNascimento: {
+  birthdate: {
     type: Date,
     required: true,
   },
-  sexo: {
+  sex: {
     type: String,
     enum: ["M", "F"],
     required: true,
   },
-  telefone: {
+  phone: {
     type: String,
     minlength: 11,
     maxlength: 11,
@@ -48,7 +48,7 @@ const patientSchema = new mongoose.Schema({
     maxlength: 8,
     required: true,
   },
-  logradouro: {
+  address: {
     type: String,
     minlength: 5,
     maxlength: 50,

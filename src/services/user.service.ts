@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import * as respository from "../repositories";
+import * as respository from "../repositories/user.repository";
 import { CustomError, NewUser, UserAcess } from "../models";
 
 const getUserByEmail = async (email: string) => {

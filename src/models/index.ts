@@ -11,14 +11,12 @@ export type UserWithoutPassword = {
   id: number;
   username: string;
   email: string;
-  password: string;
   createdAt: Date;
   updatedAt: Date;
 };
 export type User = UserWithoutPassword & { password: string };
 
-export type Patient = {
-  id: number;
+export type NewPatient = {
   nome: string;
   email: string;
   cpf: string;
@@ -28,6 +26,5 @@ export type Patient = {
   telefone: string;
   cep: string;
   logradouro: string;
-  createdAt: Date;
-  updatedAt: Date;
 };
+export type DbPatient = NewPatient & { id: number; createdAt: Date; updatedAt: Date };
