@@ -1,30 +1,37 @@
 export * from "./error.type";
 import { Request } from "express";
+import { ObjectId } from "mongoose";
+
+export type JWTPayload = { userId: number };
+export type AuthReq = Request & JWTPayload;
 
 export type UserAcess = { email: string; password: string };
 export type NewUser = UserAcess & { username: string };
-
-export type JWTPayload = { userId: number };
-export type AuthenticatedRequest = Request & JWTPayload;
-
 export type UserWithoutPassword = {
-  id: number;
+  id: ObjectId;
   username: string;
   email: string;
   createdAt: Date;
-  updatedAt: Date;
 };
-export type User = UserWithoutPassword & { password: string };
+export type DbUser = UserWithoutPassword & { password: string };
 
 export type NewPatient = {
   nome: string;
   email: string;
   cpf: string;
   rg: string;
-  dataNascimento: Date;
-  sexo: string;
-  telefone: string;
+  birthdate: Date;
+  sex: string;
+  phone: string;
   cep: string;
-  logradouro: string;
+  address: string;
 };
-export type DbPatient = NewPatient & { id: number; createdAt: Date; updatedAt: Date };
+
+export type DbPatient = NewPatient & { id: ObjectId; createdAt: Date };
+
+export type RequestRegister = {
+  email?: string;
+  cpf?: string;
+  rg?: string;
+  phone?: string;
+};

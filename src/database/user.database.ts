@@ -24,6 +24,10 @@ export const userSchema = new mongoose.Schema({
     type: String,
     default: "https://i.imgur.com/6VBx3io.png",
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 export const User = mongoose.model("User", userSchema);

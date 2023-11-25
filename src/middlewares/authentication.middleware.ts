@@ -3,13 +3,13 @@ import httpStatus from "http-status";
 import * as jwt from "jsonwebtoken";
 
 import { Session } from "../database";
-import { AuthenticatedRequest, JWTPayload } from "../models";
+import { AuthReq, JWTPayload } from "../models";
 
 function unauthorizedResponse(res: Response) {
   res.status(httpStatus.UNAUTHORIZED).send("Não autorizado");
 }
 
-export const validToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const validToken = async (req: AuthReq, res: Response, next: NextFunction) => {
   const authHeader = req.header("Authorization");
   if (!authHeader) return unauthorizedResponse(res);
 

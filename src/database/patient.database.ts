@@ -12,6 +12,7 @@ const patientSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 50,
     required: true,
+    unique: true,
   },
   cpf: {
     type: String,
@@ -52,6 +53,10 @@ const patientSchema = new mongoose.Schema({
     type: String,
     minlength: 5,
     maxlength: 50,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 
