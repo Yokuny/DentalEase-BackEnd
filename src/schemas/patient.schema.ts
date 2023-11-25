@@ -2,7 +2,7 @@ import Joi from "joi";
 
 export const patientDataSchema = Joi.object({
   name: Joi.string().min(5).max(30).required(),
-  email: Joi.string().min(5).max(50).required(),
+  email: Joi.string().email().min(5).max(50).required(),
   cpf: Joi.string().min(11).max(11).required(),
   rg: Joi.string().min(7).max(7).required(),
   birthdate: Joi.date().required(),
@@ -13,7 +13,7 @@ export const patientDataSchema = Joi.object({
 });
 
 export const requestRegisterSchema = Joi.object({
-  email: Joi.string().min(5).max(50),
+  email: Joi.string().email().min(5).max(50),
   cpf: Joi.string().min(11).max(11),
   rg: Joi.string().min(7).max(7),
   phone: Joi.string().min(11).max(11),

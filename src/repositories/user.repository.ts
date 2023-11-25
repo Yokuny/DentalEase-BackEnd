@@ -10,6 +10,6 @@ export const getUserByEmail = (email: string) => {
   return User.findOne({ email });
 };
 
-export const sessionToken = (userId: number, token: string) => {
-  return Session.updateOne({ userId }, { token }, { upsert: true });
+export const sessionToken = (clinic: string, token: string) => {
+  return Session.updateOne({ clinic }, { token }, { upsert: true });
 };

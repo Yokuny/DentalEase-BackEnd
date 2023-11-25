@@ -12,21 +12,18 @@ const patientSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 50,
     required: true,
-    unique: true,
   },
   cpf: {
     type: String,
     minlength: 11,
     maxlength: 11,
     required: true,
-    unique: true,
   },
   rg: {
     type: String,
     minlength: 7,
     maxlength: 7,
     required: true,
-    unique: true,
   },
   birthdate: {
     type: Date,
@@ -53,6 +50,10 @@ const patientSchema = new mongoose.Schema({
     type: String,
     minlength: 5,
     maxlength: 50,
+  },
+  clinic: {
+    type: String,
+    required: true,
   },
   createdAt: {
     type: Date,

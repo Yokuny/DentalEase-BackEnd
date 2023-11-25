@@ -2,7 +2,7 @@ export * from "./error.type";
 import { Request } from "express";
 import { ObjectId } from "mongoose";
 
-export type JWTPayload = { userId: number };
+export type JWTPayload = { clinic: string };
 export type AuthReq = Request & JWTPayload;
 
 export type UserAcess = { email: string; password: string };
@@ -16,6 +16,7 @@ export type UserWithoutPassword = {
 export type DbUser = UserWithoutPassword & { password: string };
 
 export type NewPatient = {
+  clinic: string;
   nome: string;
   email: string;
   cpf: string;

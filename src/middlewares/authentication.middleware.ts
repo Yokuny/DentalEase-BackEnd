@@ -17,12 +17,12 @@ export const validToken = async (req: AuthReq, res: Response, next: NextFunction
   if (!token) return unauthorizedResponse(res);
 
   try {
-    const { userId } = jwt.verify(token, process.env.JWT_SECRET) as JWTPayload;
+    const { clinic } = jwt.verify(token, process.env.JWT_SECRET) as JWTPayload;
 
-    const session = await Session.findOne({ userId, token });
+    const session = await Session.findOne({ clinic, token });
     if (!session) return unauthorizedResponse(res);
 
-    req.userId = userId;
+    req.clinic = clinic;
 
     return next();
   } catch (err) {

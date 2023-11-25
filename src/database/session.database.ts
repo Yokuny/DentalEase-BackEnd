@@ -5,7 +5,7 @@ export const sessionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  userId: {
+  clinic: {
     type: String,
     required: true,
     unique: true,
