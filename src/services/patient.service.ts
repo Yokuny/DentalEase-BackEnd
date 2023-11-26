@@ -1,7 +1,7 @@
 import * as respository from "../repositories/patient.repository";
 import { stringToData } from "../helpers/convertData.helper";
 import { CustomError } from "../models";
-import type { NewPatient, RequestRegister } from "../models";
+import type { NewPatient, RequestRegister, DbAnamnesis, Anamnesis } from "../models";
 
 const getPatientByEmail = async (email: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByEmail(email, clinic);
@@ -69,3 +69,29 @@ export const postPatientData = async (clinic: string, data: NewPatient) => {
     throw new CustomError("Erro ao cadastrar paciente", 500);
   }
 };
+
+const getPatient = async (id: string, clinic: string) => {
+  const patient = await respository.getPatient(id, clinic);
+  if (!patient) throw new CustomError("Registro não encontrado", 404);
+
+  return patient;
+};
+
+const updatePatientAnamnesis = async (patient: string, data: Anamnesis) => {
+  const register = await respository.updatePatientAnamnesis(patient, data);
+
+  try {
+    if (register.modifiedCount === 1) return "Anamnese cadastrada com sucesso";
+  } catch (err) {
+    throw new CustomError("Erro ao cadastrar anamnese", 500);
+  }
+};
+
+export const postPatientAnamnesis = async (clinic: string, data: DbAnamnesis) => {
+  const patient = await getPatient(data.patientId, clinic);
+
+  delete data.patientId;
+
+  return await updatePatientAnamnesis(patient.id, data);
+};
+

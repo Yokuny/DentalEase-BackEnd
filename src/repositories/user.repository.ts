@@ -1,12 +1,12 @@
 import { User } from "../database";
 import { Session } from "../database";
-import type { NewUser } from "../models";
+import type { NewUser, DbUser } from "../models";
 
 export const signup = (data: NewUser) => {
   return User.create(data);
 };
 
-export const getUserByEmail = (email: string) => {
+export const getUserByEmail = (email: string): Promise<DbUser> => {
   return User.findOne({ email });
 };
 
