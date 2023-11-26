@@ -1,5 +1,5 @@
 import { Patient } from "../database";
-import type { NewPatient, DbPatient, Anamnesis } from "../models";
+import type { NewPatient, DbPatient, Anamnesis, Intraoral } from "../models";
 
 export const getPatientByEmail = (email: string, clinic: string): Promise<DbPatient | null> => {
   return Patient.findOne({ email, clinic }, { clinic: 0, __v: 0 });
@@ -31,5 +31,9 @@ export const postPatientData = (data: NewPatient) => {
 
 export const updatePatientAnamnesis = (id: string, data: Anamnesis) => {
   return Patient.updateOne({ _id: id }, { anamnese: data });
+};
+
+export const updatePatientIntraoral = (id: string, data: Intraoral) => {
+  return Patient.updateOne({ _id: id }, { intraoral: data });
 };
 

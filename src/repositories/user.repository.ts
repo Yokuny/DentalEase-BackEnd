@@ -7,7 +7,7 @@ export const signup = (data: NewUser) => {
 };
 
 export const getUserByEmail = (email: string): Promise<DbUser> => {
-  return User.findOne({ email });
+  return User.findOne({ email }, { __v: 0 });
 };
 
 export const sessionToken = (clinic: string, token: string) => {

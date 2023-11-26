@@ -21,33 +21,24 @@ export const requestRegisterSchema = Joi.object({
 
 export const anamnesisSchema = Joi.object({
   patientId: Joi.string().required(),
-  mainComplaint: Joi.string().required(),
-
+  mainComplaint: Joi.string().max(250).required(),
   gumsBleedEasily: Joi.boolean().required(),
   sensitiveTeeth: Joi.boolean().required(),
-
   allergicToMedication: Joi.boolean().required(),
-  medicationAllergy: Joi.string().required(),
-
+  medicationAllergy: Joi.string().max(120).required(),
   bitesPenOrPencil: Joi.boolean().required(),
   nailsBiting: Joi.boolean().required(),
-  otherHarmfulHabits: Joi.string().required(),
-
+  otherHarmfulHabits: Joi.string().max(120).required(),
   pregnant: Joi.boolean().required(),
-  pregnancyMonth: Joi.number().required(),
+  pregnancyMonth: Joi.number().max(10).required(),
   breastfeeding: Joi.boolean().required(),
-
   underMedicalTreatment: Joi.boolean().required(),
-  medicalTreatmentDetails: Joi.string().required(),
-
+  medicalTreatmentDetails: Joi.string().max(120).required(),
   takingMedication: Joi.boolean().required(),
-  medicationDetails: Joi.string().required(),
-
-  infectiousDisease: Joi.string().required(),
-
+  medicationDetails: Joi.string().max(120).required(),
+  infectiousDisease: Joi.string().max(120).required(),
   smoker: Joi.boolean().required(),
   alcoholConsumer: Joi.boolean().required(),
-
   illnesses: Joi.object({
     diabetes: Joi.boolean().default(false),
     tuberculosis: Joi.boolean().default(false),
@@ -57,8 +48,21 @@ export const anamnesisSchema = Joi.object({
     highBloodPressure: Joi.boolean().default(false),
     kidneyProblems: Joi.boolean().default(false),
     liverProblems: Joi.boolean().default(false),
-    otherIllnesses: Joi.string().default(""),
+    otherIllnesses: Joi.string().max(120).default(""),
   }).required(),
+  importantHealthInformation: Joi.string().max(250).required(),
+});
 
-  importantHealthInformation: Joi.string(),
+export const intraoralSchema = Joi.object({
+  patientId: Joi.string().required(),
+  hygiene: Joi.string().valid("normal", "regular", "deficiente").required(),
+  halitosis: Joi.string().valid("ausente", "moderada", "forte").required(),
+  tartar: Joi.string().valid("ausente", "pouco", "muito").required(),
+  gums: Joi.string().valid("normal", "gengivite", "periodontite").required(),
+  mucosa: Joi.string().valid("normal", "alterada").required(),
+  tongue: Joi.string().max(120).required(),
+  palate: Joi.string().max(120).required(),
+  oralFloor: Joi.string().max(120).required(),
+  lips: Joi.string().max(120).required(),
+  otherObservations: Joi.string().max(250).required(),
 });

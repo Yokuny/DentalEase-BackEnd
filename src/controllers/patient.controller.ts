@@ -44,3 +44,17 @@ export const postPatientAnamnesis = async (req: AuthReq, res: Response) => {
     }
   }
 };
+
+export const potPatientIntraoral = async (req: AuthReq, res: Response) => {
+  try {
+    const response = await service.postPatientIntraoral(req.clinic, req.body);
+
+    return res.status(httpStatus.CREATED).json({ message: response });
+  } catch (err) {
+    if (err instanceof CustomError) {
+      res.status(err.status).send({ message: err.message });
+    } else {
+      res.status(httpStatus.INTERNAL_SERVER_ERROR).send("Erro desconhecido");
+    }
+  }
+};

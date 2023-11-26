@@ -30,6 +30,7 @@ export type NewPatient = {
 export type DbPatient = NewPatient & { id: string; createdAt: Date };
 export type RequestRegister = { email?: string; cpf?: string; rg?: string; phone?: string };
 
+type DbPatientId = { patientId: string };
 type Illnesses = {
   diabetes: boolean;
   tuberculosis: boolean;
@@ -41,7 +42,6 @@ type Illnesses = {
   liverProblems: boolean;
   otherIllnesses?: string;
 };
-type DbPatientId = { patientId: string };
 export type Anamnesis = {
   mainComplaint: string;
   gumsBleedEasily: boolean;
@@ -65,3 +65,18 @@ export type Anamnesis = {
   importantHealthInformation?: string;
 };
 export type DbAnamnesis = Anamnesis & DbPatientId;
+
+export type Intraoral = {
+  hygiene: string;
+  halitosis: string;
+  tartar: string;
+  gums: string;
+  mucosa: string;
+  tongue?: string;
+  palate?: string;
+  oralFloor?: string;
+  lips?: string;
+  otherObservations?: string;
+};
+export type DbIntraoral = Intraoral & DbPatientId;
+

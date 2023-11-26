@@ -1,7 +1,14 @@
 import * as respository from "../repositories/patient.repository";
 import { stringToData } from "../helpers/convertData.helper";
 import { CustomError } from "../models";
-import type { NewPatient, RequestRegister, DbAnamnesis, Anamnesis } from "../models";
+import type { NewPatient, RequestRegister, DbAnamnesis, Anamnesis, DbIntraoral, Intraoral } from "../models";
+
+const getPatient = async (id: string, clinic: string) => {
+  const patient = await respository.getPatient(id, clinic);
+  if (!patient) throw new CustomError("Registro não encontrado", 404);
+
+  return patient;
+};
 
 const getPatientByEmail = async (email: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByEmail(email, clinic);
@@ -66,15 +73,8 @@ export const postPatientData = async (clinic: string, data: NewPatient) => {
     const register = await respository.postPatientData(newPatient);
     if (register.upsertedCount === 1) return "Paciente cadastrado com sucesso";
   } catch (err) {
-    throw new CustomError("Erro ao cadastrar paciente", 500);
+    throw new CustomError("Erro ao cadastrar paciente", 502);
   }
-};
-
-const getPatient = async (id: string, clinic: string) => {
-  const patient = await respository.getPatient(id, clinic);
-  if (!patient) throw new CustomError("Registro não encontrado", 404);
-
-  return patient;
 };
 
 const updatePatientAnamnesis = async (patient: string, data: Anamnesis) => {
@@ -83,7 +83,7 @@ const updatePatientAnamnesis = async (patient: string, data: Anamnesis) => {
   try {
     if (register.modifiedCount === 1) return "Anamnese cadastrada com sucesso";
   } catch (err) {
-    throw new CustomError("Erro ao cadastrar anamnese", 500);
+    throw new CustomError("Erro ao cadastrar anamnese", 502);
   }
 };
 
@@ -93,5 +93,23 @@ export const postPatientAnamnesis = async (clinic: string, data: DbAnamnesis) =>
   delete data.patientId;
 
   return await updatePatientAnamnesis(patient.id, data);
+};
+
+const updatePatientIntraoral = async (patient: string, data: Intraoral) => {
+  const register = await respository.updatePatientIntraoral(patient, data);
+
+  try {
+    if (register.modifiedCount === 1) return "Exame intraoral cadastrado com sucesso";
+  } catch (err) {
+    throw new CustomError("Erro ao cadastrar exame intraoral", 502);
+  }
+};
+
+export const postPatientIntraoral = async (clinic: string, data: DbIntraoral) => {
+  const patient = await getPatient(data.patientId, clinic);
+
+  delete data.patientId;
+
+  return await updatePatientIntraoral(patient.id, data);
 };
 
