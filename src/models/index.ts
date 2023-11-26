@@ -80,3 +80,17 @@ export type Intraoral = {
 };
 export type DbIntraoral = Intraoral & DbPatientId;
 
+export type Odontogram = {
+  teeth: {
+    number: number;
+    workToBeDone: string;
+    faces: {
+      facil: string;
+      lingual: string;
+      mesial: string;
+      distal: string;
+      occlusal: string;
+    };
+  }[];
+};
+export type DbOdontogram = Odontogram & DbPatientId;

@@ -1,7 +1,16 @@
 import * as respository from "../repositories/patient.repository";
 import { stringToData } from "../helpers/convertData.helper";
 import { CustomError } from "../models";
-import type { NewPatient, RequestRegister, DbAnamnesis, Anamnesis, DbIntraoral, Intraoral } from "../models";
+import type {
+  NewPatient,
+  RequestRegister,
+  DbAnamnesis,
+  Anamnesis,
+  DbIntraoral,
+  Intraoral,
+  DbOdontogram,
+  Odontogram,
+} from "../models";
 
 const getPatient = async (id: string, clinic: string) => {
   const patient = await respository.getPatient(id, clinic);
@@ -113,3 +122,20 @@ export const postPatientIntraoral = async (clinic: string, data: DbIntraoral) =>
   return await updatePatientIntraoral(patient.id, data);
 };
 
+export const updatePatientOdontogram = async (patient: string, data: Odontogram) => {
+  const register = await respository.updatePatientOdontogram(patient, data);
+
+  try {
+    if (register.modifiedCount === 1) return "Odontograma cadastrado com sucesso";
+  } catch (err) {
+    throw new CustomError("Erro ao cadastrar odontograma", 502);
+  }
+};
+
+export const postPatientOdontogram = async (clinic: string, data: DbOdontogram) => {
+  const patient = await getPatient(data.patientId, clinic);
+
+  delete data.patientId;
+
+  return await updatePatientOdontogram(patient.id, data);
+};

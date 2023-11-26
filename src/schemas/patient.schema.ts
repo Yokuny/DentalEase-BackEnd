@@ -1,5 +1,12 @@
 import Joi from "joi";
 
+export const requestRegisterSchema = Joi.object({
+  email: Joi.string().email().min(5).max(50),
+  cpf: Joi.string().min(11).max(11),
+  rg: Joi.string().min(7).max(7),
+  phone: Joi.string().min(11).max(11),
+});
+
 export const patientDataSchema = Joi.object({
   name: Joi.string().min(5).max(30).required(),
   cpf: Joi.string().min(11).max(11).required(),
@@ -10,13 +17,6 @@ export const patientDataSchema = Joi.object({
   email: Joi.string().email().min(5).max(50).required(),
   cep: Joi.string().min(8).max(8).required(),
   address: Joi.string().min(5).max(50),
-});
-
-export const requestRegisterSchema = Joi.object({
-  email: Joi.string().email().min(5).max(50),
-  cpf: Joi.string().min(11).max(11),
-  rg: Joi.string().min(7).max(7),
-  phone: Joi.string().min(11).max(11),
 });
 
 export const anamnesisSchema = Joi.object({
@@ -65,4 +65,38 @@ export const intraoralSchema = Joi.object({
   oralFloor: Joi.string().max(120).required(),
   lips: Joi.string().max(120).required(),
   otherObservations: Joi.string().max(250).required(),
+});
+
+const teethFacesEnum = ["healthy", "cavity", "missing", "other"];
+
+export const odontogramSchema = Joi.object({
+  patientId: Joi.string().required(),
+  teeth: Joi.array()
+    .min(1)
+    .items(
+      Joi.object({
+        number: Joi.number().max(99).required(),
+        workToBeDone: Joi.string().max(250).required(),
+        faces: Joi.object({
+          mesial: Joi.string()
+            .valid(...teethFacesEnum)
+            .required(),
+          distal: Joi.string()
+            .valid(...teethFacesEnum)
+            .required(),
+          lingual: Joi.string()
+            .valid(...teethFacesEnum)
+            .required(),
+          facil: Joi.string()
+            .valid(...teethFacesEnum)
+            .required(),
+          occlusal: Joi.string()
+            .valid(...teethFacesEnum)
+            .required(),
+        })
+          .min(1)
+          .required(),
+      })
+    )
+    .required(),
 });

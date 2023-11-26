@@ -46,6 +46,23 @@ const intraoralSchema = new mongoose.Schema({
   otherObservations: { type: String, maxlength: 250 },
 });
 
+const teethFacesEnum = ["healthy", "cavity", "missing", "other"];
+const odontogramSchema = new mongoose.Schema({
+  teeth: [
+    {
+      number: { type: Number, maxlength: 3, required: true },
+      workToBeDone: { type: String, maxlength: 250, required: true },
+      faces: {
+        facil: { type: String, enum: teethFacesEnum, default: "healthy" },
+        lingual: { type: String, enum: teethFacesEnum, default: "healthy" },
+        mesial: { type: String, enum: teethFacesEnum, default: "healthy" },
+        distal: { type: String, enum: teethFacesEnum, default: "healthy" },
+        occlusal: { type: String, enum: teethFacesEnum, default: "healthy" },
+      },
+    },
+  ],
+});
+
 const patientSchema = new mongoose.Schema({
   name: { type: String, minlength: 5, maxlength: 30, required: true },
   email: { type: String, minlength: 5, maxlength: 50, required: true },
@@ -58,6 +75,7 @@ const patientSchema = new mongoose.Schema({
   address: { type: String, minlength: 5, maxlength: 50 },
   anamnese: anamnesisSchema,
   intraoral: intraoralSchema,
+  odontogram: odontogramSchema,
   clinic: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
