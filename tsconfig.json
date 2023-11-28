@@ -11,7 +11,9 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
-    "baseUrl": "./"
+    "moduleResolution": "Node",
+    "baseUrl": "src"
   },
+
   "include": ["src", "tests"]
 }

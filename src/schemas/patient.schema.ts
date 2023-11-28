@@ -67,8 +67,6 @@ export const intraoralSchema = Joi.object({
   otherObservations: Joi.string().max(250).required(),
 });
 
-const teethFacesEnum = ["healthy", "cavity", "missing", "other"];
-
 export const odontogramSchema = Joi.object({
   patientId: Joi.string().required(),
   teeth: Joi.array()
@@ -78,21 +76,13 @@ export const odontogramSchema = Joi.object({
         number: Joi.number().max(99).required(),
         workToBeDone: Joi.string().max(250).required(),
         faces: Joi.object({
-          mesial: Joi.string()
-            .valid(...teethFacesEnum)
-            .required(),
-          distal: Joi.string()
-            .valid(...teethFacesEnum)
-            .required(),
-          lingual: Joi.string()
-            .valid(...teethFacesEnum)
-            .required(),
-          facil: Joi.string()
-            .valid(...teethFacesEnum)
-            .required(),
-          occlusal: Joi.string()
-            .valid(...teethFacesEnum)
-            .required(),
+          facial: Joi.boolean().default(false),
+          incisal: Joi.boolean().default(false),
+          lingual: Joi.boolean().default(false),
+          mesial: Joi.boolean().default(false),
+          distal: Joi.boolean().default(false),
+          occlusal: Joi.boolean().default(false),
+          palatal: Joi.boolean().default(false),
         })
           .min(1)
           .required(),
