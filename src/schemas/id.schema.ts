@@ -11,3 +11,12 @@ export const idSchema = Joi.object({
     })
     .required(),
 });
+
+export const idSchemaOptional = Joi.object({
+  id: Joi.string().custom((value: string, helpers) => {
+    if (!ObjectId.isValid(value)) {
+      return helpers.error("ID fornecido é inválido");
+    }
+    return value;
+  }),
+});

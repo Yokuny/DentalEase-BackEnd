@@ -10,14 +10,6 @@ export const getOdontogram = async (clinic: string, id: string) => {
   return odontogram;
 };
 
-export const updateOdontogram = async (clinic: string, id: string, data: ClinicOdontogram) => {
-  await getOdontogram(clinic, id);
-
-  const register = await respository.updateOdontogram(id, data);
-  if (register.modifiedCount > 0) return "Odontograma cadastrado com sucesso";
-  else throw new CustomError("Odontograma não atualizado", 406);
-};
-
 export const postOdontogram = async (clinic: string, data: NewOdontogram) => {
   await getPatient(data.Patient, clinic);
 
@@ -30,6 +22,14 @@ export const postOdontogram = async (clinic: string, data: NewOdontogram) => {
   if (register) return "Odontograma cadastrado com sucesso";
 
   throw new CustomError("Erro ao cadastrar odontograma", 502);
+};
+
+export const updateOdontogram = async (clinic: string, id: string, data: ClinicOdontogram) => {
+  await getOdontogram(clinic, id);
+
+  const register = await respository.updateOdontogram(id, data);
+  if (register.modifiedCount > 0) return "Odontograma cadastrado com sucesso";
+  else throw new CustomError("Odontograma não atualizado", 406);
 };
 
 export const patchOdontogram = async (clinic: string, id: string) => {

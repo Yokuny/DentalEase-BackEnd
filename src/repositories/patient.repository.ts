@@ -1,6 +1,10 @@
 import { Patient } from "../database";
 import type { ClinicPatient, DbPatient, Anamnesis, Intraoral } from "../models";
 
+export const getAllPatients = (Clinic: string): Promise<DbPatient[]> => {
+  return Patient.find({ Clinic }, { Clinic: 0, __v: 0 });
+};
+
 export const getPatientByEmail = (email: string, Clinic: string): Promise<DbPatient | null> => {
   return Patient.findOne({ email, Clinic }, { Clinic: 0, __v: 0 });
 };
