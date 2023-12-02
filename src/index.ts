@@ -14,7 +14,8 @@ app
   .get("/health", (_req: Request, res: Response) => res.send("OK!"))
   .get("/time", (_req: Request, res: Response) => res.send(new Date()))
   .use("/user", route.userRoute)
-  .use("/patient", route.patientRoute);
+  .use("/patient", route.patientRoute)
+  .use("/odontogram", route.odontogramRoute);
 
 export function init(): Promise<express.Application> {
   dbConnect();

@@ -3,7 +3,10 @@ import { Request } from "express";
 
 export type JWTPayload = { clinic: string };
 export type AuthReq = Request & JWTPayload;
-
+//Common
+type Clinic = { Clinic: string };
+type Patient = { Patient: string };
+//User
 export type UserAcess = { email: string; password: string };
 export type NewUser = UserAcess & { username: string };
 export type UserWithoutPassword = {
@@ -14,10 +17,10 @@ export type UserWithoutPassword = {
   createdAt: Date;
 };
 export type DbUser = UserWithoutPassword & { password: string };
-
+//Patient
+export type RequestRegister = { email?: string; cpf?: string; rg?: string; phone?: string };
 export type NewPatient = {
-  clinic: string;
-  nome: string;
+  name: string;
   email: string;
   cpf: string;
   rg: string;
@@ -27,10 +30,13 @@ export type NewPatient = {
   cep: string;
   address: string;
 };
-export type DbPatient = NewPatient & { id: string; createdAt: Date };
-export type RequestRegister = { email?: string; cpf?: string; rg?: string; phone?: string };
-
-type DbPatientId = { patientId: string };
+export type ClinicPatient = NewPatient &
+  Clinic & {
+    anamnese: Anamnesis;
+    intraoral: Intraoral;
+  };
+export type DbPatient = ClinicPatient & { id: string; createdAt: Date };
+//Patient Anamnesis
 type Illnesses = {
   diabetes: boolean;
   tuberculosis: boolean;
@@ -64,8 +70,8 @@ export type Anamnesis = {
   illnesses: Illnesses;
   importantHealthInformation?: string;
 };
-export type DbAnamnesis = Anamnesis & DbPatientId;
-
+export type DbAnamnesis = Anamnesis & Patient;
+//Patient Intraoral
 export type Intraoral = {
   hygiene: string;
   halitosis: string;
@@ -78,19 +84,24 @@ export type Intraoral = {
   lips?: string;
   otherObservations?: string;
 };
-export type DbIntraoral = Intraoral & DbPatientId;
-
-export type Odontogram = {
+export type DbIntraoral = Intraoral & Patient;
+//Odontogram
+export type NewOdontogram = {
+  Patient: string;
+  workToBeDone: string;
+  finished: boolean;
   teeth: {
     number: number;
-    workToBeDone: string;
     faces: {
-      facil: string;
-      lingual: string;
-      mesial: string;
-      distal: string;
-      occlusal: string;
+      facial: Boolean;
+      incisal: Boolean;
+      lingual: Boolean;
+      mesial: Boolean;
+      distal: Boolean;
+      occlusal: Boolean;
+      palatal: Boolean;
     };
   }[];
 };
-export type DbOdontogram = Odontogram & DbPatientId;
+export type ClinicOdontogram = NewOdontogram & Clinic;
+export type DbOdontogram = ClinicOdontogram & { id: string; createdAt: Date };

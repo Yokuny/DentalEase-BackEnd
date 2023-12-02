@@ -1,20 +1,19 @@
 import * as respository from "../repositories/patient.repository";
-import { stringToData } from "../helpers/convertData.helper";
+import { stringToData } from "../helpers/convert_data.helper";
 import { CustomError } from "../models";
 import type {
   NewPatient,
+  ClinicPatient,
   RequestRegister,
   DbAnamnesis,
   Anamnesis,
   DbIntraoral,
   Intraoral,
-  DbOdontogram,
-  Odontogram,
 } from "../models";
 
-const getPatient = async (id: string, clinic: string) => {
+export const getPatient = async (id: string, clinic: string) => {
   const patient = await respository.getPatient(id, clinic);
-  if (!patient) throw new CustomError("Registro não encontrado", 404);
+  if (!patient) throw new CustomError("Paciente não encontrado", 404);
 
   return patient;
 };
@@ -59,6 +58,15 @@ export const getPatientRegister = async (clinic: string, body: RequestRegister) 
   throw new CustomError("Dados inválidos", 400);
 };
 
+export const updatePatient = async (data: ClinicPatient) => {
+  try {
+    const register = await respository.updatePatient(data);
+    if (register.upsertedCount === 1) return "Paciente cadastrado com sucesso";
+  } catch (err) {
+    throw new CustomError("Erro ao cadastrar paciente", 502);
+  }
+};
+
 export const postPatientData = async (clinic: string, data: NewPatient) => {
   const patientByEmail = await getPatientByEmail(data.email, clinic);
   if (patientByEmail) throw new CustomError("Email já cadastrado", 403);
@@ -74,22 +82,18 @@ export const postPatientData = async (clinic: string, data: NewPatient) => {
 
   const newPatient = {
     ...data,
-    clinic,
+    Clinic: clinic,
     birthdate: stringToData(data.birthdate),
+    anamnese: {} as Anamnesis,
+    intraoral: {} as Intraoral,
   };
 
-  try {
-    const register = await respository.postPatientData(newPatient);
-    if (register.upsertedCount === 1) return "Paciente cadastrado com sucesso";
-  } catch (err) {
-    throw new CustomError("Erro ao cadastrar paciente", 502);
-  }
+  return await updatePatient(newPatient);
 };
 
 const updatePatientAnamnesis = async (patient: string, data: Anamnesis) => {
-  const register = await respository.updatePatientAnamnesis(patient, data);
-
   try {
+    const register = await respository.updatePatientAnamnesis(patient, data);
     if (register.modifiedCount === 1) return "Anamnese cadastrada com sucesso";
   } catch (err) {
     throw new CustomError("Erro ao cadastrar anamnese", 502);
@@ -97,17 +101,16 @@ const updatePatientAnamnesis = async (patient: string, data: Anamnesis) => {
 };
 
 export const postPatientAnamnesis = async (clinic: string, data: DbAnamnesis) => {
-  const patient = await getPatient(data.patientId, clinic);
+  const patient = await getPatient(data.Patient, clinic);
 
-  delete data.patientId;
+  delete data.Patient;
 
   return await updatePatientAnamnesis(patient.id, data);
 };
 
 const updatePatientIntraoral = async (patient: string, data: Intraoral) => {
-  const register = await respository.updatePatientIntraoral(patient, data);
-
   try {
+    const register = await respository.updatePatientIntraoral(patient, data);
     if (register.modifiedCount === 1) return "Exame intraoral cadastrado com sucesso";
   } catch (err) {
     throw new CustomError("Erro ao cadastrar exame intraoral", 502);
@@ -115,27 +118,9 @@ const updatePatientIntraoral = async (patient: string, data: Intraoral) => {
 };
 
 export const postPatientIntraoral = async (clinic: string, data: DbIntraoral) => {
-  const patient = await getPatient(data.patientId, clinic);
+  const patient = await getPatient(data.Patient, clinic);
 
-  delete data.patientId;
+  delete data.Patient;
 
   return await updatePatientIntraoral(patient.id, data);
-};
-
-export const updatePatientOdontogram = async (patient: string, data: Odontogram) => {
-  const register = await respository.updatePatientOdontogram(patient, data);
-
-  try {
-    if (register.modifiedCount === 1) return "Odontograma cadastrado com sucesso";
-  } catch (err) {
-    throw new CustomError("Erro ao cadastrar odontograma", 502);
-  }
-};
-
-export const postPatientOdontogram = async (clinic: string, data: DbOdontogram) => {
-  const patient = await getPatient(data.patientId, clinic);
-
-  delete data.patientId;
-
-  return await updatePatientOdontogram(patient.id, data);
 };

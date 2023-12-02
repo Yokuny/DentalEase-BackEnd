@@ -20,7 +20,7 @@ export const patientDataSchema = Joi.object({
 });
 
 export const anamnesisSchema = Joi.object({
-  patientId: Joi.string().required(),
+  Patient: Joi.string().required(),
   mainComplaint: Joi.string().max(250).required(),
   gumsBleedEasily: Joi.boolean().required(),
   sensitiveTeeth: Joi.boolean().required(),
@@ -54,7 +54,7 @@ export const anamnesisSchema = Joi.object({
 });
 
 export const intraoralSchema = Joi.object({
-  patientId: Joi.string().required(),
+  Patient: Joi.string().required(),
   hygiene: Joi.string().valid("normal", "regular", "deficiente").required(),
   halitosis: Joi.string().valid("ausente", "moderada", "forte").required(),
   tartar: Joi.string().valid("ausente", "pouco", "muito").required(),
@@ -65,28 +65,4 @@ export const intraoralSchema = Joi.object({
   oralFloor: Joi.string().max(120).required(),
   lips: Joi.string().max(120).required(),
   otherObservations: Joi.string().max(250).required(),
-});
-
-export const odontogramSchema = Joi.object({
-  patientId: Joi.string().required(),
-  teeth: Joi.array()
-    .min(1)
-    .items(
-      Joi.object({
-        number: Joi.number().max(99).required(),
-        workToBeDone: Joi.string().max(250).required(),
-        faces: Joi.object({
-          facial: Joi.boolean().default(false),
-          incisal: Joi.boolean().default(false),
-          lingual: Joi.boolean().default(false),
-          mesial: Joi.boolean().default(false),
-          distal: Joi.boolean().default(false),
-          occlusal: Joi.boolean().default(false),
-          palatal: Joi.boolean().default(false),
-        })
-          .min(1)
-          .required(),
-      })
-    )
-    .required(),
 });

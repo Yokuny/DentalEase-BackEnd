@@ -46,26 +46,8 @@ const intraoralSchema = new mongoose.Schema({
   otherObservations: { type: String, maxlength: 250 },
 });
 
-const odontogramSchema = new mongoose.Schema({
-  teeth: [
-    {
-      number: { type: Number, maxlength: 3, required: true },
-      workToBeDone: { type: String, maxlength: 250, required: true },
-      createdAt: { type: Date, default: Date.now },
-      face: {
-        facial: { type: Boolean, default: false },
-        incisal: { type: Boolean, default: false },
-        lingual: { type: Boolean, default: false },
-        mesial: { type: Boolean, default: false },
-        distal: { type: Boolean, default: false },
-        occlusal: { type: Boolean, default: false },
-        palatal: { type: Boolean, default: false },
-      },
-    },
-  ],
-});
-
 const patientSchema = new mongoose.Schema({
+  Clinic: { type: mongoose.Schema.Types.ObjectId, ref: "Clinic" },
   name: { type: String, minlength: 5, maxlength: 30, required: true },
   email: { type: String, minlength: 5, maxlength: 50, required: true },
   cpf: { type: String, minlength: 11, maxlength: 11, required: true },
@@ -77,8 +59,6 @@ const patientSchema = new mongoose.Schema({
   address: { type: String, minlength: 5, maxlength: 50 },
   anamnese: anamnesisSchema,
   intraoral: intraoralSchema,
-  odontogram: odontogramSchema,
-  clinic: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
 

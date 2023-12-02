@@ -1,31 +1,31 @@
 import { Patient } from "../database";
-import type { NewPatient, DbPatient, Anamnesis, Intraoral, Odontogram } from "../models";
+import type { ClinicPatient, DbPatient, Anamnesis, Intraoral } from "../models";
 
-export const getPatientByEmail = (email: string, clinic: string): Promise<DbPatient | null> => {
-  return Patient.findOne({ email, clinic }, { clinic: 0, __v: 0 });
+export const getPatientByEmail = (email: string, Clinic: string): Promise<DbPatient | null> => {
+  return Patient.findOne({ email, Clinic }, { Clinic: 0, __v: 0 });
 };
 
-export const getPatientByCpf = (cpf: string, clinic: string): Promise<DbPatient | null> => {
-  return Patient.findOne({ cpf, clinic }, { clinic: 0, __v: 0 });
+export const getPatientByCpf = (cpf: string, Clinic: string): Promise<DbPatient | null> => {
+  return Patient.findOne({ cpf, Clinic }, { Clinic: 0, __v: 0 });
 };
 
-export const getPatientByRg = (rg: string, clinic: string): Promise<DbPatient | null> => {
-  return Patient.findOne({ rg, clinic }, { clinic: 0, __v: 0 });
+export const getPatientByRg = (rg: string, Clinic: string): Promise<DbPatient | null> => {
+  return Patient.findOne({ rg, Clinic }, { Clinic: 0, __v: 0 });
 };
 
-export const getPatientByPhone = (phone: string, clinic: string): Promise<DbPatient | null> => {
-  return Patient.findOne({ phone, clinic }, { clinic: 0, __v: 0 });
+export const getPatientByPhone = (phone: string, Clinic: string): Promise<DbPatient | null> => {
+  return Patient.findOne({ phone, Clinic }, { Clinic: 0, __v: 0 });
 };
 
-export const getPatientByName = (name: string, clinic: string): Promise<DbPatient | null> => {
-  return Patient.findOne({ name, clinic }, { clinic: 0, __v: 0 });
+export const getPatientByName = (name: string, Clinic: string): Promise<DbPatient | null> => {
+  return Patient.findOne({ name, Clinic }, { Clinic: 0, __v: 0 });
 };
 
-export const getPatient = (id: string, clinic: string): Promise<DbPatient | null> => {
-  return Patient.findOne({ _id: id, clinic }, { clinic: 0, __v: 0 });
+export const getPatient = (id: string, Clinic: string): Promise<DbPatient | null> => {
+  return Patient.findOne({ _id: id, Clinic }, { Clinic: 0, __v: 0 });
 };
 
-export const postPatientData = (data: NewPatient) => {
+export const updatePatient = (data: ClinicPatient) => {
   return Patient.updateOne({ cpf: data.cpf }, data, { upsert: true });
 };
 
@@ -35,8 +35,4 @@ export const updatePatientAnamnesis = (id: string, data: Anamnesis) => {
 
 export const updatePatientIntraoral = (id: string, data: Intraoral) => {
   return Patient.updateOne({ _id: id }, { intraoral: data });
-};
-
-export const updatePatientOdontogram = (id: string, data: Odontogram) => {
-  return Patient.updateOne({ _id: id }, { odontogram: data });
 };
