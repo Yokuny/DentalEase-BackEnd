@@ -25,8 +25,8 @@ export const getPatientByName = (name: string, Clinic: string): Promise<DbPatien
   return Patient.findOne({ name, Clinic }, { Clinic: 0, __v: 0 });
 };
 
-export const getPatient = (id: string, Clinic: string): Promise<DbPatient | null> => {
-  return Patient.findOne({ _id: id, Clinic }, { Clinic: 0, __v: 0 });
+export const getPatient = (id: string): Promise<DbPatient | null> => {
+  return Patient.findById(id, { Clinic: 0, __v: 0 });
 };
 
 export const updatePatient = (data: ClinicPatient) => {

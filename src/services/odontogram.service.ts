@@ -1,17 +1,17 @@
-import { getPatient } from "../services/patient.service";
 import * as respository from "../repositories/odontogram.repository";
+import { getPatient } from "../services/patient.service";
 import { CustomError } from "../models";
-import type { NewOdontogram, DbOdontogram, ClinicOdontogram } from "../models";
+import type { NewOdontogram, ClinicOdontogram } from "../models";
 
-export const getOdontogram = async (clinic: string, id: string) => {
-  const odontogram = await respository.getOdontogram(id, clinic);
+export const getOdontogram = async (id: string) => {
+  const odontogram = await respository.getOdontogram(id);
   if (!odontogram) throw new CustomError("Odontograma não encontrado", 404);
 
   return odontogram;
 };
 
 export const postOdontogram = async (clinic: string, data: NewOdontogram) => {
-  await getPatient(data.Patient, clinic);
+  await getPatient(data.Patient);
 
   const newOdontogram: ClinicOdontogram = {
     ...data,
@@ -24,16 +24,16 @@ export const postOdontogram = async (clinic: string, data: NewOdontogram) => {
   throw new CustomError("Erro ao cadastrar odontograma", 502);
 };
 
-export const updateOdontogram = async (clinic: string, id: string, data: ClinicOdontogram) => {
-  await getOdontogram(clinic, id);
+export const updateOdontogram = async (id: string, data: ClinicOdontogram) => {
+  await getOdontogram(id);
 
   const register = await respository.updateOdontogram(id, data);
   if (register.modifiedCount > 0) return "Odontograma cadastrado com sucesso";
   else throw new CustomError("Odontograma não atualizado", 406);
 };
 
-export const patchOdontogram = async (clinic: string, id: string) => {
-  const odontogram = await getOdontogram(clinic, id);
+export const patchOdontogram = async (id: string) => {
+  const odontogram = await getOdontogram(id);
 
   const newOdontogram: ClinicOdontogram = {
     Patient: odontogram.Patient,
@@ -43,12 +43,11 @@ export const patchOdontogram = async (clinic: string, id: string) => {
     finished: !odontogram.finished,
   };
 
-  return await updateOdontogram(clinic, id, newOdontogram);
+  return await updateOdontogram(id, newOdontogram);
 };
 
-export const deleteOdontogram = async (clinic: string, id: string) => {
-  const odontogram = await getOdontogram(clinic, id);
-  const register = await respository.deleteOdontogram(odontogram);
+export const deleteOdontogram = async (id: string) => {
+  const register = await respository.deleteOdontogram(id);
 
   if (register.deletedCount === 1) return "Odontograma deletado com sucesso";
   else throw new CustomError("Odontograma não deletado", 406);

@@ -7,7 +7,7 @@ export const requestRegisterSchema = Joi.object({
   phone: Joi.string().min(11).max(11),
 });
 
-export const patientDataSchema = Joi.object({
+export const patientSchema = Joi.object({
   name: Joi.string().min(5).max(30).required(),
   cpf: Joi.string().min(11).max(11).required(),
   rg: Joi.string().min(7).max(7).required(),

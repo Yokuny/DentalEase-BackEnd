@@ -2,7 +2,7 @@ import { Router } from "express";
 import * as controller from "../controllers/patient.controller";
 import {
   requestRegisterSchema,
-  patientDataSchema,
+  patientSchema,
   anamnesisSchema,
   intraoralSchema,
   idSchemaOptional,
@@ -11,13 +11,13 @@ import { validBody, validQuery, validToken } from "../middlewares";
 
 const patientRoute = Router();
 
-patientRoute.get("/", validToken, validQuery(requestRegisterSchema), controller.getPatientRegister);
+patientRoute.get("/", validToken, validQuery(requestRegisterSchema), controller.getPatient);
 patientRoute.post(
   "/personaldata",
   validToken,
-  validBody(patientDataSchema),
+  validBody(patientSchema),
   validQuery(idSchemaOptional),
-  controller.postPatientData
+  controller.postPatient
 );
 patientRoute.post("/anamnesis", validToken, validBody(anamnesisSchema), controller.postPatientAnamnesis);
 patientRoute.post("/intra-oral", validToken, validBody(intraoralSchema), controller.potPatientIntraoral);

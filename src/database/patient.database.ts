@@ -47,7 +47,7 @@ const intraoralSchema = new mongoose.Schema({
 });
 
 const patientSchema = new mongoose.Schema({
-  Clinic: { type: mongoose.Schema.Types.ObjectId, ref: "Clinic" },
+  Clinic: { type: mongoose.Schema.Types.ObjectId, ref: "Clinic", required: true },
   name: { type: String, minlength: 5, maxlength: 30, required: true },
   email: { type: String, minlength: 5, maxlength: 50, required: true },
   cpf: { type: String, minlength: 11, maxlength: 11, required: true },

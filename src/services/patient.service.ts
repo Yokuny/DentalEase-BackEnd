@@ -11,8 +11,8 @@ import type {
   Intraoral,
 } from "../models";
 
-export const getPatient = async (id: string, clinic: string) => {
-  const patient = await respository.getPatient(id, clinic);
+export const getPatient = async (id: string) => {
+  const patient = await respository.getPatient(id);
   if (!patient) throw new CustomError("Paciente não encontrado", 404);
 
   return patient;
@@ -64,14 +64,14 @@ export const getPatientRegister = async (clinic: string, body: RequestRegister) 
 
 export const updatePatient = async (data: ClinicPatient, id?: string) => {
   const register = await respository.updatePatient(data);
-  console.log(register);
+
   if (register.upsertedCount === 1) return "Paciente cadastrado com sucesso";
   else if (register.modifiedCount === 1) return "Paciente atualizado com sucesso";
   else throw new CustomError("Cadastro de paciente não registrado", 502);
 };
 
 export const putPatientData = async (clinic: string, id: string, data: ClinicPatient) => {
-  const patient = await getPatient(id, clinic);
+  const patient = await getPatient(id);
 
   const patientByEmail = await getPatientByEmail(data.email, clinic);
   if (patientByEmail && patientByEmail.id !== patient.id) throw new CustomError("Email já cadastrado", 403);
@@ -124,8 +124,8 @@ const updatePatientAnamnesis = async (patient: string, data: Anamnesis) => {
   else throw new CustomError("Erro ao cadastrar anamnese", 502);
 };
 
-export const postPatientAnamnesis = async (clinic: string, data: DbAnamnesis) => {
-  const patient = await getPatient(data.Patient, clinic);
+export const postPatientAnamnesis = async (data: DbAnamnesis) => {
+  const patient = await getPatient(data.Patient);
 
   delete data.Patient;
   return await updatePatientAnamnesis(patient.id, data);
@@ -137,8 +137,8 @@ const updatePatientIntraoral = async (patient: string, data: Intraoral) => {
   else throw new CustomError("Erro ao cadastrar exame intraoral", 502);
 };
 
-export const postPatientIntraoral = async (clinic: string, data: DbIntraoral) => {
-  const patient = await getPatient(data.Patient, clinic);
+export const postPatientIntraoral = async (data: DbIntraoral) => {
+  const patient = await getPatient(data.Patient);
 
   delete data.Patient;
   return await updatePatientIntraoral(patient.id, data);

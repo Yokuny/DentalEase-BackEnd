@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const odontogramSchema = new mongoose.Schema({
-  Patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient" },
-  Clinic: { type: mongoose.Schema.Types.ObjectId, ref: "Clinic" },
+  Patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient", required: true },
+  Clinic: { type: mongoose.Schema.Types.ObjectId, ref: "Clinic", required: true },
   workToBeDone: { type: String, maxlength: 250, required: true },
-  finished: { type: Boolean, default: false },
+  finished: { type: Boolean, default: false, required: true },
   teeth: [
     {
       number: { type: Number, maxlength: 3, required: true },

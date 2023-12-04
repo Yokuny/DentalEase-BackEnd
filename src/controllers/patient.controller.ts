@@ -11,7 +11,7 @@ const sendErrorResponse = (err: CustomError | Error, res: Response) => {
   }
 };
 
-export const getPatientRegister = async (req: AuthReq, res: Response) => {
+export const getPatient = async (req: AuthReq, res: Response) => {
   try {
     const response = await service.getPatientRegister(req.clinic, req.query);
 
@@ -21,7 +21,7 @@ export const getPatientRegister = async (req: AuthReq, res: Response) => {
   }
 };
 
-export const postPatientData = async (req: AuthReq, res: Response) => {
+export const postPatient = async (req: AuthReq, res: Response) => {
   try {
     if (req.query.id) {
       const response = await service.putPatientData(req.clinic, String(req.query.id), req.body);
@@ -38,7 +38,7 @@ export const postPatientData = async (req: AuthReq, res: Response) => {
 
 export const postPatientAnamnesis = async (req: AuthReq, res: Response) => {
   try {
-    const response = await service.postPatientAnamnesis(req.clinic, req.body);
+    const response = await service.postPatientAnamnesis(req.body);
 
     return res.status(httpStatus.CREATED).json({ message: response });
   } catch (err) {
@@ -48,7 +48,7 @@ export const postPatientAnamnesis = async (req: AuthReq, res: Response) => {
 
 export const potPatientIntraoral = async (req: AuthReq, res: Response) => {
   try {
-    const response = await service.postPatientIntraoral(req.clinic, req.body);
+    const response = await service.postPatientIntraoral(req.body);
 
     return res.status(httpStatus.CREATED).json({ message: response });
   } catch (err) {

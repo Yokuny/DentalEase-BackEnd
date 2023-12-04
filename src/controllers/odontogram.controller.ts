@@ -13,7 +13,7 @@ const sendErrorResponse = (err: CustomError | Error, res: Response) => {
 
 export const getOdontogram = async (req: AuthReq, res: Response) => {
   try {
-    const response = await service.getOdontogram(req.clinic, req.params.id);
+    const response = await service.getOdontogram(req.params.id);
 
     return res.status(httpStatus.OK).json(response);
   } catch (err) {
@@ -33,7 +33,7 @@ export const postOdontogram = async (req: AuthReq, res: Response) => {
 
 export const putOdontogram = async (req: AuthReq, res: Response) => {
   try {
-    const response = await service.updateOdontogram(req.clinic, req.params.id, req.body);
+    const response = await service.updateOdontogram(req.params.id, req.body);
 
     return res.status(httpStatus.OK).json({ message: response });
   } catch (err) {
@@ -43,7 +43,7 @@ export const putOdontogram = async (req: AuthReq, res: Response) => {
 
 export const patchOdontogram = async (req: AuthReq, res: Response) => {
   try {
-    const response = await service.patchOdontogram(req.clinic, req.params.id);
+    const response = await service.patchOdontogram(req.params.id);
 
     return res.status(httpStatus.OK).json({ message: response });
   } catch (err) {
@@ -53,7 +53,7 @@ export const patchOdontogram = async (req: AuthReq, res: Response) => {
 
 export const deleteOdontogram = async (req: AuthReq, res: Response) => {
   try {
-    const response = await service.deleteOdontogram(req.clinic, req.params.id);
+    const response = await service.deleteOdontogram(req.params.id);
 
     return res.status(httpStatus.OK).json({ message: response });
   } catch (err) {
