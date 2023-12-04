@@ -18,7 +18,7 @@ export type UserWithoutPassword = {
 };
 export type DbUser = UserWithoutPassword & { password: string };
 //Patient
-export type RequestRegister = { email?: string; cpf?: string; rg?: string; phone?: string };
+export type RequestRegister = { id?: string; email?: string; cpf?: string; rg?: string; phone?: string };
 export type NewPatient = {
   name: string;
   email: string;

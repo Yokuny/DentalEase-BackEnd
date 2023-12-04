@@ -13,7 +13,7 @@ const sendErrorResponse = (err: CustomError | Error, res: Response) => {
 
 export const getOdontogram = async (req: AuthReq, res: Response) => {
   try {
-    const response = await service.getOdontogram(req.params.id);
+    const response = await service.getOdontogramRegister(req.clinic, req.query);
 
     return res.status(httpStatus.OK).json(response);
   } catch (err) {

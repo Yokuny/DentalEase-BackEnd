@@ -1,13 +1,59 @@
 import * as respository from "../repositories/odontogram.repository";
-import { getPatient } from "../services/patient.service";
+import {
+  getPatient,
+  getPatientByCpf,
+  getPatientByEmail,
+  getPatientByPhone,
+  getPatientByRg,
+} from "../services/patient.service";
 import { CustomError } from "../models";
-import type { NewOdontogram, ClinicOdontogram } from "../models";
+import type { NewOdontogram, ClinicOdontogram, RequestRegister } from "../models";
 
 export const getOdontogram = async (id: string) => {
   const odontogram = await respository.getOdontogram(id);
   if (!odontogram) throw new CustomError("Odontograma não encontrado", 404);
 
   return odontogram;
+};
+
+const getPatientOdontograms = async (Patient: string) => {
+  const odontograms = await respository.getPatientOdontograms(Patient);
+  if (!odontograms) throw new CustomError("Nenhum odontograma encontrado", 404);
+
+  return odontograms;
+};
+
+export const getNoFinishedOdontograms = async (clinic: string) => {
+  const odontograms = await respository.getNoFinishedOdontograms(clinic);
+  if (!odontograms) throw new CustomError("Nenhum odontograma encontrado", 404);
+
+  return odontograms;
+};
+
+export const getOdontogramRegister = async (clinic: string, query: RequestRegister) => {
+  if (query.id) return await getOdontogram(query.id);
+
+  if (query.cpf) {
+    const patient = await getPatientByCpf(query.cpf, clinic);
+    return await getPatientOdontograms(patient.id);
+  }
+
+  if (query.email) {
+    const patient = await getPatientByEmail(query.email, clinic);
+    return await getPatientOdontograms(patient.id);
+  }
+
+  if (query.phone) {
+    const patient = await getPatientByPhone(query.phone, clinic);
+    return await getPatientOdontograms(patient.id);
+  }
+
+  if (query.rg) {
+    const patient = await getPatientByRg(query.rg, clinic);
+    return await getPatientOdontograms(patient.id);
+  }
+
+  return await getNoFinishedOdontograms(clinic);
 };
 
 export const postOdontogram = async (clinic: string, data: NewOdontogram) => {

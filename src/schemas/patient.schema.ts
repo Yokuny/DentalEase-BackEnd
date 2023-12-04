@@ -1,6 +1,7 @@
 import Joi from "joi";
 
 export const requestRegisterSchema = Joi.object({
+  id: Joi.string(),
   email: Joi.string().email().min(5).max(50),
   cpf: Joi.string().min(11).max(11),
   rg: Joi.string().min(7).max(7),

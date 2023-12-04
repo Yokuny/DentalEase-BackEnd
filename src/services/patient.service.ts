@@ -18,28 +18,28 @@ export const getPatient = async (id: string) => {
   return patient;
 };
 
-const getPatientByEmail = async (email: string, clinic: string, required?: boolean) => {
+export const getPatientByEmail = async (email: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByEmail(email, clinic);
   if (!patient && required) throw new CustomError("Paciente não encontrado", 404);
 
   return patient;
 };
 
-const getPatientByCpf = async (cpf: string, clinic: string, required?: boolean) => {
+export const getPatientByCpf = async (cpf: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByCpf(cpf, clinic);
   if (!patient && required) throw new CustomError("Paciente não encontrado", 404);
 
   return patient;
 };
 
-const getPatientByRg = async (rg: string, clinic: string, required?: boolean) => {
+export const getPatientByRg = async (rg: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByRg(rg, clinic);
   if (!patient && required) throw new CustomError("Paciente não encontrado", 404);
 
   return patient;
 };
 
-const getPatientByPhone = async (phone: string, clinic: string, required?: boolean) => {
+export const getPatientByPhone = async (phone: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByPhone(phone, clinic);
   if (!patient && required) throw new CustomError("Paciente não encontrado", 404);
 
@@ -58,6 +58,7 @@ export const getPatientRegister = async (clinic: string, body: RequestRegister) 
   if (body.cpf) return await getPatientByCpf(body.cpf, clinic, true);
   if (body.rg) return await getPatientByRg(body.rg, clinic, true);
   if (body.phone) return await getPatientByPhone(body.phone, clinic, true);
+  if (body.id) return await getPatient(body.id);
 
   return await getAllPatients(clinic);
 };
