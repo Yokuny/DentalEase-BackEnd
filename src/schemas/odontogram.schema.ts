@@ -1,13 +1,12 @@
 import Joi from "joi";
 
-export const requestOdontogramSchema = Joi.object({
+export const getOdontogramSchema = Joi.object({
   id: Joi.string(),
   email: Joi.string().email().min(5).max(50),
   cpf: Joi.string().min(11).max(11),
   rg: Joi.string().min(7).max(7),
   phone: Joi.string().min(11).max(11),
 });
-  
 
 export const odontogramSchema = Joi.object({
   Patient: Joi.string().required(),

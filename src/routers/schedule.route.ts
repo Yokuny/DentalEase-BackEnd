@@ -4,17 +4,12 @@ import { scheduleSchema, idSchema, idSchemaOptional } from "../schemas";
 import { validBody, validParams, validQuery, validToken } from "../middlewares";
 
 const scheduleRoute = Router();
+scheduleRoute.use(validToken);
 
-scheduleRoute.post("/create", validToken, validBody(scheduleSchema), controller.postSchedule);
-scheduleRoute.get("/", validToken, validQuery(idSchemaOptional), controller.getSchedule);
-scheduleRoute.put(
-  "/:id",
-  validToken,
-  validBody(scheduleSchema),
-  validParams(idSchema),
-  controller.putSchedule
-);
-// scheduleRoute.put("/:id/status", validToken, validParams(idSchema), controller.patchSchedule);
-scheduleRoute.delete("/:id", validToken, validParams(idSchema), controller.deleteSchedule);
+scheduleRoute.post("/create", validBody(scheduleSchema), controller.postSchedule);
+scheduleRoute.get("/", validQuery(idSchemaOptional), controller.getSchedule);
+scheduleRoute.put("/:id", validBody(scheduleSchema), validParams(idSchema), controller.putSchedule);
+// scheduleRoute.patch("/:id/status",  validParams(idSchema), controller.patchSchedule);
+scheduleRoute.delete("/:id", validParams(idSchema), controller.deleteSchedule);
 
 export { scheduleRoute };
