@@ -6,6 +6,7 @@ import {
   getPatientByPhone,
   getPatientByRg,
 } from "../services/patient.service";
+import { getClinicDoctor } from "../services/clinic.service";
 import { CustomError } from "../models";
 import type { NewOdontogram, ClinicOdontogram, RequestRegister, ClinicUser } from "../models";
 
@@ -34,30 +35,31 @@ export const getOdontogramRegister = async (user: ClinicUser, query: RequestRegi
   if (query.id) return await getOdontogram(query.id);
 
   if (query.cpf) {
-    const patient = await getPatientByCpf(query.cpf, clinic);
+    const patient = await getPatientByCpf(query.cpf, user.clinic);
     return await getPatientOdontograms(patient.id);
   }
 
   if (query.email) {
-    const patient = await getPatientByEmail(query.email, clinic);
+    const patient = await getPatientByEmail(query.email, user.clinic);
     return await getPatientOdontograms(patient.id);
   }
 
   if (query.phone) {
-    const patient = await getPatientByPhone(query.phone, clinic);
+    const patient = await getPatientByPhone(query.phone, user.clinic);
     return await getPatientOdontograms(patient.id);
   }
 
   if (query.rg) {
-    const patient = await getPatientByRg(query.rg, clinic);
+    const patient = await getPatientByRg(query.rg, user.clinic);
     return await getPatientOdontograms(patient.id);
   }
 
-  return await getNoFinishedOdontograms(clinic);
+  return await getNoFinishedOdontograms(user.clinic);
 };
 
 export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
   await getPatient(data.Patient);
+  await getClinicDoctor(user.clinic, data.Doctor);
 
   const newOdontogram: ClinicOdontogram = {
     ...data,
@@ -65,6 +67,8 @@ export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
   };
 
   const register = await respository.postOdontogram(newOdontogram);
+  console.log(register);
+  console.log("-> postOdontogram");
   if (register) return "Odontograma cadastrado com sucesso";
 
   throw new CustomError("Erro ao cadastrar odontograma", 502);
@@ -72,6 +76,9 @@ export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
 
 export const updateOdontogram = async (id: string, data: ClinicOdontogram) => {
   await getOdontogram(id);
+  const doctor = await getClinicDoctor(data.Clinic, data.Doctor);
+  if (doctor.id?.toString() !== data.Doctor?.toString())
+    throw new CustomError("Não é permitido alteração de médico", 403);
 
   const register = await respository.updateOdontogram(id, data);
   if (register.modifiedCount > 0) return "Odontograma cadastrado com sucesso";
@@ -83,6 +90,7 @@ export const patchOdontogram = async (id: string) => {
 
   const newOdontogram: ClinicOdontogram = {
     Patient: odontogram.Patient,
+    Doctor: odontogram.Doctor,
     Clinic: odontogram.Clinic,
     workToBeDone: odontogram.workToBeDone,
     teeth: odontogram.teeth,

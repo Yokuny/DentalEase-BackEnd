@@ -18,6 +18,12 @@ export const getClinicByEmail = async (email: string) => {
   return await Clinic.findOne({ email });
 };
 
+export const getClinicDoctor = async (clinic: string, doctor: string) => {
+  return await Clinic.findOne({
+    $and: [{ "users.user": doctor }, { _id: clinic }],
+  });
+};
+
 export const postClinic = async (data: ClinicWithUser, user: string) => {
   const session = await Clinic.startSession();
 

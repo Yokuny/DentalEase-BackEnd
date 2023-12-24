@@ -16,7 +16,7 @@ export const postClinic = async (req: AuthReq, res: Response) => {
   try {
     await service.postClinic(req.clinicUser, req.body);
 
-    return res.status(httpStatus.CREATED).json({ message: "Clínica cadastrada com sucesso" });
+    return res.status(httpStatus.CREATED).json({ message: "Clínica cadastrda com sucesso" });
   } catch (err) {
     sendErrorResponse(err, res);
   }

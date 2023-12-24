@@ -23,8 +23,6 @@ export const validToken = async (req: AuthReq, res: Response, next: NextFunction
 
     req.clinicUser = { user, clinic: clinic || session?.clinic?.toString() };
 
-    console.log(req.clinicUser);
-
     return next();
   } catch (err) {
     return unauthorizedResponse(res);

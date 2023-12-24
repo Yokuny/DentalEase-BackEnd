@@ -16,7 +16,7 @@ export const getSchedule = async (req: AuthReq, res: Response) => {
   try {
     const response = await service.getSchedule(req.clinicUser, req.query);
 
-    return res.status(httpStatus.OK).json(response);
+    return res.status(httpStatus.OK).json(response ? response : []);
   } catch (err) {
     sendErrorResponse(err, res);
   }

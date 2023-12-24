@@ -10,6 +10,7 @@ export const getOdontogramSchema = Joi.object({
 
 export const odontogramSchema = Joi.object({
   Patient: Joi.string().required(),
+  Doctor: Joi.string().required(),
   workToBeDone: Joi.string().max(250).required(),
   finished: Joi.boolean().default(false),
   teeth: Joi.array()

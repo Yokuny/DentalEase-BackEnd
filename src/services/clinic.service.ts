@@ -30,6 +30,13 @@ const getClinicByEmail = async (email: string, required?: boolean) => {
   return clinic;
 };
 
+export const getClinicDoctor = async (clinic: string, doctor: string) => {
+  const clinicDoctor = await respository.getClinicDoctor(clinic, doctor);
+  if (!clinicDoctor) throw new CustomError("Médico não encontrado", 404);
+
+  return clinicDoctor;
+};
+
 export const postClinic = async (user: ClinicUser, data: NewClinic) => {
   const clinic = user.clinic || "";
   if (clinic) throw new CustomError("Você já está cadastrado em uma clínica", 409);

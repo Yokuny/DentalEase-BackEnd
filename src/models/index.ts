@@ -90,6 +90,7 @@ export type DbIntraoral = Intraoral & Patient;
 //Odontogram
 export type NewOdontogram = {
   Patient: string;
+  Doctor: string;
   workToBeDone: string;
   finished: boolean;
   teeth: {

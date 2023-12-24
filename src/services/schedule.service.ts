@@ -1,5 +1,6 @@
 import * as respository from "../repositories/schedule.repository";
 import { getPatient, getOdontogram } from "../services";
+import { getClinicDoctor } from "../services/clinic.service";
 import { stringToData } from "../helpers/convert_data.helper";
 import { CustomError } from "../models";
 import type { ClinicUser } from "../models";
@@ -37,7 +38,7 @@ export const getSchedule = async (user: ClinicUser, query: any) => {
   if (query.Odontogram) return await getScheduleByOdontogram(query.Odontogram, true);
   if (query.id) return await getScheduleById(query.id, true);
 
-  const response = await getAllSchedules(clinic);
+  const response = await getAllSchedules(user.clinic);
   if (response) return response;
 
   throw new CustomError("Erro ao buscar agendamentos", 502);
@@ -51,10 +52,10 @@ const checkDate = (data: any) => {
 
 export const postSchedule = async (user: ClinicUser, data: any) => {
   await getPatient(data.Patient);
+  await getClinicDoctor(user.clinic, data.Doctor);
 
   if (data.Odontogram) {
     const odontogram = await getOdontogram(data.Odontogram);
-
     if (odontogram.finished) throw new CustomError("Odontograma já finalizado", 409);
 
     if (odontogram.Patient.toString() !== data.Patient)
@@ -69,12 +70,14 @@ export const postSchedule = async (user: ClinicUser, data: any) => {
 
   const newSchedule = {
     ...data,
-    Clinic: clinic,
+    Clinic: user.clinic,
   };
 
   if (hasFinalDate) newSchedule.finalDate = stringToData(data.finalDate);
 
   const register = await respository.postSchedule(newSchedule);
+  console.log(register);
+  console.log("-> postSchedule");
   if (register) return "Agendamento cadastrado";
 
   throw new CustomError("Erro ao cadastrar agendamento", 502);
@@ -86,7 +89,6 @@ export const updateSchedule = async (id: string, data: any) => {
   await getOdontogram(data.Odontogram);
 
   data.finalDate && checkDate(data);
-
   delete data.Patient;
 
   const update = await respository.updateSchedule(id, data);
