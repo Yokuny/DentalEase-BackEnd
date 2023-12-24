@@ -1,10 +1,11 @@
 import { Router } from "express";
 import * as controller from "../controllers/odontogram.controller";
 import { odontogramSchema, getOdontogramSchema, idSchema } from "../schemas";
-import { validBody, validParams, validQuery, validToken } from "../middlewares";
+import { validBody, validParams, validQuery, validToken, clinicAssignmentCheck } from "../middlewares";
 
 const odontogramRoute = Router();
 odontogramRoute.use(validToken);
+odontogramRoute.use(clinicAssignmentCheck);
 
 odontogramRoute.post("/create", validBody(odontogramSchema), controller.postOdontogram);
 odontogramRoute.get("/", validQuery(getOdontogramSchema), controller.getOdontogram);

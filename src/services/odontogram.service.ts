@@ -7,7 +7,7 @@ import {
   getPatientByRg,
 } from "../services/patient.service";
 import { CustomError } from "../models";
-import type { NewOdontogram, ClinicOdontogram, RequestRegister } from "../models";
+import type { NewOdontogram, ClinicOdontogram, RequestRegister, ClinicUser } from "../models";
 
 export const getOdontogram = async (id: string) => {
   const odontogram = await respository.getOdontogram(id);
@@ -30,7 +30,7 @@ export const getNoFinishedOdontograms = async (clinic: string) => {
   return odontograms;
 };
 
-export const getOdontogramRegister = async (clinic: string, query: RequestRegister) => {
+export const getOdontogramRegister = async (user: ClinicUser, query: RequestRegister) => {
   if (query.id) return await getOdontogram(query.id);
 
   if (query.cpf) {
@@ -56,12 +56,12 @@ export const getOdontogramRegister = async (clinic: string, query: RequestRegist
   return await getNoFinishedOdontograms(clinic);
 };
 
-export const postOdontogram = async (clinic: string, data: NewOdontogram) => {
+export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
   await getPatient(data.Patient);
 
   const newOdontogram: ClinicOdontogram = {
     ...data,
-    Clinic: clinic,
+    Clinic: user.clinic,
   };
 
   const register = await respository.postOdontogram(newOdontogram);

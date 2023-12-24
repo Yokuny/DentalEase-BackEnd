@@ -1,8 +1,9 @@
 export * from "./error.type";
 import { Request } from "express";
 
-export type JWTPayload = { clinic: string };
-export type AuthReq = Request & JWTPayload;
+export type ClinicUser = { clinic: string; user: string };
+export type JWTPayload = ClinicUser;
+export type AuthReq = Request & { clinicUser: JWTPayload };
 //Common
 type Clinic = { Clinic: string };
 type Patient = { Patient: string };
@@ -14,6 +15,7 @@ export type UserWithoutPassword = {
   username: string;
   email: string;
   avatar: string;
+  clinic: string;
   createdAt: Date;
 };
 export type DbUser = UserWithoutPassword & { password: string };
@@ -105,3 +107,8 @@ export type NewOdontogram = {
 };
 export type ClinicOdontogram = NewOdontogram & Clinic;
 export type DbOdontogram = ClinicOdontogram & { id: string; createdAt: Date };
+//Clinic
+export type NewClinic = { name: string; email: string; code: string; cnpj?: string };
+type ClinicUsers = { user: string; role: string };
+export type ClinicWithUser = NewClinic & { users: ClinicUsers[] };
+export type DbClinic = NewClinic & { id: string; users: ClinicUsers[]; createdAt: Date };

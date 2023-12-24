@@ -1,6 +1,6 @@
 import * as respository from "../repositories/patient.repository";
 import { stringToData } from "../helpers/convert_data.helper";
-import { CustomError } from "../models";
+import { CustomError, ClinicUser } from "../models";
 import type {
   NewPatient,
   ClinicPatient,
@@ -53,14 +53,14 @@ export const getAllPatients = async (clinic: string) => {
   return patients;
 };
 
-export const getPatientRegister = async (clinic: string, body: RequestRegister) => {
-  if (body.email) return await getPatientByEmail(body.email, clinic, true);
-  if (body.cpf) return await getPatientByCpf(body.cpf, clinic, true);
-  if (body.rg) return await getPatientByRg(body.rg, clinic, true);
-  if (body.phone) return await getPatientByPhone(body.phone, clinic, true);
+export const getPatientRegister = async (user: ClinicUser, body: RequestRegister) => {
+  if (body.email) return await getPatientByEmail(body.email, user.clinic, true);
+  if (body.cpf) return await getPatientByCpf(body.cpf, user.clinic, true);
+  if (body.rg) return await getPatientByRg(body.rg, user.clinic, true);
+  if (body.phone) return await getPatientByPhone(body.phone, user.clinic, true);
   if (body.id) return await getPatient(body.id);
 
-  return await getAllPatients(clinic);
+  return await getAllPatients(user.clinic);
 };
 
 export const updatePatient = async (data: ClinicPatient, id?: string) => {
@@ -71,19 +71,19 @@ export const updatePatient = async (data: ClinicPatient, id?: string) => {
   else throw new CustomError("Cadastro de paciente não registrado", 502);
 };
 
-export const putPatientData = async (clinic: string, id: string, data: ClinicPatient) => {
+export const putPatientData = async (user: ClinicUser, id: string, data: ClinicPatient) => {
   const patient = await getPatient(id);
 
-  const patientByEmail = await getPatientByEmail(data.email, clinic);
+  const patientByEmail = await getPatientByEmail(data.email, user.clinic);
   if (patientByEmail && patientByEmail.id !== patient.id) throw new CustomError("Email já cadastrado", 403);
 
-  const patientByCpf = await getPatientByCpf(data.cpf, clinic);
+  const patientByCpf = await getPatientByCpf(data.cpf, user.clinic);
   if (patientByCpf && patientByCpf.id !== patient.id) throw new CustomError("CPF já cadastrado", 403);
 
-  const patientByRg = await getPatientByRg(data.rg, clinic);
+  const patientByRg = await getPatientByRg(data.rg, user.clinic);
   if (patientByRg && patientByRg.id !== patient.id) throw new CustomError("RG já cadastrado", 403);
 
-  const patientByPhone = await getPatientByPhone(data.phone, clinic);
+  const patientByPhone = await getPatientByPhone(data.phone, user.clinic);
   if (patientByPhone && patientByPhone.id !== patient.id)
     throw new CustomError("Telefone já cadastrado", 403);
 
@@ -95,22 +95,22 @@ export const putPatientData = async (clinic: string, id: string, data: ClinicPat
   return await updatePatient(newPatient);
 };
 
-export const postPatientData = async (clinic: string, data: NewPatient) => {
-  const patientByEmail = await getPatientByEmail(data.email, clinic);
+export const postPatientData = async (user: ClinicUser, data: NewPatient) => {
+  const patientByEmail = await getPatientByEmail(data.email, user.clinic);
   if (patientByEmail) throw new CustomError("Email já cadastrado", 403);
 
-  const patientByCpf = await getPatientByCpf(data.cpf, clinic);
+  const patientByCpf = await getPatientByCpf(data.cpf, user.clinic);
   if (patientByCpf) throw new CustomError("CPF já cadastrado", 403);
 
-  const patientByRg = await getPatientByRg(data.rg, clinic);
+  const patientByRg = await getPatientByRg(data.rg, user.clinic);
   if (patientByRg) throw new CustomError("RG já cadastrado", 403);
 
-  const patientByPhone = await getPatientByPhone(data.phone, clinic);
+  const patientByPhone = await getPatientByPhone(data.phone, user.clinic);
   if (patientByPhone) throw new CustomError("Telefone já cadastrado", 403);
 
   const newPatient = {
     ...data,
-    Clinic: clinic,
+    Clinic: user.clinic,
     birthdate: stringToData(data.birthdate),
     anamnese: {} as Anamnesis,
     intraoral: {} as Intraoral,

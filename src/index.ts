@@ -14,6 +14,7 @@ app
   .get("/health", (_req: Request, res: Response) => res.send("OK!"))
   .get("/time", (_req: Request, res: Response) => res.send(new Date()))
   .use("/user", route.userRoute)
+  .use("/clinic", route.clinicRoute)
   .use("/patient", route.patientRoute)
   .use("/odontogram", route.odontogramRoute)
   .use("/schedule", route.scheduleRoute);

@@ -7,7 +7,8 @@ const sendErrorResponse = (err: CustomError | Error, res: Response) => {
   if (err instanceof CustomError) {
     res.status(err.status).send({ message: err.message });
   } else {
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send("Erro desconhecido");
+    const errMessage = err?.message || JSON.stringify(err, null, 2);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ message: errMessage });
   }
 };
 

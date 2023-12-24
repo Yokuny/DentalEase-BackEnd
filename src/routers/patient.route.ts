@@ -7,10 +7,11 @@ import {
   intraoralSchema,
   idSchemaOptional,
 } from "../schemas";
-import { validBody, validQuery, validToken } from "../middlewares";
+import { validBody, validQuery, validToken, clinicAssignmentCheck } from "../middlewares";
 
 const patientRoute = Router();
 patientRoute.use(validToken);
+patientRoute.use(clinicAssignmentCheck);
 
 patientRoute.get("/", validQuery(getPatientSchema), controller.getPatient);
 patientRoute.post(

@@ -2,7 +2,7 @@ import * as respository from "../repositories/schedule.repository";
 import { getPatient, getOdontogram } from "../services";
 import { stringToData } from "../helpers/convert_data.helper";
 import { CustomError } from "../models";
-// import type {} from "../models";
+import type { ClinicUser } from "../models";
 
 const getScheduleById = async (id: string, required?: boolean) => {
   const schedule = await respository.getScheduleById(id);
@@ -32,7 +32,7 @@ const getAllSchedules = async (clinic: string) => {
   return schedules;
 };
 
-export const getSchedule = async (clinic: string, query: any) => {
+export const getSchedule = async (user: ClinicUser, query: any) => {
   if (query.Patient) return await getScheduleByPatient(query.Patient, true);
   if (query.Odontogram) return await getScheduleByOdontogram(query.Odontogram, true);
   if (query.id) return await getScheduleById(query.id, true);
@@ -49,7 +49,7 @@ const checkDate = (data: any) => {
   if (finalDate && initialDate > finalDate) throw new CustomError("Data inicial maior que a final", 406);
 };
 
-export const postSchedule = async (clinic: string, data: any) => {
+export const postSchedule = async (user: ClinicUser, data: any) => {
   await getPatient(data.Patient);
 
   if (data.Odontogram) {

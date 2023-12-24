@@ -7,13 +7,14 @@ const sendErrorResponse = (err: CustomError | Error, res: Response) => {
   if (err instanceof CustomError) {
     res.status(err.status).send({ message: err.message });
   } else {
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).send("Erro desconhecido");
+    const errMessage = err?.message || JSON.stringify(err, null, 2);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ message: errMessage });
   }
 };
 
 export const getOdontogram = async (req: AuthReq, res: Response) => {
   try {
-    const response = await service.getOdontogramRegister(req.clinic, req.query);
+    const response = await service.getOdontogramRegister(req.clinicUser, req.query);
 
     return res.status(httpStatus.OK).json(response);
   } catch (err) {
@@ -23,7 +24,7 @@ export const getOdontogram = async (req: AuthReq, res: Response) => {
 
 export const postOdontogram = async (req: AuthReq, res: Response) => {
   try {
-    const response = await service.postOdontogram(req.clinic, req.body);
+    const response = await service.postOdontogram(req.clinicUser, req.body);
 
     return res.status(httpStatus.CREATED).json({ message: response });
   } catch (err) {
