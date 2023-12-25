@@ -7,6 +7,13 @@ const getUserByEmail = async (email: string) => {
   return await respository.getUserByEmail(email);
 };
 
+export const getUserById = async (id: string) => {
+  const user = await respository.getUserById(id);
+  if (!user) throw new CustomError("Usuário não encontrado", 404);
+
+  return user;
+};
+
 export const signup = async (data: NewUser) => {
   const user = await getUserByEmail(data.email);
   if (user) throw new CustomError("Usuário já existe", 409);

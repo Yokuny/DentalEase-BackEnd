@@ -20,28 +20,28 @@ export const getPatient = async (id: string) => {
 
 export const getPatientByEmail = async (email: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByEmail(email, clinic);
-  if (!patient && required) throw new CustomError("Paciente não encontrado", 404);
+  if (!patient && required) throw new CustomError("Paciente não encontrado por email", 404);
 
   return patient;
 };
 
 export const getPatientByCpf = async (cpf: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByCpf(cpf, clinic);
-  if (!patient && required) throw new CustomError("Paciente não encontrado", 404);
+  if (!patient && required) throw new CustomError("Paciente não encontrado por CPF", 404);
 
   return patient;
 };
 
 export const getPatientByRg = async (rg: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByRg(rg, clinic);
-  if (!patient && required) throw new CustomError("Paciente não encontrado", 404);
+  if (!patient && required) throw new CustomError("Paciente não encontrado por RG", 404);
 
   return patient;
 };
 
 export const getPatientByPhone = async (phone: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByPhone(phone, clinic);
-  if (!patient && required) throw new CustomError("Paciente não encontrado", 404);
+  if (!patient && required) throw new CustomError("Paciente não encontrado por telefone", 404);
 
   return patient;
 };

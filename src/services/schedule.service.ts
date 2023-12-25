@@ -76,8 +76,6 @@ export const postSchedule = async (user: ClinicUser, data: any) => {
   if (hasFinalDate) newSchedule.finalDate = stringToData(data.finalDate);
 
   const register = await respository.postSchedule(newSchedule);
-  console.log(register);
-  console.log("-> postSchedule");
   if (register) return "Agendamento cadastrado";
 
   throw new CustomError("Erro ao cadastrar agendamento", 502);

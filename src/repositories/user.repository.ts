@@ -6,6 +6,10 @@ export const signup = (data: NewUser) => {
   return User.create(data);
 };
 
+export const getUserById = (id: string): Promise<DbUser> => {
+  return User.findById(id, { __v: 0 });
+};
+
 export const getUserByEmail = (email: string): Promise<DbUser> => {
   return User.findOne({ email }, { __v: 0 });
 };

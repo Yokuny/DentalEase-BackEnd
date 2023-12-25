@@ -1,4 +1,5 @@
 import * as respository from "../repositories/clinic.repository";
+import { getUserById } from "./user.service";
 import { CustomError } from "../models";
 import type { ClinicUser, NewClinic } from "../models";
 
@@ -53,4 +54,21 @@ export const postClinic = async (user: ClinicUser, data: NewClinic) => {
   const NewClinic = { ...data, users: [{ user: user.user, role: "admin" }] };
 
   await respository.postClinic(NewClinic, user.user);
+};
+
+export const getClinic = async (user: ClinicUser) => await getClinicById(user.clinic, true);
+
+export const getDoctors = async (user: ClinicUser) => {
+  const clinicData = await getClinicById(user.clinic, true);
+  const doctorsId = clinicData.users.filter((user) => user.role !== "assistant");
+  const doctors = await Promise.all(doctorsId.map((doctor) => getUserById(doctor.user.toString())));
+
+  const secureDoctors = doctors.map((doctor) => ({
+    _id: doctor.id,
+    username: doctor.username,
+    email: doctor.email,
+    avatar: doctor.avatar,
+  }));
+
+  return secureDoctors;
 };

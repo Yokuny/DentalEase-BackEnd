@@ -21,3 +21,23 @@ export const postClinic = async (req: AuthReq, res: Response) => {
     sendErrorResponse(err, res);
   }
 };
+
+export const getClinic = async (req: AuthReq, res: Response) => {
+  try {
+    const response = await service.getClinic(req.clinicUser);
+
+    return res.status(httpStatus.OK).json(response);
+  } catch (err) {
+    sendErrorResponse(err, res);
+  }
+};
+
+export const getDoctors = async (req: AuthReq, res: Response) => {
+  try {
+    const response = await service.getDoctors(req.clinicUser);
+
+    return res.status(httpStatus.OK).json(response);
+  } catch (err) {
+    sendErrorResponse(err, res);
+  }
+};

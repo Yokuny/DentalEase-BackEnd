@@ -3,7 +3,7 @@ import { updateUserWithClinic, updateSession } from "../repositories/user.reposi
 import type { ClinicWithUser } from "../models";
 
 export const getClinicById = async (id: string) => {
-  return await Clinic.findById(id);
+  return await Clinic.findById(id, { __v: 0 });
 };
 
 export const getClinicByCNPJ = async (cnpj: string) => {

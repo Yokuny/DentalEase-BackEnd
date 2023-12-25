@@ -35,22 +35,22 @@ export const getOdontogramRegister = async (user: ClinicUser, query: RequestRegi
   if (query.id) return await getOdontogram(query.id);
 
   if (query.cpf) {
-    const patient = await getPatientByCpf(query.cpf, user.clinic);
+    const patient = await getPatientByCpf(query.cpf, user.clinic, true);
     return await getPatientOdontograms(patient.id);
   }
 
   if (query.email) {
-    const patient = await getPatientByEmail(query.email, user.clinic);
+    const patient = await getPatientByEmail(query.email, user.clinic, true);
     return await getPatientOdontograms(patient.id);
   }
 
   if (query.phone) {
-    const patient = await getPatientByPhone(query.phone, user.clinic);
+    const patient = await getPatientByPhone(query.phone, user.clinic, true);
     return await getPatientOdontograms(patient.id);
   }
 
   if (query.rg) {
-    const patient = await getPatientByRg(query.rg, user.clinic);
+    const patient = await getPatientByRg(query.rg, user.clinic, true);
     return await getPatientOdontograms(patient.id);
   }
 
@@ -64,11 +64,10 @@ export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
   const newOdontogram: ClinicOdontogram = {
     ...data,
     Clinic: user.clinic,
+    Doctor: user.user,
   };
 
   const register = await respository.postOdontogram(newOdontogram);
-  console.log(register);
-  console.log("-> postOdontogram");
   if (register) return "Odontograma cadastrado com sucesso";
 
   throw new CustomError("Erro ao cadastrar odontograma", 502);
