@@ -64,7 +64,6 @@ export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
   const newOdontogram: ClinicOdontogram = {
     ...data,
     Clinic: user.clinic,
-    Doctor: user.user,
   };
 
   const register = await respository.postOdontogram(newOdontogram);
@@ -88,12 +87,12 @@ export const patchOdontogram = async (id: string) => {
   const odontogram = await getOdontogram(id);
 
   const newOdontogram: ClinicOdontogram = {
+    Clinic: odontogram.Clinic,
     Patient: odontogram.Patient,
     Doctor: odontogram.Doctor,
-    Clinic: odontogram.Clinic,
     workToBeDone: odontogram.workToBeDone,
-    teeth: odontogram.teeth,
     finished: !odontogram.finished,
+    teeth: odontogram.teeth,
   };
 
   return await updateOdontogram(id, newOdontogram);

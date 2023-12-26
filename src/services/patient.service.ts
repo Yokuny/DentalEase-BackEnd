@@ -63,6 +63,30 @@ export const getPatientRegister = async (user: ClinicUser, body: RequestRegister
   return await getAllPatients(user.clinic);
 };
 
+export const postPatientData = async (user: ClinicUser, data: NewPatient) => {
+  const patientByEmail = await getPatientByEmail(data.email, user.clinic);
+  if (patientByEmail) throw new CustomError("Email já cadastrado", 403);
+
+  const patientByCpf = await getPatientByCpf(data.cpf, user.clinic);
+  if (patientByCpf) throw new CustomError("CPF já cadastrado", 403);
+
+  const patientByRg = await getPatientByRg(data.rg, user.clinic);
+  if (patientByRg) throw new CustomError("RG já cadastrado", 403);
+
+  const patientByPhone = await getPatientByPhone(data.phone, user.clinic);
+  if (patientByPhone) throw new CustomError("Telefone já cadastrado", 403);
+
+  const newPatient = {
+    ...data,
+    Clinic: user.clinic,
+    birthdate: stringToData(data.birthdate),
+    anamnese: {} as Anamnesis,
+    intraoral: {} as Intraoral,
+  };
+
+  return await updatePatient(newPatient);
+};
+
 export const updatePatient = async (data: ClinicPatient, id?: string) => {
   const register = await respository.updatePatient(data);
 
@@ -90,30 +114,6 @@ export const putPatientData = async (user: ClinicUser, id: string, data: ClinicP
   const newPatient: ClinicPatient = {
     ...data,
     birthdate: stringToData(data.birthdate),
-  };
-
-  return await updatePatient(newPatient);
-};
-
-export const postPatientData = async (user: ClinicUser, data: NewPatient) => {
-  const patientByEmail = await getPatientByEmail(data.email, user.clinic);
-  if (patientByEmail) throw new CustomError("Email já cadastrado", 403);
-
-  const patientByCpf = await getPatientByCpf(data.cpf, user.clinic);
-  if (patientByCpf) throw new CustomError("CPF já cadastrado", 403);
-
-  const patientByRg = await getPatientByRg(data.rg, user.clinic);
-  if (patientByRg) throw new CustomError("RG já cadastrado", 403);
-
-  const patientByPhone = await getPatientByPhone(data.phone, user.clinic);
-  if (patientByPhone) throw new CustomError("Telefone já cadastrado", 403);
-
-  const newPatient = {
-    ...data,
-    Clinic: user.clinic,
-    birthdate: stringToData(data.birthdate),
-    anamnese: {} as Anamnesis,
-    intraoral: {} as Intraoral,
   };
 
   return await updatePatient(newPatient);
