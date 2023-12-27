@@ -1,35 +1,47 @@
-import Joi from "joi";
+import { z } from "zod";
+import { titleRegex, emailRegExp, passwordRegExp } from "../helpers/regex.helper";
 
-export const signupSchema = Joi.object({
-  username: Joi.string()
-    .min(5)
-    .max(26)
-    .regex(/^[a-zA-Z0-9\sÀ-ú]{6,}\s*$/)
-    .required(),
-  email: Joi.string()
-    .email()
-    .min(5)
-    .max(50)
-    .regex(/^[a-z0-9.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/i)
-    .required(),
-  password: Joi.string()
-    .min(5)
-    .max(50)
-    .required()
-    .regex(/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.{6,})/)
-    .required(),
+const lengthMessage = (min: number, max: number) => ({
+  message: `O campo deve ter ${min ? `${min} a ${max} caracteres.` : `no máximo ${max} caracteres`}`,
 });
 
-export const signinSchema = Joi.object({
-  email: Joi.string()
-    .min(5)
-    .max(26)
-    .regex(/^[a-z0-9.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/i)
-    .email()
-    .required(),
-  password: Joi.string()
-    .min(5)
-    .max(50)
-    .regex(/^(?=.*[a-zA-Z])(?=.*[0-9])(?=.{6,})/)
-    .required(),
+const mailMessage = () => ({
+  message: `O campo deve ser um email válido`,
+});
+
+const passwordMessage = () => ({
+  message: "Digite uma senha forte",
+});
+
+export const signinSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .email(mailMessage())
+    .min(5, lengthMessage(5, 50))
+    .max(50, lengthMessage(5, 50))
+    .regex(emailRegExp),
+  password: z
+    .string()
+    .trim()
+    .min(5, lengthMessage(5, 50))
+    .max(50, lengthMessage(5, 50))
+    .regex(passwordRegExp, passwordMessage()),
+});
+
+export const signupSchema = z.object({
+  username: z.string().min(5, lengthMessage(5, 26)).max(26, lengthMessage(5, 26)).regex(titleRegex),
+  email: z
+    .string()
+    .trim()
+    .email(mailMessage())
+    .min(5, lengthMessage(5, 50))
+    .max(50, lengthMessage(5, 50))
+    .regex(emailRegExp),
+  password: z
+    .string()
+    .trim()
+    .min(5, lengthMessage(5, 50))
+    .max(50, lengthMessage(5, 50))
+    .regex(passwordRegExp, passwordMessage()),
 });

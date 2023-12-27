@@ -1,29 +1,35 @@
 import { NextFunction, Request, Response } from "express";
-import { ObjectSchema } from "joi";
-import httpStatus from "http-status";
+import { Schema } from "zod";
 
-const validate = (schema: ObjectSchema, type: "body" | "params" | "query") => {
+const validate = (schema: Schema, type: "body" | "params" | "query") => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const { error } = schema.validate(req[type], {
-      abortEarly: false,
-    });
-
-    if (!error) {
+    try {
+      schema.parse(req[type]);
       next();
-    } else {
-      res.status(httpStatus.BAD_REQUEST).send(error.details.map((d) => d.message));
+    } catch (error) {
+      const errArray = error.errors;
+      for (const err of errArray) {
+        const { path, received, message, expected } = err;
+
+        const paramMessage = type === "query" ? "Na query" : type === "params" ? "Nos params" : "No body";
+        const errMessage = `${paramMessage}: '${path}' recebeu '${received}'. Erro:'${message}'.${
+          expected ? ` Esperado: '${expected}'` : ""
+        }`;
+
+        return res.status(400).send({ message: errMessage });
+      }
     }
   };
 };
 
-export const validBody = (schema: ObjectSchema) => {
+export const validBody = (schema: Schema) => {
   return validate(schema, "body");
 };
 
-export const validParams = (schema: ObjectSchema) => {
+export const validParams = (schema: Schema) => {
   return validate(schema, "params");
 };
 
-export const validQuery = (schema: ObjectSchema) => {
+export const validQuery = (schema: Schema) => {
   return validate(schema, "query");
 };

@@ -1,22 +1,17 @@
-import Joi from "joi";
 import { ObjectId } from "mongodb";
+import { z } from "zod";
 
-export const idSchema = Joi.object({
-  id: Joi.string()
-    .custom((value: string, helpers) => {
-      if (!ObjectId.isValid(value)) {
-        return helpers.error("ID fornecido é inválido");
-      }
-      return value;
-    })
-    .required(),
+const objectIdMessage = () => ({
+  message: `ID fornecido é inválido`,
 });
 
-export const idSchemaOptional = Joi.object({
-  id: Joi.string().custom((value: string, helpers) => {
-    if (!ObjectId.isValid(value)) {
-      return helpers.error("ID fornecido é inválido");
-    }
-    return value;
-  }),
+export const idSchema = z.object({
+  id: z.string().refine((value) => ObjectId.isValid(value), objectIdMessage()),
+});
+
+export const idSchemaOptional = z.object({
+  id: z
+    .string()
+    .refine((value) => ObjectId.isValid(value), objectIdMessage())
+    .optional(),
 });

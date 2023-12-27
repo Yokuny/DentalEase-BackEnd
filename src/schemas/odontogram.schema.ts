@@ -1,35 +1,46 @@
-import Joi from "joi";
+import { z } from "zod";
 
-export const getOdontogramSchema = Joi.object({
-  id: Joi.string(),
-  email: Joi.string().email().min(5).max(50),
-  cpf: Joi.string().min(11).max(11),
-  rg: Joi.string().min(7).max(7),
-  phone: Joi.string().min(11).max(11),
+const lengthMessage = (min: number, max: number) => ({
+  message: `O campo deve ter ${min} a ${max} caracteres`,
 });
 
-export const odontogramSchema = Joi.object({
-  Patient: Joi.string().required(),
-  Doctor: Joi.string().required(),
-  workToBeDone: Joi.string().max(250).required(),
-  finished: Joi.boolean().default(false),
-  teeth: Joi.array()
-    .min(1)
-    .items(
-      Joi.object({
-        number: Joi.number().max(99).required(),
-        faces: Joi.object({
-          facial: Joi.boolean().default(false),
-          incisal: Joi.boolean().default(false),
-          lingual: Joi.boolean().default(false),
-          mesial: Joi.boolean().default(false),
-          distal: Joi.boolean().default(false),
-          occlusal: Joi.boolean().default(false),
-          palatal: Joi.boolean().default(false),
-        })
-          .min(1)
-          .required(),
+const mailMessage = () => ({
+  message: `O campo deve ser um email válido`,
+});
+
+export const getOdontogramSchema = z.object({
+  id: z.string().optional(),
+  email: z
+    .string()
+    .trim()
+    .email(mailMessage())
+    .min(5, lengthMessage(5, 50))
+    .max(50, lengthMessage(5, 50))
+    .optional(),
+  cpf: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)).optional(),
+  rg: z.string().trim().min(7, lengthMessage(7, 7)).max(7, lengthMessage(7, 7)).optional(),
+  phone: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)).optional(),
+});
+
+export const odontogramSchema = z
+  .object({
+    Patient: z.string().min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
+    Doctor: z.string().min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
+    workToBeDone: z.string().trim().max(250, lengthMessage(0, 250)),
+    finished: z.boolean(),
+    teeth: z.array(
+      z.object({
+        number: z.number().max(99),
+        faces: z.object({
+          facial: z.boolean(),
+          incisal: z.boolean(),
+          lingual: z.boolean(),
+          mesial: z.boolean(),
+          distal: z.boolean(),
+          occlusal: z.boolean(),
+          palatal: z.boolean(),
+        }),
       })
-    )
-    .required(),
-});
+    ),
+  })
+  .required();

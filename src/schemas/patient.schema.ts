@@ -1,69 +1,118 @@
-import Joi from "joi";
+import { z } from "zod";
+import { birthRegExp } from "../helpers/regex.helper";
 
-export const getPatientSchema = Joi.object({
-  id: Joi.string(),
-  email: Joi.string().email().min(5).max(50),
-  cpf: Joi.string().min(11).max(11),
-  rg: Joi.string().min(7).max(7),
-  phone: Joi.string().min(11).max(11),
+const lengthMessage = (min: number, max: number) => ({
+  message: `O campo deve ter ${min ? `${min} a ${max} caracteres.` : `no máximo ${max} caracteres`}`,
 });
 
-export const patientSchema = Joi.object({
-  name: Joi.string().min(5).max(30).required(),
-  cpf: Joi.string().min(11).max(11).required(),
-  rg: Joi.string().min(7).max(7).required(),
-  birthdate: Joi.date().required(),
-  sex: Joi.string().valid("M", "F").required(),
-  phone: Joi.string().min(11).max(11).required(),
-  email: Joi.string().email().min(5).max(50).required(),
-  cep: Joi.string().min(8).max(8).required(),
-  address: Joi.string().min(5).max(50),
+const mailMessage = () => ({
+  message: `O campo deve ser um email válido`,
 });
 
-export const anamnesisSchema = Joi.object({
-  Patient: Joi.string().required(),
-  mainComplaint: Joi.string().max(250).required(),
-  gumsBleedEasily: Joi.boolean().required(),
-  sensitiveTeeth: Joi.boolean().required(),
-  allergicToMedication: Joi.boolean().required(),
-  medicationAllergy: Joi.string().max(120).required(),
-  bitesPenOrPencil: Joi.boolean().required(),
-  nailsBiting: Joi.boolean().required(),
-  otherHarmfulHabits: Joi.string().max(120).required(),
-  pregnant: Joi.boolean().required(),
-  pregnancyMonth: Joi.number().max(10).required(),
-  breastfeeding: Joi.boolean().required(),
-  underMedicalTreatment: Joi.boolean().required(),
-  medicalTreatmentDetails: Joi.string().max(120).required(),
-  takingMedication: Joi.boolean().required(),
-  medicationDetails: Joi.string().max(120).required(),
-  infectiousDisease: Joi.string().max(120).required(),
-  smoker: Joi.boolean().required(),
-  alcoholConsumer: Joi.boolean().required(),
-  illnesses: Joi.object({
-    diabetes: Joi.boolean().default(false),
-    tuberculosis: Joi.boolean().default(false),
-    heartProblems: Joi.boolean().default(false),
-    arthritis: Joi.boolean().default(false),
-    asthma: Joi.boolean().default(false),
-    highBloodPressure: Joi.boolean().default(false),
-    kidneyProblems: Joi.boolean().default(false),
-    liverProblems: Joi.boolean().default(false),
-    otherIllnesses: Joi.string().max(120).default(""),
-  }).required(),
-  importantHealthInformation: Joi.string().max(250).required(),
+enum Sex {
+  M,
+  F,
+}
+
+enum hygiene {
+  normal,
+  regular,
+  deficiente,
+}
+
+enum halitosis {
+  ausente,
+  moderada,
+  forte,
+}
+
+enum tartar {
+  ausente,
+  pouco,
+  muito,
+}
+
+enum gums {
+  normal,
+  gengivite,
+  periodontite,
+}
+
+enum mucosa {
+  normal,
+  alterada,
+}
+
+export const getPatientSchema = z.object({
+  id: z.string().trim().optional(),
+  email: z
+    .string()
+    .trim()
+    .email(mailMessage())
+    .min(5, lengthMessage(5, 50))
+    .max(50, lengthMessage(5, 50))
+    .optional(),
+  cpf: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)).optional(),
+  rg: z.string().trim().min(7, lengthMessage(7, 7)).max(7, lengthMessage(7, 7)).optional(),
+  phone: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)).optional(),
 });
 
-export const intraoralSchema = Joi.object({
-  Patient: Joi.string().required(),
-  hygiene: Joi.string().valid("normal", "regular", "deficiente").required(),
-  halitosis: Joi.string().valid("ausente", "moderada", "forte").required(),
-  tartar: Joi.string().valid("ausente", "pouco", "muito").required(),
-  gums: Joi.string().valid("normal", "gengivite", "periodontite").required(),
-  mucosa: Joi.string().valid("normal", "alterada").required(),
-  tongue: Joi.string().max(120).required(),
-  palate: Joi.string().max(120).required(),
-  oralFloor: Joi.string().max(120).required(),
-  lips: Joi.string().max(120).required(),
-  otherObservations: Joi.string().max(250).required(),
+export const patientSchema = z.object({
+  name: z.string().trim().min(5, lengthMessage(5, 30)).max(30, lengthMessage(5, 30)),
+  cpf: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)),
+  rg: z.string().trim().min(7, lengthMessage(7, 7)).max(7, lengthMessage(7, 7)),
+  birthdate: z.string().trim().regex(birthRegExp),
+  sex: z.nativeEnum(Sex),
+  phone: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)),
+  email: z.string().trim().email(mailMessage()).min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
+  cep: z.string().trim().min(8, lengthMessage(8, 8)).max(8, lengthMessage(8, 8)),
+  address: z.string().trim().min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
+});
+
+export const anamnesisSchema = z.object({
+  Patient: z.string(),
+  mainComplaint: z.string().trim().max(250, lengthMessage(0, 250)),
+  gumsBleedEasily: z.boolean(),
+  sensitiveTeeth: z.boolean(),
+  allergicToMedication: z.boolean(),
+  medicationAllergy: z.string().trim().max(120, lengthMessage(0, 120)),
+  bitesPenOrPencil: z.boolean(),
+  nailsBiting: z.boolean(),
+  otherHarmfulHabits: z.string().trim().max(120, lengthMessage(0, 120)),
+  pregnant: z.boolean(),
+  pregnancyMonth: z.number().max(10),
+  breastfeeding: z.boolean(),
+  underMedicalTreatment: z.boolean(),
+  medicalTreatmentDetails: z.string().trim().max(120, lengthMessage(0, 120)),
+  takingMedication: z.boolean(),
+  medicationDetails: z.string().trim().max(120, lengthMessage(0, 120)),
+  infectiousDisease: z.string().trim().max(120, lengthMessage(0, 120)),
+  smoker: z.boolean(),
+  alcoholConsumer: z.boolean(),
+  illnesses: z.object({
+    diabetes: z.boolean().default(false),
+    tuberculosis: z.boolean().default(false),
+    heartProblems: z.boolean().default(false),
+    arthritis: z.boolean().default(false),
+    asthma: z.boolean().default(false),
+    highBloodPressure: z.boolean().default(false),
+    kidneyProblems: z.boolean().default(false),
+    liverProblems: z.boolean().default(false),
+    otherIllnesses: z.string().trim().max(120, lengthMessage(0, 120)).default(""),
+  }),
+  importantHealthInformation: z.string().trim().max(250, lengthMessage(0, 250)),
+});
+
+export const intraoralSchema = z.object({
+  Patient: z.string().trim(),
+  hygiene: z.nativeEnum(hygiene),
+  halitosis: z.nativeEnum(halitosis),
+  tartar: z.nativeEnum(tartar),
+  gums: z.nativeEnum(gums),
+  mucosa: z.nativeEnum(mucosa),
+  tongue: z.string().trim().max(120, lengthMessage(0, 120)),
+  palate: z.string().trim().max(120, lengthMessage(0, 120)),
+  oralFloor: z.string().trim().max(120, lengthMessage(0, 120)),
+  lips: z.string().trim().max(120, lengthMessage(0, 120)),
+  otherObservations: z.string().trim().max(250, lengthMessage(0, 250)),
 });

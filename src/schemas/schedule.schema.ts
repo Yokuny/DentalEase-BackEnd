@@ -1,9 +1,9 @@
-import Joi from "joi";
+import { z } from "zod";
 
-export const scheduleSchema = Joi.object({
-  Patient: Joi.string().required(),
-  Doctor: Joi.string().required(),
-  Service: Joi.string().required(),
-  initianDate: Joi.date().required(),
-  finalDate: Joi.date(),
+export const scheduleZodSchema = z.object({
+  Patient: z.string(),
+  Doctor: z.string(),
+  Service: z.string(),
+  initianDate: z.date(),
+  finalDate: z.date().optional(),
 });

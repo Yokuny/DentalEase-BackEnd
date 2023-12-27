@@ -1,9 +1,15 @@
-import Joi from "joi";
+import { z } from "zod";
 
-export const serviceSchema = Joi.object({
-  Patient: Joi.string().required(),
-  Doctor: Joi.string().required(),
-  workToBeDone: Joi.string().required(),
-  price: Joi.number().required(),
-  status: Joi.string().allow("pending", "paid", "canceled").default("pending"),
+enum status {
+  pending,
+  paid,
+  canceled,
+}
+
+export const serviceSchema = z.object({
+  Patient: z.string(),
+  Doctor: z.string(),
+  workToBeDone: z.string(),
+  price: z.number(),
+  status: z.nativeEnum(status).default(status.pending),
 });
