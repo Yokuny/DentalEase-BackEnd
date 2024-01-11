@@ -9,40 +9,6 @@ const mailMessage = () => ({
   message: `O campo deve ser um email válido`,
 });
 
-enum Sex {
-  M,
-  F,
-}
-
-enum hygiene {
-  normal,
-  regular,
-  deficiente,
-}
-
-enum halitosis {
-  ausente,
-  moderada,
-  forte,
-}
-
-enum tartar {
-  ausente,
-  pouco,
-  muito,
-}
-
-enum gums {
-  normal,
-  gengivite,
-  periodontite,
-}
-
-enum mucosa {
-  normal,
-  alterada,
-}
-
 export const getPatientSchema = z.object({
   id: z.string().trim().optional(),
   email: z
@@ -62,7 +28,7 @@ export const patientSchema = z.object({
   cpf: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)),
   rg: z.string().trim().min(7, lengthMessage(7, 7)).max(7, lengthMessage(7, 7)),
   birthdate: z.string().trim().regex(birthRegExp),
-  sex: z.nativeEnum(Sex),
+  sex: z.enum(["M", "F"]),
   phone: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)),
   email: z.string().trim().email(mailMessage()).min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
   cep: z.string().trim().min(8, lengthMessage(8, 8)).max(8, lengthMessage(8, 8)),
@@ -105,14 +71,15 @@ export const anamnesisSchema = z.object({
 
 export const intraoralSchema = z.object({
   Patient: z.string().trim(),
-  hygiene: z.nativeEnum(hygiene),
-  halitosis: z.nativeEnum(halitosis),
-  tartar: z.nativeEnum(tartar),
-  gums: z.nativeEnum(gums),
-  mucosa: z.nativeEnum(mucosa),
+  hygiene: z.enum(["normal", "regular", "deficiente"]),
+  halitosis: z.enum(["ausente", "moderada", "forte"]),
+  tartar: z.enum(["ausente", "pouco", "muito"]),
+  gums: z.enum(["normal", "gengivite", "periodontite"]),
+  mucosa: z.enum(["normal", "alterada"]),
   tongue: z.string().trim().max(120, lengthMessage(0, 120)),
   palate: z.string().trim().max(120, lengthMessage(0, 120)),
   oralFloor: z.string().trim().max(120, lengthMessage(0, 120)),
   lips: z.string().trim().max(120, lengthMessage(0, 120)),
   otherObservations: z.string().trim().max(250, lengthMessage(0, 250)),
 });
+

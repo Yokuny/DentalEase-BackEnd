@@ -22,25 +22,28 @@ export const getOdontogramSchema = z.object({
   phone: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)).optional(),
 });
 
+
 export const odontogramSchema = z
   .object({
     Patient: z.string().min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
     Doctor: z.string().min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
     workToBeDone: z.string().trim().max(250, lengthMessage(0, 250)),
-    finished: z.boolean(),
+    finished: z.boolean().default(false),
     teeth: z.array(
       z.object({
         number: z.number().max(99),
         faces: z.object({
-          facial: z.boolean(),
-          incisal: z.boolean(),
-          lingual: z.boolean(),
-          mesial: z.boolean(),
-          distal: z.boolean(),
-          occlusal: z.boolean(),
-          palatal: z.boolean(),
+          facial: z.boolean().default(false),
+          incisal: z.boolean().default(false),
+          lingual: z.boolean().default(false),
+          mesial: z.boolean().default(false),
+          distal: z.boolean().default(false),
+          occlusal: z.boolean().default(false),
+          palatal: z.boolean().default(false),
         }),
       })
     ),
   })
   .required();
+
+  

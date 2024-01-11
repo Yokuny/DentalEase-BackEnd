@@ -7,16 +7,20 @@ const validate = (schema: Schema, type: "body" | "params" | "query") => {
       schema.parse(req[type]);
       next();
     } catch (error) {
-      const errArray = error.errors;
-      for (const err of errArray) {
-        const { path, received, message, expected } = err;
+      if (error.errors) {
+        const errArray = error.errors;
+        for (const err of errArray) {
+          const { path, received, message, expected } = err;
 
-        const paramMessage = type === "query" ? "Na query" : type === "params" ? "Nos params" : "No body";
-        const errMessage = `${paramMessage}: '${path}' recebeu '${received}'. Erro:'${message}'.${
-          expected ? ` Esperado: '${expected}'` : ""
-        }`;
+          const paramMessage = type === "query" ? "Na query" : type === "params" ? "Nos params" : "No body";
+          const errMessage = `${paramMessage}: '${path}' recebeu '${received}'. Erro:'${message}'.${
+            expected ? ` Esperado: '${expected}'` : ""
+          }`;
 
-        return res.status(400).send({ message: errMessage });
+          return res.status(400).send({ message: errMessage });
+        }
+      } else {
+        return res.status(400).send({ message: error.message });
       }
     }
   };

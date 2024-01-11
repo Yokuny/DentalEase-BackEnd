@@ -33,7 +33,7 @@ export const postOdontogram = async (req: AuthReq, res: Response) => {
 
 export const putOdontogram = async (req: AuthReq, res: Response) => {
   try {
-    const response = await service.updateOdontogram(req.params.id, req.body);
+    const response = await service.updateOdontogram(req.params.id, req.clinicUser, req.body);
 
     return res.status(200).json({ message: response });
   } catch (err) {
@@ -43,7 +43,7 @@ export const putOdontogram = async (req: AuthReq, res: Response) => {
 
 export const patchOdontogram = async (req: AuthReq, res: Response) => {
   try {
-    const response = await service.patchOdontogram(req.params.id);
+    const response = await service.patchOdontogram(req.params.id, req.clinicUser);
 
     return res.status(200).json({ message: response });
   } catch (err) {

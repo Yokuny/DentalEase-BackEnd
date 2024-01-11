@@ -72,30 +72,26 @@ export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
   throw new CustomError("Erro ao cadastrar odontograma", 502);
 };
 
-export const updateOdontogram = async (id: string, data: ClinicOdontogram) => {
+export const updateOdontogram = async (id: string, user: ClinicUser, data: ClinicOdontogram) => {
   await getOdontogram(id);
-  const doctor = await getClinicDoctor(data.Clinic, data.Doctor);
-  if (doctor.id?.toString() !== data.Doctor?.toString())
-    throw new CustomError("Não é permitido alteração de médico", 403);
+  await getClinicDoctor(user.clinic, data.Doctor);
+  delete data.Patient;
+  delete data.Doctor;
 
   const register = await respository.updateOdontogram(id, data);
   if (register.modifiedCount > 0) return "Odontograma cadastrado com sucesso";
   else throw new CustomError("Odontograma não atualizado", 406);
 };
 
-export const patchOdontogram = async (id: string) => {
+export const patchOdontogram = async (id: string, user: ClinicUser) => {
   const odontogram = await getOdontogram(id);
 
   const newOdontogram: ClinicOdontogram = {
-    Clinic: odontogram.Clinic,
-    Patient: odontogram.Patient,
-    Doctor: odontogram.Doctor,
-    workToBeDone: odontogram.workToBeDone,
+    ...odontogram,
     finished: !odontogram.finished,
-    teeth: odontogram.teeth,
   };
 
-  return await updateOdontogram(id, newOdontogram);
+  return await updateOdontogram(id, user, newOdontogram);
 };
 
 export const deleteOdontogram = async (id: string) => {
