@@ -1,15 +1,11 @@
 import { z } from "zod";
 
-enum status {
-  pending,
-  paid,
-  canceled,
-}
-
 export const serviceSchema = z.object({
   Patient: z.string(),
   Doctor: z.string(),
   workToBeDone: z.string(),
   price: z.number(),
-  status: z.nativeEnum(status).default(status.pending),
+  status: z.enum(["pending", "paid", "canceled"]).default("pending"),
 });
+
+export type NewService = z.infer<typeof serviceSchema>;

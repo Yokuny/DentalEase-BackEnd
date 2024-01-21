@@ -45,3 +45,6 @@ export const signupSchema = z.object({
     .max(50, lengthMessage(5, 50))
     .regex(passwordRegExp, passwordMessage()),
 });
+
+export type SignIn = z.infer<typeof signinSchema>;
+export type SignUp = z.infer<typeof signupSchema>;

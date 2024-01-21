@@ -31,6 +31,8 @@ const getClinicByEmail = async (email: string, required?: boolean) => {
   return clinic;
 };
 
+export const getClinic = async (user: ClinicUser) => await getClinicById(user.clinic, true);
+
 export const getClinicDoctor = async (clinic: string, doctor: string) => {
   const clinicDoctor = await respository.getClinicDoctor(clinic, doctor);
   if (!clinicDoctor) throw new CustomError("Médico não encontrado", 404);
@@ -55,8 +57,6 @@ export const postClinic = async (user: ClinicUser, data: NewClinic) => {
 
   await respository.postClinic(NewClinic, user.user);
 };
-
-export const getClinic = async (user: ClinicUser) => await getClinicById(user.clinic, true);
 
 export const getDoctors = async (user: ClinicUser) => {
   const clinicData = await getClinicById(user.clinic, true);

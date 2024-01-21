@@ -4,11 +4,11 @@ import { CustomError, ClinicUser } from "../models";
 import type {
   NewPatient,
   ClinicPatient,
-  RequestRegister,
+  NewAnamnesis,
   DbAnamnesis,
-  Anamnesis,
+  NewIntraoral,
   DbIntraoral,
-  Intraoral,
+  Query,
 } from "../models";
 
 export const getPatient = async (id: string) => {
@@ -53,7 +53,7 @@ export const getAllPatients = async (clinic: string) => {
   return patients;
 };
 
-export const getPatientRegister = async (user: ClinicUser, body: RequestRegister) => {
+export const getPatientRegister = async (user: ClinicUser, body: Query) => {
   if (body.email) return await getPatientByEmail(body.email, user.clinic, true);
   if (body.cpf) return await getPatientByCpf(body.cpf, user.clinic, true);
   if (body.rg) return await getPatientByRg(body.rg, user.clinic, true);
@@ -79,15 +79,15 @@ export const postPatientData = async (user: ClinicUser, data: NewPatient) => {
   const newPatient = {
     ...data,
     Clinic: user.clinic,
-    birthdate: stringToData(data.birthdate),
-    anamnese: {} as Anamnesis,
-    intraoral: {} as Intraoral,
+    birthdate: String(stringToData(data.birthdate)),
+    anamnese: {} as NewAnamnesis,
+    intraoral: {} as NewIntraoral,
   };
 
   return await updatePatient(newPatient);
 };
 
-export const updatePatient = async (data: ClinicPatient, id?: string) => {
+export const updatePatient = async (data: ClinicPatient) => {
   const register = await respository.updatePatient(data);
 
   if (register.upsertedCount === 1) return "Paciente cadastrado com sucesso";
@@ -113,13 +113,13 @@ export const putPatientData = async (user: ClinicUser, id: string, data: ClinicP
 
   const newPatient: ClinicPatient = {
     ...data,
-    birthdate: stringToData(data.birthdate),
+    birthdate: String(stringToData(data.birthdate)),
   };
 
   return await updatePatient(newPatient);
 };
 
-const updatePatientAnamnesis = async (patient: string, data: Anamnesis) => {
+const updatePatientAnamnesis = async (patient: string, data: NewAnamnesis) => {
   const register = await respository.updatePatientAnamnesis(patient, data);
   if (register.modifiedCount === 1) return "Anamnese cadastrada com sucesso";
   else throw new CustomError("Erro ao cadastrar anamnese", 502);
@@ -132,7 +132,7 @@ export const postPatientAnamnesis = async (data: DbAnamnesis) => {
   return await updatePatientAnamnesis(patient.id, data);
 };
 
-const updatePatientIntraoral = async (patient: string, data: Intraoral) => {
+const updatePatientIntraoral = async (patient: string, data: NewIntraoral) => {
   const register = await respository.updatePatientIntraoral(patient, data);
   if (register.modifiedCount === 1) return "Exame intraoral cadastrado com sucesso";
   else throw new CustomError("Erro ao cadastrar exame intraoral", 502);

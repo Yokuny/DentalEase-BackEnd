@@ -8,7 +8,7 @@ import {
 } from "./patient.service";
 import { getClinicDoctor } from "./clinic.service";
 import { CustomError } from "../models";
-import type { NewOdontogram, ClinicOdontogram, RequestRegister, ClinicUser } from "../models";
+import type { NewOdontogram, ClinicOdontogram, ClinicUser, Query } from "../models";
 
 export const getOdontogram = async (id: string) => {
   const odontogram = await respository.getOdontogram(id);
@@ -31,7 +31,7 @@ export const getNoFinishedOdontograms = async (clinic: string) => {
   return odontograms;
 };
 
-export const getOdontogramRegister = async (user: ClinicUser, query: RequestRegister) => {
+export const getOdontogramRegister = async (user: ClinicUser, query: Query) => {
   if (query.id) return await getOdontogram(query.id);
 
   if (query.cpf) {

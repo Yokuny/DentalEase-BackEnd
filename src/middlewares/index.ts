@@ -1,4 +1,4 @@
-export * from "./validation.middleware";
-export * from "./authentication.middleware";
-export * from "./errorHandler.middleware";
-export * from "./clinicAssign.middleware";
+export { validBody, validParams, validQuery } from "./validation.middleware";
+export { validToken } from "./authentication.middleware";
+export { errorHandler } from "./errorHandler.middleware";
+export { clinicAssignmentCheck } from "./clinicAssign.middleware";

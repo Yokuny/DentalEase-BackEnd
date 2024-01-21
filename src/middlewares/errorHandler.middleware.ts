@@ -6,7 +6,6 @@ export const errorHandler = (err: any, _req: Request, res: Response, _next: Next
     return res.status(err.status).send({ message: err.message });
   } else {
     const errMessage = err?.message || JSON.stringify(err, null, 2);
-
     return res.status(500).send({ message: errMessage });
   }
 };

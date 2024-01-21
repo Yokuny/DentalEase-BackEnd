@@ -7,3 +7,5 @@ export const scheduleSchema = z.object({
   initianDate: z.string().datetime(),
   finalDate: z.string().datetime().optional(),
 });
+
+export type NewSchedule = z.infer<typeof scheduleSchema>;

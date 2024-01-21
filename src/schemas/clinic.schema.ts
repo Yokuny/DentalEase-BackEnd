@@ -26,3 +26,5 @@ export const clinicSchema = z
     cnpj: z.string().trim().min(11, lengthMessage(11, 14)).max(14, lengthMessage(11, 14)),
   })
   .required();
+
+export type NewClinic = z.infer<typeof clinicSchema>;

@@ -9,28 +9,14 @@ const mailMessage = () => ({
   message: `O campo deve ser um email válido`,
 });
 
-export const getPatientSchema = z.object({
-  id: z.string().trim().optional(),
-  email: z
-    .string()
-    .trim()
-    .email(mailMessage())
-    .min(5, lengthMessage(5, 50))
-    .max(50, lengthMessage(5, 50))
-    .optional(),
-  cpf: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)).optional(),
-  rg: z.string().trim().min(7, lengthMessage(7, 7)).max(7, lengthMessage(7, 7)).optional(),
-  phone: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)).optional(),
-});
-
 export const patientSchema = z.object({
   name: z.string().trim().min(5, lengthMessage(5, 30)).max(30, lengthMessage(5, 30)),
+  email: z.string().trim().email(mailMessage()).min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
   cpf: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)),
   rg: z.string().trim().min(7, lengthMessage(7, 7)).max(7, lengthMessage(7, 7)),
   birthdate: z.string().trim().regex(birthRegExp),
   sex: z.enum(["M", "F"]),
   phone: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)),
-  email: z.string().trim().email(mailMessage()).min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
   cep: z.string().trim().min(8, lengthMessage(8, 8)).max(8, lengthMessage(8, 8)),
   address: z.string().trim().min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
 });
@@ -83,3 +69,6 @@ export const intraoralSchema = z.object({
   otherObservations: z.string().trim().max(250, lengthMessage(0, 250)),
 });
 
+export type NewPatient = z.infer<typeof patientSchema>;
+export type NewAnamnesis = z.infer<typeof anamnesisSchema>;
+export type NewIntraoral = z.infer<typeof intraoralSchema>;

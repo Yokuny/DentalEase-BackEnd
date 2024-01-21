@@ -1,8 +1,8 @@
 import { User } from "../database";
 import { Session } from "../database";
-import type { NewUser, DbUser } from "../models";
+import type { SignUp, DbUser } from "../models";
 
-export const signup = (data: NewUser) => {
+export const signup = (data: SignUp) => {
   return User.create(data);
 };
 
