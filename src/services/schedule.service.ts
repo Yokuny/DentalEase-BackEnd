@@ -1,6 +1,6 @@
 import * as respository from "../repositories/schedule.repository";
-import { getPatient, getOdontogram } from "../services";
-import { getClinicDoctor } from "../services/clinic.service";
+import { getPatient, getOdontogram } from ".";
+import { getClinicDoctor } from "./clinic.service";
 import { stringToData } from "../helpers/convert_data.helper";
 import { CustomError } from "../models";
 import type { ClinicUser } from "../models";

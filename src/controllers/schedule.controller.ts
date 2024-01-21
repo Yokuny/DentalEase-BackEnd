@@ -1,62 +1,53 @@
-import { Response } from "express";
+import { Response, NextFunction } from "express";
 import * as service from "../services/schedule.service";
-import { CustomError, AuthReq } from "../models";
+import { AuthReq } from "../models";
 
-const sendErrorResponse = (err: CustomError | Error, res: Response) => {
-  if (err instanceof CustomError) {
-    res.status(err.status).send({ message: err.message });
-  } else {
-    const errMessage = err?.message || JSON.stringify(err, null, 2);
-    res.status(500).send({ message: errMessage });
-  }
-};
-
-export const getSchedule = async (req: AuthReq, res: Response) => {
+export const getSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
     const response = await service.getSchedule(req.clinicUser, req.query);
 
     return res.status(200).json(response ? response : []);
   } catch (err) {
-    sendErrorResponse(err, res);
+    next(err);
   }
 };
 
-export const postSchedule = async (req: AuthReq, res: Response) => {
+export const postSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
     const response = await service.postSchedule(req.clinicUser, req.body);
 
     return res.status(201).json({ message: response });
   } catch (err) {
-    sendErrorResponse(err, res);
+    next(err);
   }
 };
 
-export const putSchedule = async (req: AuthReq, res: Response) => {
+export const putSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
     const response = await service.updateSchedule(req.params.id, req.body);
 
     return res.status(200).json({ message: response });
   } catch (err) {
-    sendErrorResponse(err, res);
+    next(err);
   }
 };
 
-// export const patchSchedule = async (req: AuthReq, res: Response) => {
+// export const patchSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
 //   try {
 //     const response = await service.patchSchedule(req.clinic, req.params.id);
 
 //     return res.status(200).json({ message: response });
 //   } catch (err) {
-//     sendErrorResponse(err, res);
+//     next(err);
 //   }
 // };
 
-export const deleteSchedule = async (req: AuthReq, res: Response) => {
+export const deleteSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
     const response = await service.deleteSchedule(req.params.id);
 
     return res.status(200).json({ message: response });
   } catch (err) {
-    sendErrorResponse(err, res);
+    next(err);
   }
 };

@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import { config } from "dotenv";
 import * as route from "./routers";
+import { errorHandler } from "./middlewares/errorHandler.middleware";
 import { dbConnect } from "./database";
 
 const app: Application = express();
@@ -18,6 +19,9 @@ app
   .use("/patient", route.patientRoute)
   .use("/odontogram", route.odontogramRoute)
   .use("/schedule", route.scheduleRoute);
+
+app.use("*", (_req: Request, res: Response) => res.status(404).send({ message: "Route not found" }));
+app.use(errorHandler);
 
 export function init(): Promise<express.Application> {
   dbConnect();

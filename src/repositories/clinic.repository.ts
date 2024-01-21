@@ -1,5 +1,5 @@
 import { Clinic } from "../database";
-import { updateUserWithClinic, updateSession } from "../repositories/user.repository";
+import { updateUserWithClinic, updateSession } from "./user.repository";
 import type { ClinicWithUser } from "../models";
 
 export const getClinicById = async (id: string) => {

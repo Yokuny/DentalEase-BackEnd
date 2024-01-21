@@ -5,8 +5,8 @@ import {
   getPatientByEmail,
   getPatientByPhone,
   getPatientByRg,
-} from "../services/patient.service";
-import { getClinicDoctor } from "../services/clinic.service";
+} from "./patient.service";
+import { getClinicDoctor } from "./clinic.service";
 import { CustomError } from "../models";
 import type { NewOdontogram, ClinicOdontogram, RequestRegister, ClinicUser } from "../models";
 
