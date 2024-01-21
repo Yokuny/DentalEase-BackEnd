@@ -11,4 +11,4 @@ const serviceSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-export const Odontogram = mongoose.model("Service", serviceSchema);
+export const Service = mongoose.model("Service", serviceSchema);

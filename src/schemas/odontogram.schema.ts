@@ -4,10 +4,6 @@ const lengthMessage = (min: number, max: number) => ({
   message: `O campo deve ter ${min} a ${max} caracteres`,
 });
 
-const mailMessage = () => ({
-  message: `O campo deve ser um email válido`,
-});
-
 export const odontogramSchema = z
   .object({
     Patient: z.string().min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),

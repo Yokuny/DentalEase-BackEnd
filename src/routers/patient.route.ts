@@ -1,19 +1,13 @@
 import { Router } from "express";
 import * as controller from "../controllers/patient.controller";
-import {
-  getPatientSchema,
-  patientSchema,
-  anamnesisSchema,
-  intraoralSchema,
-  idSchemaOptional,
-} from "../schemas";
+import { querySchema, patientSchema, anamnesisSchema, intraoralSchema, idSchemaOptional } from "../schemas";
 import { validBody, validQuery, validToken, clinicAssignmentCheck } from "../middlewares";
 
 const patientRoute = Router();
 patientRoute.use(validToken);
 patientRoute.use(clinicAssignmentCheck);
 
-patientRoute.get("/", validQuery(getPatientSchema), controller.getPatient);
+patientRoute.get("/", validQuery(querySchema), controller.getPatient);
 patientRoute.post(
   "/personaldata",
   validBody(patientSchema),

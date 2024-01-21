@@ -1,9 +1,10 @@
 import * as respository from "../repositories/schedule.repository";
 import { getPatient } from "./patient.service";
 import { getClinicDoctor } from "./clinic.service";
+import { getService } from "./service.service";
 import { stringToData } from "../helpers/convert_data.helper";
 import { CustomError } from "../models";
-import type { ClinicUser, NewSchedule } from "../models";
+import type { ClinicUser, NewSchedule, QueryId } from "../models";
 
 const getScheduleById = async (id: string, required?: boolean) => {
   const schedule = await respository.getScheduleById(id);
@@ -33,11 +34,10 @@ const getAllSchedules = async (clinic: string) => {
   return schedules;
 };
 
-export const getSchedule = async (user: ClinicUser, query: any) => {
-  // IDEALIZAR ESSA QUERY
+export const getSchedule = async (user: ClinicUser, query: QueryId) => {
+  if (query.id) return await getScheduleById(query.id, true);
   if (query.Patient) return await getScheduleByPatient(query.Patient, true);
   if (query.Odontogram) return await getScheduleByOdontogram(query.Odontogram, true);
-  if (query.id) return await getScheduleById(query.id, true);
 
   const response = await getAllSchedules(user.clinic);
   if (response) return response;
@@ -45,7 +45,7 @@ export const getSchedule = async (user: ClinicUser, query: any) => {
   throw new CustomError("Erro ao buscar agendamentos", 502);
 };
 
-const checkDate = (data: any) => {
+const checkDate = (data: NewSchedule) => {
   const initialDate = stringToData(data.initianDate);
   const finalDate = stringToData(data.finalDate);
   if (finalDate && initialDate > finalDate) throw new CustomError("Data inicial maior que a final", 406);
@@ -54,17 +54,18 @@ const checkDate = (data: any) => {
 export const postSchedule = async (user: ClinicUser, data: NewSchedule) => {
   await getPatient(data.Patient);
   await getClinicDoctor(user.clinic, data.Doctor);
+  await getService(data.Service);
 
-  if (data.Odontogram) {
-    const odontogram = await getOdontogram(data.Odontogram);
-    if (odontogram.finished) throw new CustomError("Odontograma já finalizado", 409);
+  // if (data.Odontogram) {
+  //   const odontogram = await getOdontogram(data.Odontogram);
+  //   if (odontogram.finished) throw new CustomError("Odontograma já finalizado", 409);
 
-    if (odontogram.Patient.toString() !== data.Patient)
-      throw new CustomError("Odontograma não pertence ao paciente", 409);
+  //   if (odontogram.Patient.toString() !== data.Patient)
+  //     throw new CustomError("Odontograma não pertence ao paciente", 409);
 
-    if (await getScheduleByOdontogram(data.Odontogram))
-      throw new CustomError("Odontograma já possui agendamento", 409);
-  }
+  //   if (await getScheduleByOdontogram(data.Odontogram))
+  //     throw new CustomError("Odontograma já possui agendamento", 409);
+  // }
 
   const hasFinalDate = data.finalDate && data.finalDate !== "";
   if (hasFinalDate) checkDate(data);
@@ -74,7 +75,7 @@ export const postSchedule = async (user: ClinicUser, data: NewSchedule) => {
     Clinic: user.clinic,
   };
 
-  if (hasFinalDate) newSchedule.finalDate = stringToData(data.finalDate);
+  if (hasFinalDate) newSchedule.finalDate = String(stringToData(data.finalDate));
 
   const register = await respository.postSchedule(newSchedule);
   if (register) return "Agendamento cadastrado";
@@ -85,7 +86,6 @@ export const postSchedule = async (user: ClinicUser, data: NewSchedule) => {
 export const updateSchedule = async (id: string, data: NewSchedule) => {
   await getScheduleById(id, true);
   await getPatient(data.Patient);
-  await getOdontogram(data.Odontogram);
 
   data.finalDate && checkDate(data);
   delete data.Patient;

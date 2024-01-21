@@ -38,17 +38,14 @@ export const getOdontogramRegister = async (user: ClinicUser, query: Query) => {
     const patient = await getPatientByCpf(query.cpf, user.clinic, true);
     return await getPatientOdontograms(patient.id);
   }
-
   if (query.email) {
     const patient = await getPatientByEmail(query.email, user.clinic, true);
     return await getPatientOdontograms(patient.id);
   }
-
   if (query.phone) {
     const patient = await getPatientByPhone(query.phone, user.clinic, true);
     return await getPatientOdontograms(patient.id);
   }
-
   if (query.rg) {
     const patient = await getPatientByRg(query.rg, user.clinic, true);
     return await getPatientOdontograms(patient.id);

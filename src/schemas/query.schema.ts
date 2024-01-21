@@ -22,4 +22,14 @@ export const querySchema = z.object({
   phone: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)).optional(),
 });
 
+export const queryIdSchema = z.object({
+  id: z.string().trim().min(24, lengthMessage(24, 24)).max(24, lengthMessage(24, 24)),
+  Patient: z.string().trim().min(24, lengthMessage(24, 24)).max(24, lengthMessage(24, 24)),
+  Odontogram: z.string().trim().min(24, lengthMessage(24, 24)).max(24, lengthMessage(24, 24)),
+  Doctor: z.string().trim().min(24, lengthMessage(24, 24)).max(24, lengthMessage(24, 24)),
+  Clinic: z.string().trim().min(24, lengthMessage(24, 24)).max(24, lengthMessage(24, 24)),
+  Service: z.string().trim().min(24, lengthMessage(24, 24)).max(24, lengthMessage(24, 24)),
+});
+
 export type Query = z.infer<typeof querySchema>;
+export type QueryId = z.infer<typeof queryIdSchema>;
