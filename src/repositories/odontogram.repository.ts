@@ -1,20 +1,22 @@
 import { Odontogram } from "../database";
 import type { DbOdontogram, NewOdontogram, ClinicOdontogram } from "../models";
 
+const projection = { Clinic: 0, __v: 0 };
+
 export const getOdontogram = async (id: string): Promise<DbOdontogram | null> => {
-  return Odontogram.findOne({ _id: id }, { Clinic: 0, __v: 0 }).lean();
+  return Odontogram.findOne({ _id: id }, projection);
 };
 
 export const getPatientOdontograms = async (Patient: string): Promise<DbOdontogram[]> => {
-  return Odontogram.find({ Patient }, { Clinic: 0, __v: 0 });
+  return Odontogram.find({ Patient }, projection);
 };
 
 export const getAllOdontograms = async (clinic: string): Promise<DbOdontogram[]> => {
-  return Odontogram.find({ Clinic: clinic }, { Clinic: 0, __v: 0 });
+  return Odontogram.find({ Clinic: clinic }, projection);
 };
 
 export const getNoFinishedOdontograms = async (clinic: string): Promise<DbOdontogram[]> => {
-  return Odontogram.find({ Clinic: clinic, finished: false }, { Clinic: 0, __v: 0 });
+  return Odontogram.find({ Clinic: clinic, finished: false }, projection);
 };
 
 export const postOdontogram = async (data: NewOdontogram) => {

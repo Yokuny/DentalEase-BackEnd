@@ -56,17 +56,6 @@ export const postSchedule = async (user: ClinicUser, data: NewSchedule) => {
   await getClinicDoctor(user.clinic, data.Doctor);
   await getService(data.Service);
 
-  // if (data.Odontogram) {
-  //   const odontogram = await getOdontogram(data.Odontogram);
-  //   if (odontogram.finished) throw new CustomError("Odontograma já finalizado", 409);
-
-  //   if (odontogram.Patient.toString() !== data.Patient)
-  //     throw new CustomError("Odontograma não pertence ao paciente", 409);
-
-  //   if (await getScheduleByOdontogram(data.Odontogram))
-  //     throw new CustomError("Odontograma já possui agendamento", 409);
-  // }
-
   const hasFinalDate = data.finalDate && data.finalDate !== "";
   if (hasFinalDate) checkDate(data);
 

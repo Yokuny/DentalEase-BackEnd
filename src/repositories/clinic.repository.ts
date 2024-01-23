@@ -2,26 +2,26 @@ import { Clinic } from "../database";
 import { updateUserWithClinic, updateSession } from "./user.repository";
 import type { ClinicWithUser } from "../models";
 
+const projection = { __v: 0 };
+
 export const getClinicById = async (id: string) => {
-  return await Clinic.findById(id, { __v: 0 });
+  return await Clinic.findById(id, projection);
 };
 
 export const getClinicByCNPJ = async (cnpj: string) => {
-  return await Clinic.findOne({ cnpj });
+  return await Clinic.findOne({ cnpj }, projection);
 };
 
 export const getClinicByCode = async (code: string) => {
-  return await Clinic.findOne({ code });
+  return await Clinic.findOne({ code }, projection);
 };
 
 export const getClinicByEmail = async (email: string) => {
-  return await Clinic.findOne({ email });
+  return await Clinic.findOne({ email }, projection);
 };
 
 export const getClinicDoctor = async (clinic: string, doctor: string) => {
-  return await Clinic.findOne({
-    $and: [{ "users.user": doctor }, { _id: clinic }],
-  });
+  return await Clinic.findOne({ $and: [{ "users.user": doctor }, { _id: clinic }] }, projection);
 };
 
 export const postClinic = async (data: ClinicWithUser, user: string) => {

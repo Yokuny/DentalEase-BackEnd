@@ -53,6 +53,7 @@ export const postClinic = async (user: ClinicUser, data: NewClinic) => {
   const clinicByCode = await getClinicByCode(data.code);
   if (clinicByCode) throw new CustomError("Código já cadastrado", 409);
 
+  data.cnpj = data.cnpj.replace(/[^0-9]/g, "");
   const NewClinic = { ...data, users: [{ user: user.user, role: "admin" }] };
 
   await respository.postClinic(NewClinic, user.user);

@@ -1,5 +1,5 @@
 export { CustomError } from "./error.type";
-// export { SignIn, SignUp } from "../schemas/user.schema";
+export { SignIn, SignUp } from "../schemas/user.schema";
 export { NewClinic } from "../schemas/clinic.schema";
 export { NewPatient, NewIntraoral, NewAnamnesis } from "../schemas/patient.schema";
 export { NewOdontogram } from "../schemas/odontogram.schema";

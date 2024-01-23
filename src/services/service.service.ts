@@ -68,7 +68,6 @@ export const postService = async (user: ClinicUser, data: NewService) => {
   };
 
   const response = await respository.postService(newService);
-  console.log(response);
   if (response) return "Serviço criado com sucesso";
 
   throw new CustomError("Erro ao criar serviço", 502);

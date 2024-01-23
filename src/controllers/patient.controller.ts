@@ -14,14 +14,19 @@ export const getPatient = async (req: AuthReq, res: Response, next: NextFunction
 
 export const postPatient = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    if (req.query.id) {
-      const response = await service.putPatientData(req.clinicUser, String(req.query.id), req.body);
-      return res.status(200).json({ message: response });
-    }
-
     const response = await service.postPatientData(req.clinicUser, req.body);
 
     return res.status(201).json({ message: response });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const putPatient = async (req: AuthReq, res: Response, next: NextFunction) => {
+  try {
+    const response = await service.putPatientData(req.clinicUser, req.params.id, req.body);
+
+    return res.status(200).json({ message: response });
   } catch (err) {
     next(err);
   }

@@ -1,27 +1,29 @@
 import { Schedule } from "../database";
-import type { ClinicSchedule } from "../models";
+import type { NewSchedule, ClinicSchedule } from "../models";
+
+const projection = { Clinic: 0, __v: 0 };
 
 export const getScheduleById = (id: string) => {
-  return Schedule.findById(id, { Clinic: 0, __v: 0 });
+  return Schedule.findById(id, projection);
 };
 
 export const getScheduleByPatient = (Patient: string) => {
-  return Schedule.findOne({ Patient }, { Clinic: 0, __v: 0 });
+  return Schedule.findOne({ Patient }, projection);
 };
 
 export const getScheduleByOdontogram = (Odontogram: string) => {
-  return Schedule.findOne({ Odontogram }, { Clinic: 0, __v: 0 });
+  return Schedule.findOne({ Odontogram }, projection);
 };
 
 export const getAllSchedules = (Clinic: string) => {
-  return Schedule.find({ Clinic }, { Clinic: 0, __v: 0 });
+  return Schedule.find({ Clinic }, projection);
 };
 
 export const postSchedule = (data: ClinicSchedule) => {
   return Schedule.create(data);
 };
 
-export const updateSchedule = (id: string, data: ClinicSchedule) => {
+export const updateSchedule = (id: string, data: NewSchedule) => {
   return Schedule.updateOne({ _id: id }, data);
 };
 

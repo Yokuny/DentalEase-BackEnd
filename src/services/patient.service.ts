@@ -53,6 +53,14 @@ export const getAllPatients = async (clinic: string) => {
   return patients;
 };
 
+export const updatePatient = async (data: ClinicPatient) => {
+  const register = await respository.updatePatient(data);
+
+  if (register.upsertedCount === 1) return "Paciente cadastrado com sucesso";
+  else if (register.modifiedCount === 1) return "Paciente atualizado com sucesso";
+  else throw new CustomError("Cadastro de paciente não registrado", 502);
+};
+
 export const getPatientRegister = async (user: ClinicUser, body: Query) => {
   if (body.email) return await getPatientByEmail(body.email, user.clinic, true);
   if (body.cpf) return await getPatientByCpf(body.cpf, user.clinic, true);
@@ -85,14 +93,6 @@ export const postPatientData = async (user: ClinicUser, data: NewPatient) => {
   };
 
   return await updatePatient(newPatient);
-};
-
-export const updatePatient = async (data: ClinicPatient) => {
-  const register = await respository.updatePatient(data);
-
-  if (register.upsertedCount === 1) return "Paciente cadastrado com sucesso";
-  else if (register.modifiedCount === 1) return "Paciente atualizado com sucesso";
-  else throw new CustomError("Cadastro de paciente não registrado", 502);
 };
 
 export const putPatientData = async (user: ClinicUser, id: string, data: ClinicPatient) => {
