@@ -1,10 +1,10 @@
 import { Schedule } from "../database";
-import type { NewSchedule, ClinicSchedule } from "../models";
+import type { NewSchedule, ClinicSchedule, DbSchedule } from "../models";
 
 const projection = { Clinic: 0, __v: 0 };
 
-export const getScheduleById = (id: string) => {
-  return Schedule.findById(id, projection);
+export const getScheduleById = (id: string): Promise<DbSchedule | null> => {
+  return Schedule.findById(id, { __v: 0 }).lean();
 };
 
 export const getScheduleByPatient = (Patient: string) => {

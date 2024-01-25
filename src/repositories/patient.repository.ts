@@ -28,7 +28,7 @@ export const getPatientByName = (name: string, Clinic: string): Promise<DbPatien
 };
 
 export const getPatient = (id: string): Promise<DbPatient | null> => {
-  return Patient.findById(id, projection);
+  return Patient.findById(id, { __v: 0 }).lean();
 };
 
 export const updatePatient = (data: ClinicPatient) => {

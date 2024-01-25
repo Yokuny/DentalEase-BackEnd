@@ -2,13 +2,13 @@ import * as respository from "../repositories/schedule.repository";
 import { getPatient } from "./patient.service";
 import { getClinicDoctor } from "./clinic.service";
 import { getService } from "./service.service";
-import { stringToData } from "../helpers/convert_data.helper";
+import { stringToData } from "../helpers/convertData.helper";
 import { CustomError } from "../models";
 import type { ClinicUser, NewSchedule, QueryId } from "../models";
 
-const getScheduleById = async (id: string, required?: boolean) => {
+const getSchedule = async (id: string) => {
   const schedule = await respository.getScheduleById(id);
-  if (!schedule && required) throw new CustomError("Agendamento não encontrado", 404);
+  if (!schedule) throw new CustomError("Agendamento não encontrado", 404);
 
   return schedule;
 };
@@ -34,8 +34,8 @@ const getAllSchedules = async (clinic: string) => {
   return schedules;
 };
 
-export const getSchedule = async (user: ClinicUser, query: QueryId) => {
-  if (query.id) return await getScheduleById(query.id, true);
+export const getScheduleRegister = async (user: ClinicUser, query: QueryId) => {
+  if (query.id) return await getSchedule(query.id);
   if (query.Patient) return await getScheduleByPatient(query.Patient, true);
   if (query.Odontogram) return await getScheduleByOdontogram(query.Odontogram, true);
 
@@ -72,8 +72,10 @@ export const postSchedule = async (user: ClinicUser, data: NewSchedule) => {
   throw new CustomError("Erro ao cadastrar agendamento", 502);
 };
 
-export const updateSchedule = async (id: string, data: NewSchedule) => {
-  await getScheduleById(id, true);
+export const updateSchedule = async (user: ClinicUser, id: string, data: NewSchedule) => {
+  const schedule = await getSchedule(id);
+  if (schedule.Clinic !== user.clinic) throw new CustomError("Agendamento não pertence a clínica", 406);
+
   await getPatient(data.Patient);
 
   data.finalDate && checkDate(data);
@@ -85,7 +87,10 @@ export const updateSchedule = async (id: string, data: NewSchedule) => {
   throw new CustomError("Erro ao atualizar agendamento", 502);
 };
 
-export const deleteSchedule = async (id: string) => {
+export const deleteSchedule = async (user: ClinicUser, id: string) => {
+  const schedule = await getSchedule(id);
+  if (schedule.Clinic !== user.clinic) throw new CustomError("Agendamento não pertence a clínica", 406);
+
   const register = await respository.deleteSchedule(id);
 
   if (register.deletedCount === 1) return "Agendamento deletado";

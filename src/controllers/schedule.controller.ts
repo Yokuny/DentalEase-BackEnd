@@ -4,7 +4,7 @@ import { AuthReq } from "../models";
 
 export const getSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.getSchedule(req.clinicUser, req.query);
+    const response = await service.getScheduleRegister(req.clinicUser, req.query);
 
     return res.status(200).json(response ? response : []);
   } catch (err) {
@@ -24,7 +24,7 @@ export const postSchedule = async (req: AuthReq, res: Response, next: NextFuncti
 
 export const putSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.updateSchedule(req.params.id, req.body);
+    const response = await service.updateSchedule(req.clinicUser, req.params.id, req.body);
 
     return res.status(200).json({ message: response });
   } catch (err) {
@@ -32,19 +32,9 @@ export const putSchedule = async (req: AuthReq, res: Response, next: NextFunctio
   }
 };
 
-// export const patchSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
-//   try {
-//     const response = await service.patchSchedule(req.clinic, req.params.id);
-
-//     return res.status(200).json({ message: response });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
-
 export const deleteSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.deleteSchedule(req.params.id);
+    const response = await service.deleteSchedule(req.clinicUser, req.params.id);
 
     return res.status(200).json({ message: response });
   } catch (err) {

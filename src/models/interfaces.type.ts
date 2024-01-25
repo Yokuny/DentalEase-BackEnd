@@ -38,3 +38,5 @@ export type DbService = ClinicService & { id: string; createdAt: Date };
 
 export type ClinicSchedule = NewSchedule & Clinic;
 export type DbSchedule = ClinicSchedule & { id: string; createdAt: Date };
+
+

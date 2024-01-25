@@ -4,7 +4,7 @@ import type { DbOdontogram, NewOdontogram, ClinicOdontogram } from "../models";
 const projection = { Clinic: 0, __v: 0 };
 
 export const getOdontogram = async (id: string): Promise<DbOdontogram | null> => {
-  return Odontogram.findOne({ _id: id }, projection);
+  return Odontogram.findOne({ _id: id }, { __v: 0 }).lean();
 };
 
 export const getPatientOdontograms = async (Patient: string): Promise<DbOdontogram[]> => {

@@ -1,17 +1,6 @@
 import { z } from "zod";
+import { lengthMessage, mailMessage, passRegexMessage } from "../helpers/zodMessage.helper";
 import { titleRegex, emailRegExp, passwordRegExp } from "../helpers/regex.helper";
-
-const lengthMessage = (min: number, max: number) => ({
-  message: `O campo deve ter ${min ? `${min} a ${max} caracteres.` : `no máximo ${max} caracteres`}`,
-});
-
-const mailMessage = () => ({
-  message: `O campo deve ser um email válido`,
-});
-
-const passwordMessage = () => ({
-  message: "Digite uma senha forte",
-});
 
 export const signinSchema = z.object({
   email: z
@@ -26,7 +15,7 @@ export const signinSchema = z.object({
     .trim()
     .min(5, lengthMessage(5, 50))
     .max(50, lengthMessage(5, 50))
-    .regex(passwordRegExp, passwordMessage()),
+    .regex(passwordRegExp, passRegexMessage()),
 });
 
 export const signupSchema = z.object({
@@ -43,7 +32,7 @@ export const signupSchema = z.object({
     .trim()
     .min(5, lengthMessage(5, 50))
     .max(50, lengthMessage(5, 50))
-    .regex(passwordRegExp, passwordMessage()),
+    .regex(passwordRegExp, passRegexMessage()),
 });
 
 export type SignIn = z.infer<typeof signinSchema>;

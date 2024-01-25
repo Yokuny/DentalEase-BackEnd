@@ -1,13 +1,10 @@
 import { z } from "zod";
-
-const lengthMessage = (min: number, max: number) => ({
-  message: `O campo deve ter ${min} a ${max} caracteres`,
-});
+import { lengthMessage, objectIdMessage, validObjectID } from "../helpers";
 
 export const odontogramSchema = z
   .object({
-    Patient: z.string().min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
-    Doctor: z.string().min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
+    Patient: z.string().refine(validObjectID, objectIdMessage()),
+    Doctor: z.string().refine(validObjectID, objectIdMessage()),
     workToBeDone: z.string().trim().max(250, lengthMessage(0, 250)),
     finished: z.boolean().default(false),
     teeth: z.array(

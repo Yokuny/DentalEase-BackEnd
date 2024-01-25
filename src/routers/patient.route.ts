@@ -9,8 +9,8 @@ patientRoute.use(clinicAssignmentCheck);
 
 patientRoute.get("/", validQuery(querySchema), controller.getPatient);
 patientRoute.post("/", validBody(patientSchema), controller.postPatient);
-patientRoute.put("/:id", validBody(patientSchema), validParams(idSchema), controller.putPatient);
 patientRoute.post("/anamnesis", validBody(anamnesisSchema), controller.postPatientAnamnesis);
 patientRoute.post("/intra-oral", validBody(intraoralSchema), controller.potPatientIntraoral);
+patientRoute.put("/:id", validBody(patientSchema), validParams(idSchema), controller.putPatient);
 
 export { patientRoute };

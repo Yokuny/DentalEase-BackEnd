@@ -1,17 +1,10 @@
-import { ObjectId } from "mongodb";
 import { z } from "zod";
-
-const objectIdMessage = () => ({
-  message: `ID fornecido é inválido`,
-});
+import { objectIdMessage, validObjectID } from "../helpers";
 
 export const idSchema = z.object({
-  id: z.string().refine((value) => ObjectId.isValid(value), objectIdMessage()),
+  id: z.string().refine(validObjectID, objectIdMessage()),
 });
 
 export const idSchemaOptional = z.object({
-  id: z
-    .string()
-    .refine((value) => ObjectId.isValid(value), objectIdMessage())
-    .optional(),
+  id: z.string().refine(validObjectID, objectIdMessage()).optional(),
 });

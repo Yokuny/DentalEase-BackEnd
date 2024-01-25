@@ -34,7 +34,7 @@ export const putPatient = async (req: AuthReq, res: Response, next: NextFunction
 
 export const postPatientAnamnesis = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.postPatientAnamnesis(req.body);
+    const response = await service.postPatientAnamnesis(req.clinicUser, req.body);
 
     return res.status(201).json({ message: response });
   } catch (err) {
@@ -44,7 +44,7 @@ export const postPatientAnamnesis = async (req: AuthReq, res: Response, next: Ne
 
 export const potPatientIntraoral = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.postPatientIntraoral(req.body);
+    const response = await service.postPatientIntraoral(req.clinicUser, req.body);
 
     return res.status(201).json({ message: response });
   } catch (err) {

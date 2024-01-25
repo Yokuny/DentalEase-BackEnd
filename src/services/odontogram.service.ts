@@ -69,29 +69,37 @@ export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
   throw new CustomError("Erro ao cadastrar odontograma", 502);
 };
 
-export const updateOdontogram = async (id: string, user: ClinicUser, data: ClinicOdontogram) => {
-  await getOdontogram(id);
+export const updateOdontogram = async (user: ClinicUser, id: string, data: ClinicOdontogram) => {
+  const odontogram = await getOdontogram(id);
+  if (odontogram.Clinic !== user.clinic) throw new CustomError("Odontograma não pertence a clínica", 406);
+
+  await getPatient(data.Patient);
   await getClinicDoctor(user.clinic, data.Doctor);
+
   delete data.Patient;
   delete data.Doctor;
 
   const register = await respository.updateOdontogram(id, data);
-  if (register.modifiedCount > 0) return "Odontograma cadastrado com sucesso";
+  if (register.modifiedCount > 0) return "Odontograma atualizado com sucesso";
   else throw new CustomError("Odontograma não atualizado", 406);
 };
 
-export const patchOdontogram = async (id: string, user: ClinicUser) => {
+export const patchOdontogram = async (user: ClinicUser, id: string) => {
   const odontogram = await getOdontogram(id);
+  if (odontogram.Clinic !== user.clinic) throw new CustomError("Odontograma não pertence a clínica", 406);
 
   const newOdontogram: ClinicOdontogram = {
     ...odontogram,
     finished: !odontogram.finished,
   };
 
-  return await updateOdontogram(id, user, newOdontogram);
+  return await updateOdontogram(user, id, newOdontogram);
 };
 
-export const deleteOdontogram = async (id: string) => {
+export const deleteOdontogram = async (user: ClinicUser, id: string) => {
+  const odontogram = await getOdontogram(id);
+  if (odontogram.Clinic !== user.clinic) throw new CustomError("Odontograma não pertence a clínica", 406);
+
   const register = await respository.deleteOdontogram(id);
 
   if (register.deletedCount === 1) return "Odontograma deletado com sucesso";

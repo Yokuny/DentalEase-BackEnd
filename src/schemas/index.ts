@@ -5,4 +5,4 @@ export { patientSchema, intraoralSchema, anamnesisSchema } from "./patient.schem
 export { odontogramSchema } from "./odontogram.schema";
 export { serviceSchema } from "./service.schema";
 export { scheduleSchema } from "./schedule.schema";
-export { querySchema, queryIdSchema } from "./query.schema";
+export { querySchema, queryByIdSchema } from "./query.schema";

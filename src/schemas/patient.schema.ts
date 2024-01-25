@@ -1,30 +1,21 @@
 import { z } from "zod";
-import { birthRegExp } from "../helpers/regex.helper";
-
-const lengthMessage = (min: number, max: number) => ({
-  message: `O campo deve ter ${min ? `${min} a ${max} caracteres.` : `no máximo ${max} caracteres`}`,
-});
-
-const mailMessage = () => ({
-  message: `O campo deve ser um email válido`,
-});
-
-const sanatize = (value: string) => value.replace(/\D/g, "");
+import { validObjectID, numClean, birthRegExp } from "../helpers";
+import { lengthMessage, mailMessage, objectIdMessage } from "../helpers/zodMessage.helper";
 
 export const patientSchema = z.object({
   name: z.string().trim().min(5, lengthMessage(5, 30)).max(30, lengthMessage(5, 30)),
   email: z.string().trim().email(mailMessage()).min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
-  cpf: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)).transform(sanatize),
-  rg: z.string().trim().min(7, lengthMessage(7, 7)).max(7, lengthMessage(7, 7)).transform(sanatize),
+  cpf: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)).transform(numClean),
+  rg: z.string().trim().min(7, lengthMessage(7, 7)).max(7, lengthMessage(7, 7)).transform(numClean),
   birthdate: z.string().trim().regex(birthRegExp),
   sex: z.enum(["M", "F"]),
-  phone: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)).transform(sanatize),
-  cep: z.string().trim().min(8, lengthMessage(8, 8)).max(8, lengthMessage(8, 8)).transform(sanatize),
+  phone: z.string().trim().min(11, lengthMessage(11, 11)).max(11, lengthMessage(11, 11)).transform(numClean),
+  cep: z.string().trim().min(8, lengthMessage(8, 8)).max(8, lengthMessage(8, 8)).transform(numClean),
   address: z.string().trim().min(5, lengthMessage(5, 50)).max(50, lengthMessage(5, 50)),
 });
 
 export const anamnesisSchema = z.object({
-  Patient: z.string(),
+  Patient: z.string().refine(validObjectID, objectIdMessage()),
   mainComplaint: z.string().trim().max(250, lengthMessage(0, 250)),
   gumsBleedEasily: z.boolean(),
   sensitiveTeeth: z.boolean(),
@@ -58,7 +49,7 @@ export const anamnesisSchema = z.object({
 });
 
 export const intraoralSchema = z.object({
-  Patient: z.string().trim(),
+  Patient: z.string().refine(validObjectID, objectIdMessage()),
   hygiene: z.enum(["normal", "regular", "deficiente"]),
   halitosis: z.enum(["ausente", "moderada", "forte"]),
   tartar: z.enum(["ausente", "pouco", "muito"]),

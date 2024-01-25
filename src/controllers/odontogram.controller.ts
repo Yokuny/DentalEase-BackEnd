@@ -24,7 +24,7 @@ export const postOdontogram = async (req: AuthReq, res: Response, next: NextFunc
 
 export const putOdontogram = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.updateOdontogram(req.params.id, req.clinicUser, req.body);
+    const response = await service.updateOdontogram(req.clinicUser, req.params.id, req.body);
 
     return res.status(200).json({ message: response });
   } catch (err) {
@@ -34,7 +34,7 @@ export const putOdontogram = async (req: AuthReq, res: Response, next: NextFunct
 
 export const patchOdontogram = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.patchOdontogram(req.params.id, req.clinicUser);
+    const response = await service.patchOdontogram(req.clinicUser, req.params.id);
 
     return res.status(200).json({ message: response });
   } catch (err) {
@@ -44,7 +44,7 @@ export const patchOdontogram = async (req: AuthReq, res: Response, next: NextFun
 
 export const deleteOdontogram = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.deleteOdontogram(req.params.id);
+    const response = await service.deleteOdontogram(req.clinicUser, req.params.id);
 
     return res.status(200).json({ message: response });
   } catch (err) {

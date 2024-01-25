@@ -1,19 +1,6 @@
 import { z } from "zod";
-import { passwordRegExp } from "../helpers/regex.helper";
-
-const lengthMessage = (min: number, max: number) => ({
-  message: `O campo deve ter ${min} a ${max} caracteres`,
-});
-
-const mailMessage = () => ({
-  message: `O campo deve ser um email válido`,
-});
-
-const passRegexMessage = () => ({
-  message: `O campo deve ter ao menos uma letra e um número`,
-});
-
-const sanatize = (value: string) => value.replace(/[^0-9]/g, "");
+import { passwordRegExp, numClean } from "../helpers";
+import { lengthMessage, mailMessage, passRegexMessage } from "../helpers/zodMessage.helper";
 
 export const clinicSchema = z
   .object({
@@ -25,7 +12,7 @@ export const clinicSchema = z
       .min(6, lengthMessage(6, 10))
       .max(10, lengthMessage(6, 10))
       .regex(passwordRegExp, passRegexMessage()),
-    cnpj: z.string().trim().min(14, lengthMessage(14, 18)).max(18, lengthMessage(14, 18)).transform(sanatize),
+    cnpj: z.string().trim().min(14, lengthMessage(14, 18)).max(18, lengthMessage(14, 18)).transform(numClean),
   })
   .required();
 
