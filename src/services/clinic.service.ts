@@ -1,6 +1,7 @@
 import * as respository from "../repositories/clinic.repository";
 import { getUserById } from "./user.service";
 import { CustomError } from "../models";
+import { numClean } from "../helpers/sanitize.helper";
 import type { ClinicUser, NewClinic } from "../models";
 
 const getClinicById = async (id: string, required?: boolean) => {
@@ -33,6 +34,21 @@ const getClinicByEmail = async (email: string, required?: boolean) => {
 
 export const getClinic = async (user: ClinicUser) => await getClinicById(user.clinic, true);
 
+export const getDoctors = async (user: ClinicUser) => {
+  const clinicData = await getClinicById(user.clinic, true);
+  const doctorsId = clinicData.users.filter((user) => user.role !== "assistant");
+  const doctors = await Promise.all(doctorsId.map((doctor) => getUserById(doctor.user.toString())));
+
+  const secureDoctors = doctors.map((doctor) => ({
+    _id: doctor.id,
+    username: doctor.username,
+    email: doctor.email,
+    avatar: doctor.avatar,
+  }));
+
+  return secureDoctors;
+};
+
 export const getClinicDoctor = async (clinic: string, doctor: string) => {
   const clinicDoctor = await respository.getClinicDoctor(clinic, doctor);
   if (!clinicDoctor) throw new CustomError("Médico não encontrado", 404);
@@ -53,23 +69,8 @@ export const postClinic = async (user: ClinicUser, data: NewClinic) => {
   const clinicByCode = await getClinicByCode(data.code);
   if (clinicByCode) throw new CustomError("Código já cadastrado", 409);
 
-  data.cnpj = data.cnpj.replace(/[^0-9]/g, "");
+  data.cnpj = numClean(data.cnpj);
   const NewClinic = { ...data, users: [{ user: user.user, role: "admin" }] };
 
   await respository.postClinic(NewClinic, user.user);
-};
-
-export const getDoctors = async (user: ClinicUser) => {
-  const clinicData = await getClinicById(user.clinic, true);
-  const doctorsId = clinicData.users.filter((user) => user.role !== "assistant");
-  const doctors = await Promise.all(doctorsId.map((doctor) => getUserById(doctor.user.toString())));
-
-  const secureDoctors = doctors.map((doctor) => ({
-    _id: doctor.id,
-    username: doctor.username,
-    email: doctor.email,
-    avatar: doctor.avatar,
-  }));
-
-  return secureDoctors;
 };

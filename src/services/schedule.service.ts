@@ -2,7 +2,7 @@ import * as respository from "../repositories/schedule.repository";
 import { getPatient } from "./patient.service";
 import { getClinicDoctor } from "./clinic.service";
 import { getService } from "./service.service";
-import { stringToData } from "../helpers/convertData.helper";
+import { stringToData } from "../helpers/convert.helper";
 import { CustomError } from "../models";
 import type { ClinicUser, NewSchedule, QueryId } from "../models";
 

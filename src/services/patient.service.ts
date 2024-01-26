@@ -1,5 +1,5 @@
 import * as respository from "../repositories/patient.repository";
-import { stringToData } from "../helpers/convertData.helper";
+import { stringToData } from "../helpers/convert.helper";
 import { CustomError, ClinicUser } from "../models";
 import type {
   NewPatient,

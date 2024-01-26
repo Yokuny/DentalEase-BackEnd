@@ -11,6 +11,4 @@ clinicRoute.use(clinicAssignmentCheck);
 clinicRoute.get("/", controller.getClinic);
 clinicRoute.get("/doctors", controller.getDoctors);
 
-
-
 export { clinicRoute };
