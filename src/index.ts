@@ -8,9 +8,15 @@ import { dbConnect } from "./database";
 const app: Application = express();
 config();
 
+const corsOptions = {
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+};
+
 app
   .use(express.json())
-  .use(cors())
+  .use(cors(corsOptions))
   .get("/", (_req: Request, res: Response) => res.send("Welcome to the Dental Ease API!"))
   .get("/health", (_req: Request, res: Response) => res.send("OK!"))
   .get("/time", (_req: Request, res: Response) => res.send(new Date()))

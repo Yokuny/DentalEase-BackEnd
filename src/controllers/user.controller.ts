@@ -13,9 +13,9 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
 
 export const signin = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = await service.signin(req.body);
+    const user = await service.signin(req.body);
 
-    return res.status(200).json(token);
+    return res.status(200).json(user);
   } catch (err) {
     next(err);
   }
