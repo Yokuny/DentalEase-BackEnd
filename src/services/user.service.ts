@@ -34,12 +34,9 @@ export const signin = async (data: SignIn) => {
   const isValidPassword = await bcrypt.compare(data.password, user.password);
   if (!isValidPassword) throw new CustomError("Usuário ou senha incorretos", 403);
 
-
-  const token = jwt.sign({ user: user.id, clinic: user.clinic }, process.env.JWT_SECRET, {
-    expiresIn: "5d",
+  const token = jwt.sign({ user: user.id, clinic: user.clinic || "" }, process.env.JWT_SECRET, {
+    expiresIn: "4d",
   });
-
-  await respository.sessionToken(user.id, user.clinic, token);
 
   const secureUser = {
     username: user.username,

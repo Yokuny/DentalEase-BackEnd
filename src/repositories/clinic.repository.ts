@@ -1,5 +1,5 @@
 import { Clinic } from "../database";
-import { updateUserWithClinic, updateSession } from "./user.repository";
+import { updateUserWithClinic } from "./user.repository";
 import type { ClinicWithUser } from "../models";
 
 const projection = { __v: 0 };
@@ -32,7 +32,6 @@ export const postClinic = async (data: ClinicWithUser, user: string) => {
       async () => {
         const clinic = await Clinic.create([data], { session });
         await updateUserWithClinic(user, clinic[0].id, session);
-        await updateSession(user, clinic[0].id, session);
       },
       { readPreference: "primary" }
     );

@@ -15,7 +15,9 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
   try {
     const user = await service.signin(req.body);
 
-    return res.status(200).json(user);
+    res.cookie("token", user.token, { httpOnly: true, maxAge: 4 * 86400 });
+
+    return res.status(200).json(user.user);
   } catch (err) {
     next(err);
   }
