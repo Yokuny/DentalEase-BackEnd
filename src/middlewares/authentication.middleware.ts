@@ -3,9 +3,8 @@ import * as jwt from "jsonwebtoken";
 
 import { CustomError } from "../models";
 import { getUserById } from "../services/user.service";
+import { cookieOptions } from "../config/cookie.config";
 import type { AuthReq, ClinicUser } from "../models";
-
-const cookieOptions = { httpOnly: false, secure: false, path: "/", maxAge: 4 * 86400 };
 
 export const validToken = async (req: AuthReq, res: Response, next: NextFunction) => {
   const authCookie = req.cookies.auth;

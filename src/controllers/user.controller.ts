@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as service from "../services/user.service";
-
-const cookieOptions = { httpOnly: false, secure: false, path: "/", maxAge: 4 * 86400 };
+import { cookieOptions } from "../config/cookie.config";
 
 export const signup = async (req: Request, res: Response, next: NextFunction) => {
   try {
