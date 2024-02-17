@@ -1,25 +1,19 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application, Request, Response, json, urlencoded } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { config } from "dotenv";
 
 import * as route from "./routers";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
-import { dbConnect } from "./database";
+import { dbConnect, corsOptions } from "./config";
 
 const app: Application = express();
 config();
 
-const corsOptions = {
-  credentials: true,
-  allowedHeaders: ["Content-Type"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-};
-
 app
-  .use(express.urlencoded({ extended: true }))
+  .use(urlencoded({ extended: false }))
+  .use(json())
   .use(cookieParser())
-  .use(express.json())
   .use(cors(corsOptions))
   .get("/", (_req: Request, res: Response) => res.send("Welcome to the Dental Ease API!"))
   .get("/health", (_req: Request, res: Response) => res.send("OK!"))

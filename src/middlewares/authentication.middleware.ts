@@ -5,11 +5,18 @@ import { CustomError } from "../models";
 import { getUserById } from "../services/user.service";
 import type { AuthReq, ClinicUser } from "../models";
 
+const cookieOptions = { httpOnly: false, secure: false, path: "/", maxAge: 4 * 86400 };
+
 export const validToken = async (req: AuthReq, res: Response, next: NextFunction) => {
-  const token = req.cookies.token;
-  if (!token) throw new CustomError("Token não encontrado", 401);
+  const authCookie = req.cookies.auth;
+  const headerToken = req.header("Authorization");
+  const authHeader = headerToken?.split(" ")[1];
+
+  const token = authCookie || authHeader;
 
   try {
+    if (!token) throw new CustomError("Token não encontrado", 401);
+
     const { user, clinic } = jwt.verify(token, process.env.JWT_SECRET) as ClinicUser;
     if (!user) throw new CustomError("Token inválido", 401);
 
@@ -21,7 +28,7 @@ export const validToken = async (req: AuthReq, res: Response, next: NextFunction
     }
 
     const newToken = jwt.sign(userAndClinic, process.env.JWT_SECRET, { expiresIn: "4d" });
-    res.cookie("token", newToken, { httpOnly: true, maxAge: 4 * 86400 });
+    res.cookie("auth", newToken, cookieOptions);
 
     req.clinicUser = userAndClinic;
 

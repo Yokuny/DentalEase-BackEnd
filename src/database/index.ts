@@ -1,4 +1,3 @@
-export { dbConnect } from "./db.database";
 export { User } from "./user.database";
 export { Clinic } from "./clinic.database";
 export { Patient } from "./patient.database";

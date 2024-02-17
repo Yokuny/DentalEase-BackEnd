@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import * as service from "../services/user.service";
 
+const cookieOptions = { httpOnly: false, secure: false, path: "/", maxAge: 4 * 86400 };
+
 export const signup = async (req: Request, res: Response, next: NextFunction) => {
   try {
     await service.signup(req.body);
@@ -15,7 +17,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
   try {
     const user = await service.signin(req.body);
 
-    res.cookie("token", user.token, { httpOnly: true, maxAge: 4 * 86400 });
+    res.cookie("auth", user.token, cookieOptions);
 
     return res.status(200).json(user.user);
   } catch (err) {
