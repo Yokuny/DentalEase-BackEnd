@@ -3,6 +3,6 @@ export const allowedOrigins = ["http://localhost:3000", "https://dental-ease.ver
 export const corsOptions = {
   credentials: true,
   origin: allowedOrigins,
-  allowedHeaders: ["Content-Type"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 };

@@ -15,7 +15,7 @@ app
   .use(json())
   .use(cookieParser())
   .use(cors(corsOptions))
-  .get("/", (_req: Request, res: Response) => res.send("Welcome to the Dental Ease API!"))
+  .get("/", (_req: Request, res: Response) => res.send("Bem-vindo ao sistema de gerenciamento de clínicas!"))
   .get("/health", (_req: Request, res: Response) => res.send("OK!"))
   .get("/time", (_req: Request, res: Response) => res.send(new Date()))
   .use("/user", route.userRoute)
@@ -25,7 +25,7 @@ app
   .use("/service", route.serviceRoute)
   .use("/schedule", route.scheduleRoute);
 
-app.use("*", (_req: Request, res: Response) => res.status(404).send({ message: "Route not found" }));
+app.use("*", (_req: Request, res: Response) => res.status(404).send({ message: "Rota não encontrada! 🤷‍♂️" }));
 app.use(errorHandler);
 
 export function init(): Promise<express.Application> {

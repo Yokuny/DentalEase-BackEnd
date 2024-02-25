@@ -18,7 +18,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
 
     res.cookie("auth", user.token, cookieOptions);
 
-    return res.status(200).json(user.user);
+    return res.status(200).json(user);
   } catch (err) {
     next(err);
   }
