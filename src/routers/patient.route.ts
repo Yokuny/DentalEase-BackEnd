@@ -8,6 +8,7 @@ patientRoute.use(validToken);
 patientRoute.use(clinicAssignmentCheck);
 
 patientRoute.get("/", validQuery(querySchema), controller.getPatient);
+patientRoute.get("/partial", controller.getPartialPatientRegister);
 patientRoute.post("/", validBody(patientSchema), controller.postPatient);
 patientRoute.post("/anamnesis", validBody(anamnesisSchema), controller.postPatientAnamnesis);
 patientRoute.post("/intra-oral", validBody(intraoralSchema), controller.potPatientIntraoral);

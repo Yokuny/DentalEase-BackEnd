@@ -7,6 +7,10 @@ export const getAllPatients = (Clinic: string): Promise<DbPatient[]> => {
   return Patient.find({ Clinic }, projection);
 };
 
+export const getPartialPatientRegister = (Clinic: string): Promise<DbPatient[]> => {
+  return Patient.find({ Clinic }, { name: 1, phone: 1, email: 1, sex: 1, anamnese: 1, intraoral: 1 });
+};
+
 export const getPatientByEmail = (email: string, Clinic: string): Promise<DbPatient | null> => {
   return Patient.findOne({ email, Clinic }, projection);
 };

@@ -12,6 +12,16 @@ export const getPatient = async (req: AuthReq, res: Response, next: NextFunction
   }
 };
 
+export const getPartialPatientRegister = async (req: AuthReq, res: Response, next: NextFunction) => {
+  try {
+    const response = await service.getPartialPatientRegister(req.clinicUser);
+
+    return res.status(200).json(response ? response : []);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const postPatient = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
     const response = await service.postPatientData(req.clinicUser, req.body);

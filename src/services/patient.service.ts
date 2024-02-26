@@ -71,6 +71,20 @@ export const getPatientRegister = async (user: ClinicUser, body: Query) => {
   return await getAllPatients(user.clinic);
 };
 
+export const getPartialPatientRegister = async (user: ClinicUser) => {
+  const patients = await respository.getPartialPatientRegister(user.clinic);
+  if (!patients) throw new CustomError("Nenhum paciente encontrado", 404);
+
+  const partialPatients = patients.map((patient) => {
+    const { id, name, phone, email, sex, anamnese, intraoral } = patient;
+    const anamneseCheck = anamnese.mainComplaint ? true : false;
+    const intraoralCheck = intraoral.hygiene ? true : false;
+    return { id, name, phone, email, sex, anamnese: anamneseCheck, intraoral: intraoralCheck };
+  });
+
+  return partialPatients;
+};
+
 export const postPatientData = async (user: ClinicUser, data: NewPatient) => {
   const patientByEmail = await getPatientByEmail(data.email, user.clinic);
   if (patientByEmail) throw new CustomError("Email já cadastrado", 403);
