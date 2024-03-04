@@ -1,14 +1,12 @@
 import express, { Application, Request, Response, json, urlencoded } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { config } from "dotenv";
 
 import * as route from "./routers";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
 import { dbConnect, corsOptions } from "./config";
 
 const app: Application = express();
-config();
 
 app
   .use(urlencoded({ extended: false }))
