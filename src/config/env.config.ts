@@ -6,7 +6,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string(),
 
   IAGENT_USER: z.string().email(),
-  IAGENT_URL: z.string().url(),
+  IAGENT_URL: z.string(),
   IAGENT_API_KEY: z.string(),
 });
 
