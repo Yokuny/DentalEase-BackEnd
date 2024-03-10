@@ -7,7 +7,7 @@ import {
   getPatientByRg,
 } from "./patient.service";
 import { getClinicDoctor } from "./clinic.service";
-import { CustomError } from "../models";
+import { CustomError } from "../models/error.type";
 import type { NewOdontogram, ClinicOdontogram, ClinicUser, Query } from "../models";
 
 export const getOdontogram = async (id: string) => {

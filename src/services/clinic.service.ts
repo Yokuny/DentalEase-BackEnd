@@ -2,6 +2,7 @@ import * as respository from "../repositories/clinic.repository";
 import { getUserById } from "./user.service";
 import { CustomError } from "../models";
 import { numClean } from "../helpers/sanitize.helper";
+import { clinicNotFound, clinicAlreadyRegistered } from "../helpers/statusMessage.helper";
 import type { ClinicUser, NewClinic } from "../models";
 
 const getClinicById = async (id: string, required?: boolean) => {
@@ -13,21 +14,21 @@ const getClinicById = async (id: string, required?: boolean) => {
 
 const getClinicByCNPJ = async (cnpj: string, required?: boolean) => {
   const clinic = await respository.getClinicByCNPJ(cnpj);
-  if (!clinic && required) throw new CustomError("Clínica não encontrada", 404);
+  if (!clinic && required) clinicNotFound({ record: "cnpj", searched: cnpj, err: 404 });
 
   return clinic;
 };
 
 const getClinicByCode = async (code: string, required?: boolean) => {
   const clinic = await respository.getClinicByCode(code);
-  if (!clinic && required) throw new CustomError("Clínica não encontrada", 404);
+  if (!clinic && required) clinicNotFound({ record: "code", searched: code, err: 404 });
 
   return clinic;
 };
 
 const getClinicByEmail = async (email: string, required?: boolean) => {
   const clinic = await respository.getClinicByEmail(email);
-  if (!clinic && required) throw new CustomError("Clínica não encontrada", 404);
+  if (!clinic && required) clinicNotFound({ record: "email", searched: email, err: 404 });
 
   return clinic;
 };
@@ -61,13 +62,13 @@ export const postClinic = async (user: ClinicUser, data: NewClinic) => {
   if (clinic) throw new CustomError("Você já está cadastrado em uma clínica", 409);
 
   const clinicByCNPJ = await getClinicByCNPJ(data.cnpj);
-  if (clinicByCNPJ) throw new CustomError("CNPJ já cadastrado", 409);
+  if (clinicByCNPJ) clinicAlreadyRegistered({ record: "cnpj", searched: data.cnpj, err: 409 });
 
   const clinicByEmail = await getClinicByEmail(data.email);
-  if (clinicByEmail) throw new CustomError("E-mail já cadastrado", 409);
+  if (clinicByEmail) clinicAlreadyRegistered({ record: "email", searched: data.email, err: 409 });
 
   const clinicByCode = await getClinicByCode(data.code);
-  if (clinicByCode) throw new CustomError("Código já cadastrado", 409);
+  if (clinicByCode) clinicAlreadyRegistered({ record: "code", searched: data.code, err: 409 });
 
   data.cnpj = numClean(data.cnpj);
   const NewClinic = { ...data, users: [{ user: user.user, role: "admin" }] };

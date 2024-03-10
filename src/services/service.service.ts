@@ -3,7 +3,7 @@ import { getPatient } from "./patient.service";
 import { getClinicDoctor } from "./clinic.service";
 import { getOdontogram } from "./odontogram.service";
 import { CustomError, QueryId } from "../models";
-import type { ClinicUser, NewService, Query } from "../models";
+import type { ClinicUser, NewService } from "../models";
 
 export const getService = async (id: string, required?: boolean) => {
   const service = await respository.getServiceById(id);

@@ -1,5 +1,6 @@
 import * as respository from "../repositories/patient.repository";
 import { stringToData } from "../helpers/convert.helper";
+import { patientNotFound, patientAlreadyRegistered } from "../helpers/statusMessage.helper";
 import { CustomError, ClinicUser } from "../models";
 import type {
   NewPatient,
@@ -20,28 +21,28 @@ export const getPatient = async (id: string) => {
 
 export const getPatientByEmail = async (email: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByEmail(email, clinic);
-  if (!patient && required) throw new CustomError("Paciente não encontrado por email", 404);
+  if (!patient && required) patientNotFound({ record: "email", searched: email, err: 404 });
 
   return patient;
 };
 
 export const getPatientByCpf = async (cpf: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByCpf(cpf, clinic);
-  if (!patient && required) throw new CustomError("Paciente não encontrado por CPF", 404);
+  if (!patient && required) patientNotFound({ record: "cpf", searched: cpf, err: 404 });
 
   return patient;
 };
 
 export const getPatientByRg = async (rg: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByRg(rg, clinic);
-  if (!patient && required) throw new CustomError("Paciente não encontrado por RG", 404);
+  if (!patient && required) patientNotFound({ record: "rg", searched: rg, err: 404 });
 
   return patient;
 };
 
 export const getPatientByPhone = async (phone: string, clinic: string, required?: boolean) => {
   const patient = await respository.getPatientByPhone(phone, clinic);
-  if (!patient && required) throw new CustomError("Paciente não encontrado por telefone", 404);
+  if (!patient && required) patientNotFound({ record: "phone", searched: phone, err: 404 });
 
   return patient;
 };
@@ -79,6 +80,7 @@ export const getPartialPatientRegister = async (user: ClinicUser) => {
     const { id, name, phone, email, sex, anamnese, intraoral } = patient;
     const anamneseCheck = anamnese.mainComplaint ? true : false;
     const intraoralCheck = intraoral.hygiene ? true : false;
+
     return { id, name, phone, email, sex, anamnese: anamneseCheck, intraoral: intraoralCheck };
   });
 
@@ -87,16 +89,16 @@ export const getPartialPatientRegister = async (user: ClinicUser) => {
 
 export const postPatientData = async (user: ClinicUser, data: NewPatient) => {
   const patientByEmail = await getPatientByEmail(data.email, user.clinic);
-  if (patientByEmail) throw new CustomError("Email já cadastrado", 403);
+  if (patientByEmail) patientAlreadyRegistered({ record: "email", searched: data.email, err: 403 });
 
   const patientByCpf = await getPatientByCpf(data.cpf, user.clinic);
-  if (patientByCpf) throw new CustomError("CPF já cadastrado", 403);
+  if (patientByCpf) patientAlreadyRegistered({ record: "cpf", searched: data.cpf, err: 403 });
 
   const patientByRg = await getPatientByRg(data.rg, user.clinic);
-  if (patientByRg) throw new CustomError("RG já cadastrado", 403);
+  if (patientByRg) patientAlreadyRegistered({ record: "rg", searched: data.rg, err: 403 });
 
   const patientByPhone = await getPatientByPhone(data.phone, user.clinic);
-  if (patientByPhone) throw new CustomError("Telefone já cadastrado", 403);
+  if (patientByPhone) patientAlreadyRegistered({ record: "phone", searched: data.phone, err: 403 });
 
   const newPatient = {
     ...data,
@@ -111,20 +113,23 @@ export const postPatientData = async (user: ClinicUser, data: NewPatient) => {
 
 export const putPatientData = async (user: ClinicUser, id: string, data: ClinicPatient) => {
   const patient = await getPatient(id);
-  if (patient.Clinic !== user.clinic) throw new CustomError("Paciente não pertence a clínica", 403);
+  if (patient.Clinic.toString() !== user.clinic)
+    throw new CustomError("Paciente não pertence a clínica", 403);
 
-  const patientByEmail = await getPatientByEmail(data.email, user.clinic);
-  if (patientByEmail && patientByEmail.id !== patient.id) throw new CustomError("Email já cadastrado", 403);
+  const byEmail = await getPatientByEmail(data.email, user.clinic);
+  if (byEmail && byEmail.id !== patient.id)
+    patientAlreadyRegistered({ record: "email", searched: data.email, err: 403 });
 
-  const patientByCpf = await getPatientByCpf(data.cpf, user.clinic);
-  if (patientByCpf && patientByCpf.id !== patient.id) throw new CustomError("CPF já cadastrado", 403);
+  const byCpf = await getPatientByCpf(data.cpf, user.clinic);
+  if (byCpf && byCpf.id !== patient.id)
+    patientAlreadyRegistered({ record: "cpf", searched: data.cpf, err: 403 });
 
-  const patientByRg = await getPatientByRg(data.rg, user.clinic);
-  if (patientByRg && patientByRg.id !== patient.id) throw new CustomError("RG já cadastrado", 403);
+  const byRg = await getPatientByRg(data.rg, user.clinic);
+  if (byRg && byRg.id !== patient.id) patientAlreadyRegistered({ record: "rg", searched: data.rg, err: 403 });
 
-  const patientByPhone = await getPatientByPhone(data.phone, user.clinic);
-  if (patientByPhone && patientByPhone.id !== patient.id)
-    throw new CustomError("Telefone já cadastrado", 403);
+  const byPhone = await getPatientByPhone(data.phone, user.clinic);
+  if (byPhone && byPhone.id !== patient.id)
+    patientAlreadyRegistered({ record: "phone", searched: data.phone, err: 403 });
 
   const newPatient: ClinicPatient = {
     ...data,
