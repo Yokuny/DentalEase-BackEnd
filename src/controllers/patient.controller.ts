@@ -26,7 +26,8 @@ export const postPatient = async (req: AuthReq, res: Response, next: NextFunctio
   try {
     const response = await service.postPatientData(req.clinicUser, req.body);
 
-    return res.status(201).json({ message: response });
+    if (typeof response === "string") return res.status(201).json({ message: response });
+    if (response.id) return res.status(201).json({ id: response.id, message: response.message });
   } catch (err) {
     next(err);
   }

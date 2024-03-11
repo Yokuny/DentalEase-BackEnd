@@ -57,8 +57,12 @@ export const getAllPatients = async (clinic: string) => {
 export const updatePatient = async (data: ClinicPatient) => {
   const register = await respository.updatePatient(data);
 
-  if (register.upsertedCount === 1) return "Paciente cadastrado com sucesso";
-  else if (register.modifiedCount === 1) return "Paciente cadastrado com sucesso";
+  if (register.upsertedId) {
+    return {
+      id: register.upsertedId.toString(),
+      message: "Paciente cadastrado com sucesso",
+    };
+  } else if (register.modifiedCount === 1) return "Paciente cadastrado com sucesso";
   else throw new CustomError("Cadastro de paciente não registrado", 502);
 };
 

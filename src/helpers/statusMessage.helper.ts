@@ -16,9 +16,9 @@ const statusMessageFactory = ({ environment, record, searched, searchType, err }
   const value = searched;
 
   if (searchType === "notFound")
-    throw new CustomError(`${environment} não encontrado com ${record} ${value}`, err);
+    throw new CustomError(`${environment} não encontrado com ${record.toUpperCase()} ${value}`, err);
 
-  throw new CustomError(`${environment} já cadastrado com ${record} ${value}`, err);
+  throw new CustomError(`${environment} já cadastrado com ${record.toUpperCase()} ${value}`, err);
 };
 
 const patientEnvironment = ({ record, searched, searchType, err }: EnvironmentParse) => {
