@@ -41,7 +41,7 @@ export const getDoctors = async (user: ClinicUser) => {
   const doctors = await Promise.all(doctorsId.map((doctor) => getUserById(doctor.user.toString())));
 
   const secureDoctors = doctors.map((doctor) => ({
-    _id: doctor.id,
+    _id: doctor._id,
     username: doctor.username,
     email: doctor.email,
     avatar: doctor.avatar,

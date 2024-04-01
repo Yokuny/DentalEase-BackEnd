@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { Odontogram } from "../database";
 import type { DbOdontogram, NewOdontogram, ClinicOdontogram } from "../models";
 
@@ -7,7 +8,7 @@ export const getOdontogram = async (id: string): Promise<DbOdontogram | null> =>
   return Odontogram.findOne({ _id: id }, { __v: 0 }).lean();
 };
 
-export const getPatientOdontograms = async (Patient: string): Promise<DbOdontogram[]> => {
+export const getPatientOdontograms = async (Patient: ObjectId): Promise<DbOdontogram[]> => {
   return Odontogram.find({ Patient }, projection);
 };
 
@@ -27,6 +28,6 @@ export const updateOdontogram = async (id: string, data: ClinicOdontogram) => {
   return Odontogram.updateOne({ _id: id }, data);
 };
 
-export const deleteOdontogram = async (id: string) => {
-  return Odontogram.deleteOne({ _id: id });
+export const deleteOdontogram = async (_id: ObjectId) => {
+  return Odontogram.deleteOne({ _id });
 };

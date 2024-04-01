@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import * as respository from "../repositories/odontogram.repository";
 import {
   getPatient,
@@ -17,7 +18,7 @@ export const getOdontogram = async (id: string) => {
   return odontogram;
 };
 
-const getPatientOdontograms = async (Patient: string) => {
+const getPatientOdontograms = async (Patient: ObjectId) => {
   const odontograms = await respository.getPatientOdontograms(Patient);
   if (!odontograms) throw new CustomError("Nenhum odontograma encontrado", 404);
 
@@ -36,19 +37,19 @@ export const getOdontogramRegister = async (user: ClinicUser, query: Query) => {
 
   if (query.cpf) {
     const patient = await getPatientByCpf(query.cpf, user.clinic, true);
-    return await getPatientOdontograms(patient.id);
+    return await getPatientOdontograms(patient._id);
   }
   if (query.email) {
     const patient = await getPatientByEmail(query.email, user.clinic, true);
-    return await getPatientOdontograms(patient.id);
+    return await getPatientOdontograms(patient._id);
   }
   if (query.phone) {
     const patient = await getPatientByPhone(query.phone, user.clinic, true);
-    return await getPatientOdontograms(patient.id);
+    return await getPatientOdontograms(patient._id);
   }
   if (query.rg) {
     const patient = await getPatientByRg(query.rg, user.clinic, true);
-    return await getPatientOdontograms(patient.id);
+    return await getPatientOdontograms(patient._id);
   }
 
   return await getNoFinishedOdontograms(user.clinic);
@@ -71,7 +72,8 @@ export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
 
 export const updateOdontogram = async (user: ClinicUser, id: string, data: ClinicOdontogram) => {
   const odontogram = await getOdontogram(id);
-  if (odontogram.Clinic !== user.clinic) throw new CustomError("Odontograma não pertence a clínica", 406);
+  if (odontogram.Clinic.toString() !== user.clinic)
+    throw new CustomError("Odontograma não pertence a clínica", 406);
 
   await getPatient(data.Patient);
   await getClinicDoctor(user.clinic, data.Doctor);
@@ -86,21 +88,23 @@ export const updateOdontogram = async (user: ClinicUser, id: string, data: Clini
 
 export const patchOdontogram = async (user: ClinicUser, id: string) => {
   const odontogram = await getOdontogram(id);
-  if (odontogram.Clinic !== user.clinic) throw new CustomError("Odontograma não pertence a clínica", 406);
+  if (odontogram.Clinic.toString() !== user.clinic)
+    throw new CustomError("Odontograma não pertence a clínica", 406);
 
   const newOdontogram: ClinicOdontogram = {
     ...odontogram,
     finished: !odontogram.finished,
   };
 
-  return await updateOdontogram(user, id, newOdontogram);
+  return await updateOdontogram(user, String(odontogram._id), newOdontogram);
 };
 
 export const deleteOdontogram = async (user: ClinicUser, id: string) => {
   const odontogram = await getOdontogram(id);
-  if (odontogram.Clinic !== user.clinic) throw new CustomError("Odontograma não pertence a clínica", 406);
+  if (odontogram.Clinic.toString() !== user.clinic)
+    throw new CustomError("Odontograma não pertence a clínica", 406);
 
-  const register = await respository.deleteOdontogram(id);
+  const register = await respository.deleteOdontogram(odontogram._id);
 
   if (register.deletedCount === 1) return "Odontograma deletado com sucesso";
   else throw new CustomError("Odontograma não deletado", 406);

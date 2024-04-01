@@ -74,14 +74,15 @@ export const postSchedule = async (user: ClinicUser, data: NewSchedule) => {
 
 export const updateSchedule = async (user: ClinicUser, id: string, data: NewSchedule) => {
   const schedule = await getSchedule(id);
-  if (schedule.Clinic !== user.clinic) throw new CustomError("Agendamento não pertence a clínica", 406);
+  if (schedule.Clinic.toString() !== user.clinic)
+    throw new CustomError("Agendamento não pertence a clínica", 406);
 
   await getPatient(data.Patient);
 
   data.finalDate && checkDate(data);
   delete data.Patient;
 
-  const update = await respository.updateSchedule(id, data);
+  const update = await respository.updateSchedule(schedule._id, data);
   if (update) return "Agendamento atualizado";
 
   throw new CustomError("Erro ao atualizar agendamento", 502);
@@ -89,9 +90,10 @@ export const updateSchedule = async (user: ClinicUser, id: string, data: NewSche
 
 export const deleteSchedule = async (user: ClinicUser, id: string) => {
   const schedule = await getSchedule(id);
-  if (schedule.Clinic !== user.clinic) throw new CustomError("Agendamento não pertence a clínica", 406);
+  if (schedule.Clinic.toString() !== user.clinic)
+    throw new CustomError("Agendamento não pertence a clínica", 406);
 
-  const register = await respository.deleteSchedule(id);
+  const register = await respository.deleteSchedule(schedule._id);
 
   if (register.deletedCount === 1) return "Agendamento deletado";
   else throw new CustomError("Agendamento não deletado", 406);

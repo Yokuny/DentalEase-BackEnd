@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import * as respository from "../repositories/patient.repository";
 import { stringToData } from "../helpers/convert.helper";
 import { patientNotFound, patientAlreadyRegistered } from "../helpers/statusMessage.helper";
@@ -10,9 +11,10 @@ import type {
   NewIntraoral,
   DbIntraoral,
   Query,
+  DbPatient,
 } from "../models";
 
-export const getPatient = async (id: string) => {
+export const getPatient = async (id: string): Promise<DbPatient> => {
   const patient = await respository.getPatient(id);
   if (!patient) throw new CustomError("Paciente não encontrado", 404);
 
@@ -81,11 +83,11 @@ export const getPartialPatientRegister = async (user: ClinicUser) => {
   if (!patients) throw new CustomError("Nenhum paciente encontrado", 404);
 
   const partialPatients = patients.map((patient) => {
-    const { id, name, phone, email, sex, anamnese, intraoral } = patient;
+    const { _id, name, phone, email, sex, anamnese, intraoral } = patient;
     const anamneseCheck = anamnese.mainComplaint ? true : false;
     const intraoralCheck = intraoral.hygiene ? true : false;
 
-    return { id, name, phone, email, sex, anamnese: anamneseCheck, intraoral: intraoralCheck };
+    return { id: _id, name, phone, email, sex, anamnese: anamneseCheck, intraoral: intraoralCheck };
   });
 
   return partialPatients;
@@ -121,18 +123,19 @@ export const putPatientData = async (user: ClinicUser, id: string, data: ClinicP
     throw new CustomError("Paciente não pertence a clínica", 403);
 
   const byEmail = await getPatientByEmail(data.email, user.clinic);
-  if (byEmail && byEmail.id !== patient.id)
+  if (byEmail && byEmail._id !== patient._id)
     patientAlreadyRegistered({ record: "email", searched: data.email, err: 403 });
 
   const byCpf = await getPatientByCpf(data.cpf, user.clinic);
-  if (byCpf && byCpf.id !== patient.id)
+  if (byCpf && byCpf._id !== patient._id)
     patientAlreadyRegistered({ record: "cpf", searched: data.cpf, err: 403 });
 
   const byRg = await getPatientByRg(data.rg, user.clinic);
-  if (byRg && byRg.id !== patient.id) patientAlreadyRegistered({ record: "rg", searched: data.rg, err: 403 });
+  if (byRg && byRg._id !== patient._id)
+    patientAlreadyRegistered({ record: "rg", searched: data.rg, err: 403 });
 
   const byPhone = await getPatientByPhone(data.phone, user.clinic);
-  if (byPhone && byPhone.id !== patient.id)
+  if (byPhone && byPhone._id !== patient._id)
     patientAlreadyRegistered({ record: "phone", searched: data.phone, err: 403 });
 
   const newPatient: ClinicPatient = {
@@ -143,21 +146,23 @@ export const putPatientData = async (user: ClinicUser, id: string, data: ClinicP
   return await updatePatient(newPatient);
 };
 
-const updatePatientAnamnesis = async (patient: string, data: NewAnamnesis) => {
+const updatePatientAnamnesis = async (patient: ObjectId, data: NewAnamnesis) => {
   const register = await respository.updatePatientAnamnesis(patient, data);
+
   if (register.modifiedCount === 1) return "Anamnese cadastrada com sucesso";
   else throw new CustomError("Erro ao cadastrar anamnese", 502);
 };
 
 export const postPatientAnamnesis = async (user: ClinicUser, data: DbAnamnesis) => {
   const patient = await getPatient(data.Patient);
-  if (patient.Clinic !== user.clinic) throw new CustomError("Paciente não pertence a clínica", 403);
+  if (patient.Clinic.toString() !== user.clinic)
+    throw new CustomError("Paciente não pertence a clínica", 403);
 
   delete data.Patient;
-  return await updatePatientAnamnesis(patient.id, data);
+  return await updatePatientAnamnesis(patient._id, data);
 };
 
-const updatePatientIntraoral = async (patient: string, data: NewIntraoral) => {
+const updatePatientIntraoral = async (patient: ObjectId, data: NewIntraoral) => {
   const register = await respository.updatePatientIntraoral(patient, data);
   if (register.modifiedCount === 1) return "Exame intraoral cadastrado com sucesso";
   else throw new CustomError("Erro ao cadastrar exame intraoral", 502);
@@ -165,8 +170,9 @@ const updatePatientIntraoral = async (patient: string, data: NewIntraoral) => {
 
 export const postPatientIntraoral = async (user: ClinicUser, data: DbIntraoral) => {
   const patient = await getPatient(data.Patient);
-  if (patient.Clinic !== user.clinic) throw new CustomError("Paciente não pertence a clínica", 403);
+  if (patient.Clinic.toString() !== user.clinic)
+    throw new CustomError("Paciente não pertence a clínica", 403);
 
   delete data.Patient;
-  return await updatePatientIntraoral(patient.id, data);
+  return await updatePatientIntraoral(patient._id, data);
 };

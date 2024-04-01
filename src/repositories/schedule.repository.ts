@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { Schedule } from "../database";
 import type { NewSchedule, ClinicSchedule, DbSchedule } from "../models";
 
@@ -23,10 +24,10 @@ export const postSchedule = (data: ClinicSchedule) => {
   return Schedule.create(data);
 };
 
-export const updateSchedule = (id: string, data: NewSchedule) => {
-  return Schedule.updateOne({ _id: id }, data);
+export const updateSchedule = (_id: ObjectId, data: NewSchedule) => {
+  return Schedule.updateOne({ _id }, data);
 };
 
-export const deleteSchedule = (id: string) => {
-  return Schedule.deleteOne({ _id: id });
+export const deleteSchedule = (_id: ObjectId) => {
+  return Schedule.deleteOne({ _id });
 };

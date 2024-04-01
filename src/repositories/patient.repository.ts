@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { Patient } from "../database";
 import type { ClinicPatient, DbPatient, NewAnamnesis, NewIntraoral } from "../models";
 
@@ -39,10 +40,10 @@ export const updatePatient = (data: ClinicPatient) => {
   return Patient.updateOne({ cpf: data.cpf }, data, { upsert: true });
 };
 
-export const updatePatientAnamnesis = (id: string, data: NewAnamnesis) => {
-  return Patient.updateOne({ _id: id }, { anamnese: data });
+export const updatePatientAnamnesis = (_id: ObjectId, data: NewAnamnesis) => {
+  return Patient.updateOne({ _id }, { anamnese: data });
 };
 
-export const updatePatientIntraoral = (id: string, data: NewIntraoral) => {
-  return Patient.updateOne({ _id: id }, { intraoral: data });
+export const updatePatientIntraoral = (_id: ObjectId, data: NewIntraoral) => {
+  return Patient.updateOne({ _id }, { intraoral: data });
 };
