@@ -42,7 +42,7 @@ export const getDoctors = async (user: ClinicUser) => {
 
   const secureDoctors = doctors.map((doctor) => ({
     _id: doctor._id,
-    username: doctor.username,
+    name: doctor.name,
     email: doctor.email,
     avatar: doctor.avatar,
   }));

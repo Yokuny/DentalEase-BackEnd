@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  username: { type: String, minlength: 5, maxlength: 26, required: true },
+  name: { type: String, minlength: 5, maxlength: 26, required: true },
   email: { type: String, minlength: 5, maxlength: 50, required: true, unique: true },
   password: { type: String, minlength: 5, maxlength: 200, required: true },
   clinic: { type: mongoose.Schema.Types.ObjectId, ref: "Clinic", required: false },

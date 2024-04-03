@@ -55,6 +55,19 @@ export const getOdontogramRegister = async (user: ClinicUser, query: Query) => {
   return await getNoFinishedOdontograms(user.clinic);
 };
 
+export const getPartialOdontogramRegister = async (user: ClinicUser) => {
+  const odontograms = await respository.getPartialOdontogramRegister(user.clinic);
+  if (!odontograms) throw new CustomError("Nenhum odontograma encontrado", 404);
+
+  const partialOdontograms = odontograms.map((odontogram) => {
+    console.log(odontogram);
+
+    return { id: "ok" };
+  });
+
+  return partialOdontograms;
+};
+
 export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
   await getPatient(data.Patient);
   await getClinicDoctor(user.clinic, data.Doctor);

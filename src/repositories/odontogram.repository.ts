@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { Odontogram } from "../database";
-import type { DbOdontogram, NewOdontogram, ClinicOdontogram } from "../models";
+import type { DbOdontogram, ClinicOdontogram } from "../models";
 
 const projection = { Clinic: 0, __v: 0 };
 
@@ -12,15 +12,34 @@ export const getPatientOdontograms = async (Patient: ObjectId): Promise<DbOdonto
   return Odontogram.find({ Patient }, projection);
 };
 
-export const getAllOdontograms = async (clinic: string): Promise<DbOdontogram[]> => {
-  return Odontogram.find({ Clinic: clinic }, projection);
+export const getPartialOdontogramRegister = async (Clinic: string) => {
+  return Odontogram.aggregate([
+    { $match: { Clinic: new ObjectId(Clinic) } },
+    { $lookup: { from: "patients", localField: "Patient", foreignField: "_id", as: "patient" } },
+    { $lookup: { from: "users", localField: "Doctor", foreignField: "_id", as: "doctor" } },
+    { $unwind: "$patient" },
+    { $unwind: "$doctor" },
+    {
+      $project: {
+        _id: 1,
+        workToBeDone: 1,
+        finished: 1,
+        patient: { _id: 1, name: 1 },
+        doctor: { _id: 1, name: 1 },
+      },
+    },
+  ]);
 };
 
-export const getNoFinishedOdontograms = async (clinic: string): Promise<DbOdontogram[]> => {
-  return Odontogram.find({ Clinic: clinic, finished: false }, projection);
+export const getAllOdontograms = async (Clinic: string): Promise<DbOdontogram[]> => {
+  return Odontogram.find({ Clinic }, projection);
 };
 
-export const postOdontogram = async (data: NewOdontogram) => {
+export const getNoFinishedOdontograms = async (Clinic: string): Promise<DbOdontogram[]> => {
+  return Odontogram.find({ Clinic, finished: false }, projection);
+};
+
+export const postOdontogram = async (data: ClinicOdontogram) => {
   return Odontogram.create(data);
 };
 

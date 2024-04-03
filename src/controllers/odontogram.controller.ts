@@ -12,6 +12,16 @@ export const getOdontogram = async (req: AuthReq, res: Response, next: NextFunct
   }
 };
 
+export const getPartialOdontogramRegister = async (req: AuthReq, res: Response, next: NextFunction) => {
+  try {
+    const response = await service.getPartialOdontogramRegister(req.clinicUser);
+
+    return res.status(200).json(response ? response : []);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const postOdontogram = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
     const response = await service.postOdontogram(req.clinicUser, req.body);

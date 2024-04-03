@@ -19,7 +19,7 @@ export const signinSchema = z.object({
 });
 
 export const signupSchema = z.object({
-  username: z.string().min(5, lengthMessage(5, 26)).max(26, lengthMessage(5, 26)).regex(titleRegex),
+  name: z.string().min(5, lengthMessage(5, 26)).max(26, lengthMessage(5, 26)).regex(titleRegex),
   email: z
     .string()
     .trim()

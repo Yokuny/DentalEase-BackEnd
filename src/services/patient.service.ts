@@ -84,6 +84,7 @@ export const getPartialPatientRegister = async (user: ClinicUser) => {
 
   const partialPatients = patients.map((patient) => {
     const { _id, name, phone, email, sex, anamnese, intraoral } = patient;
+
     const anamneseCheck = anamnese.mainComplaint ? true : false;
     const intraoralCheck = intraoral.hygiene ? true : false;
 

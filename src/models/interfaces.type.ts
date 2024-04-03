@@ -15,7 +15,7 @@ export type AuthReq = Request & { clinicUser: ClinicUser };
 
 export type UserWithoutPassword = {
   _id: ObjectId;
-  username: string;
+  name: string;
   email: string;
   avatar: string;
   clinic: string;
