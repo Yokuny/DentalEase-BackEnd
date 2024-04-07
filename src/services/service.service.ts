@@ -2,6 +2,7 @@ import * as respository from "../repositories/service.repository";
 import { getPatient } from "./patient.service";
 import { getClinicDoctor } from "./clinic.service";
 import { getOdontogram } from "./odontogram.service";
+import { returnMessage, returnData, returnDataMessage } from "../helpers/responsePattern.helper";
 import { CustomError, QueryId } from "../models";
 import type { ClinicUser, NewService } from "../models";
 
@@ -34,13 +35,13 @@ export const getAllServices = async (clinic: string) => {
 };
 
 export const getServiceRegister = async (user: ClinicUser, query: QueryId) => {
-  if (query.id) return await getService(query.id, true);
-  if (query.Service) return await getService(query.Service, true);
-  if (query.Patient) return await getServiceByPatient(query.Patient, true);
-  if (query.Doctor) return await getServiceByDoctor(query.Doctor, true);
+  if (query.id) return returnData(await getService(query.id, true));
+  if (query.Service) return returnData(await getService(query.Service, true));
+  if (query.Patient) return returnData(await getServiceByPatient(query.Patient, true));
+  if (query.Doctor) return returnData(await getServiceByDoctor(query.Doctor, true));
 
   const response = await getAllServices(user.clinic);
-  if (response) return response;
+  if (response) return returnData(response);
 
   throw new CustomError("Erro ao buscar serviços", 502);
 };
@@ -68,7 +69,7 @@ export const postService = async (user: ClinicUser, data: NewService) => {
   };
 
   const response = await respository.postService(newService);
-  if (response) return "Serviço criado com sucesso";
+  if (response) return returnMessage("Serviço criado com sucesso");
 
   throw new CustomError("Erro ao criar serviço", 502);
 };

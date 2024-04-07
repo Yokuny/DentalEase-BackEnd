@@ -8,6 +8,7 @@ import {
   getPatientByRg,
 } from "./patient.service";
 import { getClinicDoctor } from "./clinic.service";
+import { returnMessage, returnData, returnDataMessage } from "../helpers/responsePattern.helper";
 import { CustomError } from "../models/error.type";
 import type { NewOdontogram, ClinicOdontogram, ClinicUser, Query } from "../models";
 
@@ -37,22 +38,25 @@ export const getOdontogramRegister = async (user: ClinicUser, query: Query) => {
 
   if (query.cpf) {
     const patient = await getPatientByCpf(query.cpf, user.clinic, true);
-    return await getPatientOdontograms(patient._id);
+    return returnData(await getPatientOdontograms(patient._id));
   }
   if (query.email) {
     const patient = await getPatientByEmail(query.email, user.clinic, true);
-    return await getPatientOdontograms(patient._id);
+    return returnData(await getPatientOdontograms(patient._id));
   }
   if (query.phone) {
     const patient = await getPatientByPhone(query.phone, user.clinic, true);
-    return await getPatientOdontograms(patient._id);
+    return returnData(await getPatientOdontograms(patient._id));
   }
   if (query.rg) {
     const patient = await getPatientByRg(query.rg, user.clinic, true);
-    return await getPatientOdontograms(patient._id);
+    return returnData(await getPatientOdontograms(patient._id));
   }
 
-  return await getNoFinishedOdontograms(user.clinic);
+  const odontograms = await getNoFinishedOdontograms(user.clinic);
+
+  if (!odontograms || odontograms.length === 0) return returnMessage("Nenhum odontograma encontrado");
+  return returnData(odontograms);
 };
 
 export const getPartialOdontogramRegister = async (user: ClinicUser) => {
@@ -60,12 +64,18 @@ export const getPartialOdontogramRegister = async (user: ClinicUser) => {
   if (!odontograms) throw new CustomError("Nenhum odontograma encontrado", 404);
 
   const partialOdontograms = odontograms.map((odontogram) => {
-    console.log(odontogram);
-
-    return { id: "ok" };
+    return {
+      ...odontogram,
+      patient: odontogram.patient.name,
+      patient_id: odontogram.patient._id,
+      doctor: odontogram.doctor.name,
+      doctor_id: odontogram.doctor._id,
+    };
   });
 
-  return partialOdontograms;
+  if (!partialOdontograms || partialOdontograms.length === 0)
+    return returnMessage("Nenhum odontograma encontrado");
+  return returnData(partialOdontograms);
 };
 
 export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
@@ -78,7 +88,11 @@ export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
   };
 
   const register = await respository.postOdontogram(newOdontogram);
-  if (register) return "Odontograma cadastrado com sucesso";
+
+  if (register._id) {
+    const odontogram_id = { _id: register._id.toString() };
+    return returnDataMessage(odontogram_id, "Odontograma cadastrado com sucesso");
+  }
 
   throw new CustomError("Erro ao cadastrar odontograma", 502);
 };
@@ -95,7 +109,8 @@ export const updateOdontogram = async (user: ClinicUser, id: string, data: Clini
   delete data.Doctor;
 
   const register = await respository.updateOdontogram(id, data);
-  if (register.modifiedCount > 0) return "Odontograma atualizado com sucesso";
+
+  if (register.modifiedCount > 0) return returnMessage("Odontograma atualizado com sucesso");
   else throw new CustomError("Odontograma não atualizado", 406);
 };
 
@@ -119,6 +134,6 @@ export const deleteOdontogram = async (user: ClinicUser, id: string) => {
 
   const register = await respository.deleteOdontogram(odontogram._id);
 
-  if (register.deletedCount === 1) return "Odontograma deletado com sucesso";
+  if (register.deletedCount === 1) return returnMessage("Odontograma deletado com sucesso");
   else throw new CustomError("Odontograma não deletado", 406);
 };

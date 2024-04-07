@@ -1,12 +1,14 @@
 import { Response, NextFunction } from "express";
 import * as service from "../services/patient.service";
-import { AuthReq } from "../models";
+import { respObj } from "../helpers/responsePattern.helper";
+import type { ServiceRes } from "../helpers/responsePattern.helper";
+import type { AuthReq } from "../models/interfaces.type";
 
 export const getPatient = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.getPatientRegister(req.clinicUser, req.query);
+    const resp = (await service.getPatientRegister(req.clinicUser, req.query)) as ServiceRes;
 
-    return res.status(200).json(response ? response : []);
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -14,9 +16,9 @@ export const getPatient = async (req: AuthReq, res: Response, next: NextFunction
 
 export const getPartialPatientRegister = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.getPartialPatientRegister(req.clinicUser);
+    const resp = (await service.getPartialPatientRegister(req.clinicUser)) as ServiceRes;
 
-    return res.status(200).json(response ? response : []);
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -24,10 +26,9 @@ export const getPartialPatientRegister = async (req: AuthReq, res: Response, nex
 
 export const postPatient = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.postPatientData(req.clinicUser, req.body);
+    const resp = (await service.postPatientData(req.clinicUser, req.body)) as ServiceRes;
 
-    if (typeof response === "string") return res.status(201).json({ message: response });
-    if (response.id) return res.status(201).json({ id: response.id, message: response.message });
+    return res.status(201).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -35,9 +36,9 @@ export const postPatient = async (req: AuthReq, res: Response, next: NextFunctio
 
 export const putPatient = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.putPatientData(req.clinicUser, req.params.id, req.body);
+    const resp = (await service.putPatientData(req.clinicUser, req.params.id, req.body)) as ServiceRes;
 
-    return res.status(200).json({ message: response });
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -45,9 +46,9 @@ export const putPatient = async (req: AuthReq, res: Response, next: NextFunction
 
 export const postPatientAnamnesis = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.postPatientAnamnesis(req.clinicUser, req.body);
+    const resp = (await service.postPatientAnamnesis(req.clinicUser, req.body)) as ServiceRes;
 
-    return res.status(201).json({ message: response });
+    return res.status(201).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -55,9 +56,9 @@ export const postPatientAnamnesis = async (req: AuthReq, res: Response, next: Ne
 
 export const potPatientIntraoral = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.postPatientIntraoral(req.clinicUser, req.body);
+    const resp = (await service.postPatientIntraoral(req.clinicUser, req.body)) as ServiceRes;
 
-    return res.status(201).json({ message: response });
+    return res.status(201).json(respObj(resp));
   } catch (err) {
     next(err);
   }

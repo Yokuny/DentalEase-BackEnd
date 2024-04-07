@@ -1,12 +1,14 @@
 import { Response, NextFunction } from "express";
 import * as service from "../services/schedule.service";
-import { AuthReq } from "../models";
+import { respObj } from "../helpers/responsePattern.helper";
+import type { ServiceRes } from "../helpers/responsePattern.helper";
+import type { AuthReq } from "../models/interfaces.type";
 
 export const getSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.getScheduleRegister(req.clinicUser, req.query);
+    const resp = (await service.getScheduleRegister(req.clinicUser, req.query)) as ServiceRes;
 
-    return res.status(200).json(response ? response : []);
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -14,9 +16,9 @@ export const getSchedule = async (req: AuthReq, res: Response, next: NextFunctio
 
 export const postSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.postSchedule(req.clinicUser, req.body);
+    const resp = (await service.postSchedule(req.clinicUser, req.body)) as ServiceRes;
 
-    return res.status(201).json({ message: response });
+    return res.status(201).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -24,9 +26,9 @@ export const postSchedule = async (req: AuthReq, res: Response, next: NextFuncti
 
 export const putSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.updateSchedule(req.clinicUser, req.params.id, req.body);
+    const resp = (await service.updateSchedule(req.clinicUser, req.params.id, req.body)) as ServiceRes;
 
-    return res.status(200).json({ message: response });
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -34,9 +36,9 @@ export const putSchedule = async (req: AuthReq, res: Response, next: NextFunctio
 
 export const deleteSchedule = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.deleteSchedule(req.clinicUser, req.params.id);
+    const resp = (await service.deleteSchedule(req.clinicUser, req.params.id)) as ServiceRes;
 
-    return res.status(200).json({ message: response });
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }

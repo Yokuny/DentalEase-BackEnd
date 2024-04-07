@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import * as service from "../services/user.service";
 import { cookieOptions } from "../config/cookie.config";
+import { respObj } from "../helpers/responsePattern.helper";
+import type { ServiceRes } from "../helpers/responsePattern.helper";
 
 export const signup = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await service.signup(req.body);
+    const resp = (await service.signup(req.body)) as ServiceRes;
 
-    return res.status(201).json({ message: "Usuário criado com sucesso" });
+    return res.status(201).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -14,11 +16,11 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
 
 export const signin = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await service.signin(req.body);
+    const resp = (await service.signin(req.body)) as ServiceRes;
 
-    res.cookie("auth", user.token, cookieOptions);
+    res.cookie("auth", (resp.data as { token: string }).token, cookieOptions);
 
-    return res.status(200).json(user);
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }

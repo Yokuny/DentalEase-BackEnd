@@ -3,6 +3,7 @@ import { getPatient } from "./patient.service";
 import { getClinicDoctor } from "./clinic.service";
 import { getService } from "./service.service";
 import { stringToData } from "../helpers/convert.helper";
+import { returnMessage, returnData, returnDataMessage } from "../helpers/responsePattern.helper";
 import { CustomError } from "../models";
 import type { ClinicUser, NewSchedule, QueryId } from "../models";
 
@@ -35,12 +36,12 @@ const getAllSchedules = async (clinic: string) => {
 };
 
 export const getScheduleRegister = async (user: ClinicUser, query: QueryId) => {
-  if (query.id) return await getSchedule(query.id);
-  if (query.Patient) return await getScheduleByPatient(query.Patient, true);
-  if (query.Odontogram) return await getScheduleByOdontogram(query.Odontogram, true);
+  if (query.id) return returnData(await getSchedule(query.id));
+  if (query.Patient) return returnData(await getScheduleByPatient(query.Patient, true));
+  if (query.Odontogram) return returnData(await getScheduleByOdontogram(query.Odontogram, true));
 
   const response = await getAllSchedules(user.clinic);
-  if (response) return response;
+  if (response) return returnData(response);
 
   throw new CustomError("Erro ao buscar agendamentos", 502);
 };
@@ -67,8 +68,10 @@ export const postSchedule = async (user: ClinicUser, data: NewSchedule) => {
   if (hasFinalDate) newSchedule.finalDate = String(stringToData(data.finalDate));
 
   const register = await respository.postSchedule(newSchedule);
-  if (register) return "Agendamento cadastrado";
-
+  if (register) {
+    const register_id = { _id: register._id.toString() };
+    return returnDataMessage(register_id, "Agendamento cadastrado");
+  }
   throw new CustomError("Erro ao cadastrar agendamento", 502);
 };
 
@@ -83,7 +86,7 @@ export const updateSchedule = async (user: ClinicUser, id: string, data: NewSche
   delete data.Patient;
 
   const update = await respository.updateSchedule(schedule._id, data);
-  if (update) return "Agendamento atualizado";
+  if (update) return returnMessage("Agendamento atualizado");
 
   throw new CustomError("Erro ao atualizar agendamento", 502);
 };
@@ -95,6 +98,6 @@ export const deleteSchedule = async (user: ClinicUser, id: string) => {
 
   const register = await respository.deleteSchedule(schedule._id);
 
-  if (register.deletedCount === 1) return "Agendamento deletado";
+  if (register.deletedCount === 1) return returnMessage("Agendamento deletado");
   else throw new CustomError("Agendamento não deletado", 406);
 };

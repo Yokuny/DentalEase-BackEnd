@@ -1,8 +1,9 @@
 import * as respository from "../repositories/clinic.repository";
 import { getUserById } from "./user.service";
-import { CustomError } from "../models";
 import { numClean } from "../helpers/sanitize.helper";
-import { clinicNotFound, clinicAlreadyRegistered } from "../helpers/statusMessage.helper";
+import { clinicNotFound, clinicAlreadyRegistered } from "../helpers/statusMsgPattern.helper";
+import { returnMessage, returnData, returnDataMessage } from "../helpers/responsePattern.helper";
+import { CustomError } from "../models";
 import type { ClinicUser, NewClinic } from "../models";
 
 const getClinicById = async (id: string, required?: boolean) => {
@@ -33,7 +34,11 @@ const getClinicByEmail = async (email: string, required?: boolean) => {
   return clinic;
 };
 
-export const getClinic = async (user: ClinicUser) => await getClinicById(user.clinic, true);
+export const getClinic = async (user: ClinicUser) => {
+  const clinic = await getClinicById(user.clinic, true);
+
+  return returnData(clinic);
+};
 
 export const getDoctors = async (user: ClinicUser) => {
   const clinicData = await getClinicById(user.clinic, true);
@@ -47,14 +52,15 @@ export const getDoctors = async (user: ClinicUser) => {
     avatar: doctor.avatar,
   }));
 
-  return secureDoctors;
+  if (!secureDoctors) return returnMessage("Nenhum médico encontrado");
+  return returnData(secureDoctors);
 };
 
 export const getClinicDoctor = async (clinic: string, doctor: string) => {
   const clinicDoctor = await respository.getClinicDoctor(clinic, doctor);
   if (!clinicDoctor) throw new CustomError("Médico não encontrado", 404);
 
-  return clinicDoctor;
+  return returnData(clinicDoctor);
 };
 
 export const postClinic = async (user: ClinicUser, data: NewClinic) => {
@@ -74,4 +80,6 @@ export const postClinic = async (user: ClinicUser, data: NewClinic) => {
   const NewClinic = { ...data, users: [{ user: user.user, role: "admin" }] };
 
   await respository.postClinic(NewClinic, user.user);
+
+  return returnMessage("Clínica cadastrada com sucesso");
 };

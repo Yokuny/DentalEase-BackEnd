@@ -1,5 +1,7 @@
 import { numClean } from "./sanitize.helper";
 
+export const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+
 export const stringToData = (data: string | Date) => new Date(data);
 
 export const formatCnpj = (cnpjReceived: string) => {

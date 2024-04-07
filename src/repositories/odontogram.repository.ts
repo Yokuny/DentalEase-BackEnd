@@ -12,7 +12,7 @@ export const getPatientOdontograms = async (Patient: ObjectId): Promise<DbOdonto
   return Odontogram.find({ Patient }, projection);
 };
 
-export const getPartialOdontogramRegister = async (Clinic: string) => {
+export const getPartialOdontogramRegister = async (Clinic: string): Promise<any[]> => {
   return Odontogram.aggregate([
     { $match: { Clinic: new ObjectId(Clinic) } },
     { $lookup: { from: "patients", localField: "Patient", foreignField: "_id", as: "patient" } },
@@ -28,7 +28,7 @@ export const getPartialOdontogramRegister = async (Clinic: string) => {
         doctor: { _id: 1, name: 1 },
       },
     },
-  ]);
+  ]).exec();
 };
 
 export const getAllOdontograms = async (Clinic: string): Promise<DbOdontogram[]> => {

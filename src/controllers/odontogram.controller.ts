@@ -1,12 +1,14 @@
 import { Response, NextFunction } from "express";
 import * as service from "../services/odontogram.service";
-import { AuthReq } from "../models";
+import { respObj } from "../helpers/responsePattern.helper";
+import type { ServiceRes } from "../helpers/responsePattern.helper";
+import type { AuthReq } from "../models/interfaces.type";
 
 export const getOdontogram = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.getOdontogramRegister(req.clinicUser, req.query);
+    const resp = (await service.getOdontogramRegister(req.clinicUser, req.query)) as ServiceRes;
 
-    return res.status(200).json(response ? response : []);
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -14,9 +16,9 @@ export const getOdontogram = async (req: AuthReq, res: Response, next: NextFunct
 
 export const getPartialOdontogramRegister = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.getPartialOdontogramRegister(req.clinicUser);
+    const resp = (await service.getPartialOdontogramRegister(req.clinicUser)) as ServiceRes;
 
-    return res.status(200).json(response ? response : []);
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -24,9 +26,9 @@ export const getPartialOdontogramRegister = async (req: AuthReq, res: Response, 
 
 export const postOdontogram = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.postOdontogram(req.clinicUser, req.body);
+    const resp = (await service.postOdontogram(req.clinicUser, req.body)) as ServiceRes;
 
-    return res.status(201).json({ message: response });
+    return res.status(201).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -34,9 +36,9 @@ export const postOdontogram = async (req: AuthReq, res: Response, next: NextFunc
 
 export const putOdontogram = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.updateOdontogram(req.clinicUser, req.params.id, req.body);
+    const resp = (await service.updateOdontogram(req.clinicUser, req.params.id, req.body)) as ServiceRes;
 
-    return res.status(200).json({ message: response });
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -44,9 +46,9 @@ export const putOdontogram = async (req: AuthReq, res: Response, next: NextFunct
 
 export const patchOdontogram = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.patchOdontogram(req.clinicUser, req.params.id);
+    const resp = (await service.patchOdontogram(req.clinicUser, req.params.id)) as ServiceRes;
 
-    return res.status(200).json({ message: response });
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -54,9 +56,9 @@ export const patchOdontogram = async (req: AuthReq, res: Response, next: NextFun
 
 export const deleteOdontogram = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.deleteOdontogram(req.clinicUser, req.params.id);
+    const resp = (await service.deleteOdontogram(req.clinicUser, req.params.id)) as ServiceRes;
 
-    return res.status(200).json({ message: response });
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }

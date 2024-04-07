@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 import * as respository from "../repositories/user.repository";
 import { env } from "../config/env.config";
+import { returnMessage, returnData, returnDataMessage } from "../helpers/responsePattern.helper";
 import { CustomError, SignUp, SignIn } from "../models";
 
 const getUserByEmail = async (email: string) => {
@@ -13,7 +14,7 @@ export const getUserById = async (id: string) => {
   const user = await respository.getUserById(id);
   if (!user) throw new CustomError("Usuário não encontrado", 404);
 
-  return user;
+  return returnData(user);
 };
 
 export const signup = async (data: SignUp) => {
@@ -26,7 +27,9 @@ export const signup = async (data: SignUp) => {
     password: cryptPassword,
   };
 
-  return await respository.signup(newUser);
+  await respository.signup(newUser);
+
+  return returnMessage("Usuário criado com sucesso");
 };
 
 export const signin = async (data: SignIn) => {
@@ -47,5 +50,5 @@ export const signin = async (data: SignIn) => {
     avatar: user.avatar,
   };
 
-  return { user: secureUser, token };
+  return returnData({ user: secureUser, token });
 };

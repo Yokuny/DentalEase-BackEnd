@@ -1,12 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import { Schema } from "zod";
+import { capitalize } from "helpers/convert.helper";
 import { CustomError } from "../models";
 
 const extractErrorMessage = (err: any) => {
   const { path, received, message, expected } = err;
 
-  return `O campo '${path}' recebeu '${received}'.
-  Erro:'${message}'.${expected ? ` Esperado: '${expected}'` : ""}`;
+  const erroMessage = `Erro:'${message}'.${expected ? ` Esperado:'${capitalize(expected)}'` : ""}`;
+
+  if (received === undefined) {
+    return `O campo '${path}' é obrigatório. ${erroMessage}`;
+  }
+
+  return `O campo '${path}' recebeu '${received}'. ${erroMessage}`;
 };
 
 const validate = (schema: Schema, type: "body" | "params" | "query") => {

@@ -1,12 +1,14 @@
 import { Response, NextFunction } from "express";
 import * as service from "../services/service.service";
-import { AuthReq } from "../models";
+import { respObj } from "../helpers/responsePattern.helper";
+import type { ServiceRes } from "../helpers/responsePattern.helper";
+import type { AuthReq } from "../models/interfaces.type";
 
 export const postService = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.postService(req.clinicUser, req.body);
+    const resp = (await service.postService(req.clinicUser, req.body)) as ServiceRes;
 
-    return res.status(201).json({ message: response });
+    return res.status(201).json(respObj(resp));
   } catch (err) {
     next(err);
   }
@@ -14,9 +16,9 @@ export const postService = async (req: AuthReq, res: Response, next: NextFunctio
 
 export const getService = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
-    const response = await service.getServiceRegister(req.clinicUser, req.query);
+    const resp = (await service.getServiceRegister(req.clinicUser, req.query)) as ServiceRes;
 
-    return res.status(200).json(response ? response : []);
+    return res.status(200).json(respObj(resp));
   } catch (err) {
     next(err);
   }

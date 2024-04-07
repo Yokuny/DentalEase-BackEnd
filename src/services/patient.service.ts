@@ -1,7 +1,8 @@
 import { ObjectId } from "mongodb";
 import * as respository from "../repositories/patient.repository";
 import { stringToData } from "../helpers/convert.helper";
-import { patientNotFound, patientAlreadyRegistered } from "../helpers/statusMessage.helper";
+import { patientNotFound, patientAlreadyRegistered } from "../helpers/statusMsgPattern.helper";
+import { returnMessage, returnData, returnDataMessage } from "../helpers/responsePattern.helper";
 import { CustomError, ClinicUser } from "../models";
 import type {
   NewPatient,
@@ -60,22 +61,23 @@ export const updatePatient = async (data: ClinicPatient) => {
   const register = await respository.updatePatient(data);
 
   if (register.upsertedId) {
-    return {
-      id: register.upsertedId.toString(),
-      message: "Paciente cadastrado com sucesso",
-    };
-  } else if (register.modifiedCount === 1) return "Paciente cadastrado com sucesso";
+    const patient_id = { _id: register.upsertedId.toString() };
+    return returnDataMessage(patient_id, "Paciente cadastrado com sucesso");
+  } else if (register.modifiedCount === 1) return returnMessage("Paciente atualizado com sucesso");
   else throw new CustomError("Cadastro de paciente não registrado", 502);
 };
 
 export const getPatientRegister = async (user: ClinicUser, body: Query) => {
-  if (body.email) return await getPatientByEmail(body.email, user.clinic, true);
-  if (body.cpf) return await getPatientByCpf(body.cpf, user.clinic, true);
-  if (body.rg) return await getPatientByRg(body.rg, user.clinic, true);
-  if (body.phone) return await getPatientByPhone(body.phone, user.clinic, true);
-  if (body.id) return await getPatient(body.id);
+  if (body.email) return returnData(await getPatientByEmail(body.email, user.clinic, true));
+  if (body.cpf) return returnData(await getPatientByCpf(body.cpf, user.clinic, true));
+  if (body.rg) return returnData(await getPatientByRg(body.rg, user.clinic, true));
+  if (body.phone) return returnData(await getPatientByPhone(body.phone, user.clinic, true));
+  if (body.id) return returnData(await getPatient(body.id));
 
-  return await getAllPatients(user.clinic);
+  const allPatients = await getAllPatients(user.clinic);
+
+  if (!allPatients) return returnMessage("Nenhum paciente encontrado");
+  return returnData(allPatients);
 };
 
 export const getPartialPatientRegister = async (user: ClinicUser) => {
@@ -85,13 +87,13 @@ export const getPartialPatientRegister = async (user: ClinicUser) => {
   const partialPatients = patients.map((patient) => {
     const { _id, name, phone, email, sex, anamnese, intraoral } = patient;
 
-    const anamneseCheck = anamnese.mainComplaint ? true : false;
+    const anamneseCheck = anamnese.mainComplaint || anamnese.mainComplaint === "" ? true : false;
     const intraoralCheck = intraoral.hygiene ? true : false;
 
-    return { id: _id, name, phone, email, sex, anamnese: anamneseCheck, intraoral: intraoralCheck };
+    return { _id, name, phone, email, sex, anamnese: anamneseCheck, intraoral: intraoralCheck };
   });
 
-  return partialPatients;
+  return returnData(partialPatients);
 };
 
 export const postPatientData = async (user: ClinicUser, data: NewPatient) => {
@@ -150,7 +152,7 @@ export const putPatientData = async (user: ClinicUser, id: string, data: ClinicP
 const updatePatientAnamnesis = async (patient: ObjectId, data: NewAnamnesis) => {
   const register = await respository.updatePatientAnamnesis(patient, data);
 
-  if (register.modifiedCount === 1) return "Anamnese cadastrada com sucesso";
+  if (register.modifiedCount === 1) return returnMessage("Anamnese cadastrada com sucesso");
   else throw new CustomError("Erro ao cadastrar anamnese", 502);
 };
 
@@ -165,7 +167,7 @@ export const postPatientAnamnesis = async (user: ClinicUser, data: DbAnamnesis) 
 
 const updatePatientIntraoral = async (patient: ObjectId, data: NewIntraoral) => {
   const register = await respository.updatePatientIntraoral(patient, data);
-  if (register.modifiedCount === 1) return "Exame intraoral cadastrado com sucesso";
+  if (register.modifiedCount === 1) return returnMessage("Exame intraoral cadastrado com sucesso");
   else throw new CustomError("Erro ao cadastrar exame intraoral", 502);
 };
 
