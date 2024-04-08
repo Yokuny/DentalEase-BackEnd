@@ -2,7 +2,8 @@ import * as respository from "../repositories/service.repository";
 import { getPatient } from "./patient.service";
 import { getClinicDoctor } from "./clinic.service";
 import { getOdontogram } from "./odontogram.service";
-import { returnMessage, returnData, returnDataMessage } from "../helpers/responsePattern.helper";
+import { returnMessage, returnData } from "../helpers/responsePattern.helper";
+import type { ServiceRes } from "../helpers/responsePattern.helper";
 import { CustomError, QueryId } from "../models";
 import type { ClinicUser, NewService } from "../models";
 
@@ -34,7 +35,7 @@ export const getAllServices = async (clinic: string) => {
   return services;
 };
 
-export const getServiceRegister = async (user: ClinicUser, query: QueryId) => {
+export const getServiceRegister = async (user: ClinicUser, query: QueryId): Promise<ServiceRes> => {
   if (query.id) return returnData(await getService(query.id, true));
   if (query.Service) return returnData(await getService(query.Service, true));
   if (query.Patient) return returnData(await getServiceByPatient(query.Patient, true));
@@ -46,14 +47,13 @@ export const getServiceRegister = async (user: ClinicUser, query: QueryId) => {
   throw new CustomError("Erro ao buscar serviços", 502);
 };
 
-export const postService = async (user: ClinicUser, data: NewService) => {
+export const postService = async (user: ClinicUser, data: NewService): Promise<ServiceRes> => {
   await getPatient(data.Patient);
   await getClinicDoctor(user.clinic, data.Doctor);
 
   if (data.Odontogram) {
     const odontogram = await getOdontogram(data.Odontogram);
-    if (odontogram.Patient !== data.Patient)
-      throw new CustomError("Odontograma não pertence ao paciente", 406);
+    if (odontogram.Patient !== data.Patient) throw new CustomError("Odontograma não pertence ao paciente", 406);
     if (odontogram.Doctor !== data.Doctor) throw new CustomError("Odontograma não pertence ao dentista", 406);
     if (odontogram.finished === true) throw new CustomError("Odontograma já finalizado", 409);
 

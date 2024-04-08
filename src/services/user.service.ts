@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken";
 
 import * as respository from "../repositories/user.repository";
 import { env } from "../config/env.config";
-import { returnMessage, returnData, returnDataMessage } from "../helpers/responsePattern.helper";
+import { returnMessage, returnData } from "../helpers/responsePattern.helper";
+import type { ServiceRes } from "../helpers/responsePattern.helper";
 import { CustomError, SignUp, SignIn } from "../models";
 
 const getUserByEmail = async (email: string) => {
@@ -14,10 +15,10 @@ export const getUserById = async (id: string) => {
   const user = await respository.getUserById(id);
   if (!user) throw new CustomError("Usuário não encontrado", 404);
 
-  return returnData(user);
+  return user;
 };
 
-export const signup = async (data: SignUp) => {
+export const signup = async (data: SignUp): Promise<ServiceRes> => {
   const user = await getUserByEmail(data.email);
   if (user) throw new CustomError("Usuário já existe", 409);
 
@@ -32,7 +33,7 @@ export const signup = async (data: SignUp) => {
   return returnMessage("Usuário criado com sucesso");
 };
 
-export const signin = async (data: SignIn) => {
+export const signin = async (data: SignIn): Promise<ServiceRes> => {
   const user = await getUserByEmail(data.email);
   if (!user) throw new CustomError("Usuário ou senha incorretos", 409);
 

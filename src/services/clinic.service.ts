@@ -2,8 +2,9 @@ import * as respository from "../repositories/clinic.repository";
 import { getUserById } from "./user.service";
 import { numClean } from "../helpers/sanitize.helper";
 import { clinicNotFound, clinicAlreadyRegistered } from "../helpers/statusMsgPattern.helper";
-import { returnMessage, returnData, returnDataMessage } from "../helpers/responsePattern.helper";
+import { returnMessage, returnData } from "../helpers/responsePattern.helper";
 import { CustomError } from "../models";
+import type { ServiceRes } from "../helpers/responsePattern.helper";
 import type { ClinicUser, NewClinic } from "../models";
 
 const getClinicById = async (id: string, required?: boolean) => {
@@ -34,16 +35,16 @@ const getClinicByEmail = async (email: string, required?: boolean) => {
   return clinic;
 };
 
-export const getClinic = async (user: ClinicUser) => {
+export const getClinic = async (user: ClinicUser): Promise<ServiceRes> => {
   const clinic = await getClinicById(user.clinic, true);
 
   return returnData(clinic);
 };
 
-export const getDoctors = async (user: ClinicUser) => {
+export const getDoctors = async (user: ClinicUser): Promise<ServiceRes> => {
   const clinicData = await getClinicById(user.clinic, true);
-  const doctorsId = clinicData.users.filter((user) => user.role !== "assistant");
-  const doctors = await Promise.all(doctorsId.map((doctor) => getUserById(doctor.user.toString())));
+  const doctors_id = clinicData.users.filter((user) => user.role !== "assistant");
+  const doctors = await Promise.all(doctors_id.map((doctor) => getUserById(doctor.user.toString())));
 
   const secureDoctors = doctors.map((doctor) => ({
     _id: doctor._id,
@@ -63,7 +64,7 @@ export const getClinicDoctor = async (clinic: string, doctor: string) => {
   return returnData(clinicDoctor);
 };
 
-export const postClinic = async (user: ClinicUser, data: NewClinic) => {
+export const postClinic = async (user: ClinicUser, data: NewClinic): Promise<ServiceRes> => {
   const clinic = user.clinic || "";
   if (clinic) throw new CustomError("Você já está cadastrado em uma clínica", 409);
 

@@ -36,8 +36,8 @@ export const getPatient = (id: string): Promise<DbPatient | null> => {
   return Patient.findById(id, { __v: 0 }).lean();
 };
 
-export const updatePatient = (data: ClinicPatient) => {
-  return Patient.updateOne({ cpf: data.cpf }, data, { upsert: true });
+export const updatePatient = (data: ClinicPatient, Clinic: string) => {
+  return Patient.updateOne({ cpf: data.cpf, Clinic }, data, { upsert: true });
 };
 
 export const updatePatientAnamnesis = (_id: ObjectId, data: NewAnamnesis) => {
@@ -46,4 +46,8 @@ export const updatePatientAnamnesis = (_id: ObjectId, data: NewAnamnesis) => {
 
 export const updatePatientIntraoral = (_id: ObjectId, data: NewIntraoral) => {
   return Patient.updateOne({ _id }, { intraoral: data });
+};
+
+export const deletePatient = (_id: ObjectId) => {
+  return Patient.deleteOne({ _id });
 };

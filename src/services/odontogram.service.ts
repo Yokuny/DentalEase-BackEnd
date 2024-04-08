@@ -1,15 +1,11 @@
 import { ObjectId } from "mongodb";
 import * as respository from "../repositories/odontogram.repository";
-import {
-  getPatient,
-  getPatientByCpf,
-  getPatientByEmail,
-  getPatientByPhone,
-  getPatientByRg,
-} from "./patient.service";
+import { getPatient, getPatientByCpf, getPatientByEmail, getPatientByPhone, getPatientByRg } from "./patient.service";
 import { getClinicDoctor } from "./clinic.service";
 import { returnMessage, returnData, returnDataMessage } from "../helpers/responsePattern.helper";
 import { CustomError } from "../models/error.type";
+import type { ServiceRes } from "../helpers/responsePattern.helper";
+
 import type { NewOdontogram, ClinicOdontogram, ClinicUser, Query } from "../models";
 
 export const getOdontogram = async (id: string) => {
@@ -33,8 +29,8 @@ export const getNoFinishedOdontograms = async (clinic: string) => {
   return odontograms;
 };
 
-export const getOdontogramRegister = async (user: ClinicUser, query: Query) => {
-  if (query.id) return await getOdontogram(query.id);
+export const getOdontogramRegister = async (user: ClinicUser, query: Query): Promise<ServiceRes> => {
+  if (query.id) return returnData(await getOdontogram(query.id));
 
   if (query.cpf) {
     const patient = await getPatientByCpf(query.cpf, user.clinic, true);
@@ -59,7 +55,7 @@ export const getOdontogramRegister = async (user: ClinicUser, query: Query) => {
   return returnData(odontograms);
 };
 
-export const getPartialOdontogramRegister = async (user: ClinicUser) => {
+export const getPartialOdontogramRegister = async (user: ClinicUser): Promise<ServiceRes> => {
   const odontograms = await respository.getPartialOdontogramRegister(user.clinic);
   if (!odontograms) throw new CustomError("Nenhum odontograma encontrado", 404);
 
@@ -73,12 +69,11 @@ export const getPartialOdontogramRegister = async (user: ClinicUser) => {
     };
   });
 
-  if (!partialOdontograms || partialOdontograms.length === 0)
-    return returnMessage("Nenhum odontograma encontrado");
+  if (!partialOdontograms || partialOdontograms.length === 0) return returnMessage("Nenhum odontograma encontrado");
   return returnData(partialOdontograms);
 };
 
-export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
+export const postOdontogram = async (user: ClinicUser, data: NewOdontogram): Promise<ServiceRes> => {
   await getPatient(data.Patient);
   await getClinicDoctor(user.clinic, data.Doctor);
 
@@ -97,10 +92,9 @@ export const postOdontogram = async (user: ClinicUser, data: NewOdontogram) => {
   throw new CustomError("Erro ao cadastrar odontograma", 502);
 };
 
-export const updateOdontogram = async (user: ClinicUser, id: string, data: ClinicOdontogram) => {
+export const updateOdontogram = async (user: ClinicUser, id: string, data: ClinicOdontogram): Promise<ServiceRes> => {
   const odontogram = await getOdontogram(id);
-  if (odontogram.Clinic.toString() !== user.clinic)
-    throw new CustomError("Odontograma não pertence a clínica", 406);
+  if (odontogram.Clinic.toString() !== user.clinic) throw new CustomError("Odontograma não pertence a clínica", 406);
 
   await getPatient(data.Patient);
   await getClinicDoctor(user.clinic, data.Doctor);
@@ -114,10 +108,9 @@ export const updateOdontogram = async (user: ClinicUser, id: string, data: Clini
   else throw new CustomError("Odontograma não atualizado", 406);
 };
 
-export const patchOdontogram = async (user: ClinicUser, id: string) => {
+export const patchOdontogram = async (user: ClinicUser, id: string): Promise<ServiceRes> => {
   const odontogram = await getOdontogram(id);
-  if (odontogram.Clinic.toString() !== user.clinic)
-    throw new CustomError("Odontograma não pertence a clínica", 406);
+  if (odontogram.Clinic.toString() !== user.clinic) throw new CustomError("Odontograma não pertence a clínica", 406);
 
   const newOdontogram: ClinicOdontogram = {
     ...odontogram,
@@ -127,10 +120,9 @@ export const patchOdontogram = async (user: ClinicUser, id: string) => {
   return await updateOdontogram(user, String(odontogram._id), newOdontogram);
 };
 
-export const deleteOdontogram = async (user: ClinicUser, id: string) => {
+export const deleteOdontogram = async (user: ClinicUser, id: string): Promise<ServiceRes> => {
   const odontogram = await getOdontogram(id);
-  if (odontogram.Clinic.toString() !== user.clinic)
-    throw new CustomError("Odontograma não pertence a clínica", 406);
+  if (odontogram.Clinic.toString() !== user.clinic) throw new CustomError("Odontograma não pertence a clínica", 406);
 
   const register = await respository.deleteOdontogram(odontogram._id);
 

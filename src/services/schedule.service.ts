@@ -4,6 +4,7 @@ import { getClinicDoctor } from "./clinic.service";
 import { getService } from "./service.service";
 import { stringToData } from "../helpers/convert.helper";
 import { returnMessage, returnData, returnDataMessage } from "../helpers/responsePattern.helper";
+import type { ServiceRes } from "../helpers/responsePattern.helper";
 import { CustomError } from "../models";
 import type { ClinicUser, NewSchedule, QueryId } from "../models";
 
@@ -35,15 +36,15 @@ const getAllSchedules = async (clinic: string) => {
   return schedules;
 };
 
-export const getScheduleRegister = async (user: ClinicUser, query: QueryId) => {
+export const getScheduleRegister = async (user: ClinicUser, query: QueryId): Promise<ServiceRes> => {
   if (query.id) return returnData(await getSchedule(query.id));
   if (query.Patient) return returnData(await getScheduleByPatient(query.Patient, true));
   if (query.Odontogram) return returnData(await getScheduleByOdontogram(query.Odontogram, true));
 
-  const response = await getAllSchedules(user.clinic);
-  if (response) return returnData(response);
+  const schedules = await getAllSchedules(user.clinic);
 
-  throw new CustomError("Erro ao buscar agendamentos", 502);
+  if (!schedules || schedules.length === 0) return returnMessage("Nenhum agendamento encontrado");
+  return returnData(schedules);
 };
 
 const checkDate = (data: NewSchedule) => {
@@ -52,7 +53,7 @@ const checkDate = (data: NewSchedule) => {
   if (finalDate && initialDate > finalDate) throw new CustomError("Data inicial maior que a final", 406);
 };
 
-export const postSchedule = async (user: ClinicUser, data: NewSchedule) => {
+export const postSchedule = async (user: ClinicUser, data: NewSchedule): Promise<ServiceRes> => {
   await getPatient(data.Patient);
   await getClinicDoctor(user.clinic, data.Doctor);
   await getService(data.Service);
@@ -75,10 +76,9 @@ export const postSchedule = async (user: ClinicUser, data: NewSchedule) => {
   throw new CustomError("Erro ao cadastrar agendamento", 502);
 };
 
-export const updateSchedule = async (user: ClinicUser, id: string, data: NewSchedule) => {
+export const updateSchedule = async (user: ClinicUser, id: string, data: NewSchedule): Promise<ServiceRes> => {
   const schedule = await getSchedule(id);
-  if (schedule.Clinic.toString() !== user.clinic)
-    throw new CustomError("Agendamento não pertence a clínica", 406);
+  if (schedule.Clinic.toString() !== user.clinic) throw new CustomError("Agendamento não pertence a clínica", 406);
 
   await getPatient(data.Patient);
 
@@ -91,10 +91,9 @@ export const updateSchedule = async (user: ClinicUser, id: string, data: NewSche
   throw new CustomError("Erro ao atualizar agendamento", 502);
 };
 
-export const deleteSchedule = async (user: ClinicUser, id: string) => {
+export const deleteSchedule = async (user: ClinicUser, id: string): Promise<ServiceRes> => {
   const schedule = await getSchedule(id);
-  if (schedule.Clinic.toString() !== user.clinic)
-    throw new CustomError("Agendamento não pertence a clínica", 406);
+  if (schedule.Clinic.toString() !== user.clinic) throw new CustomError("Agendamento não pertence a clínica", 406);
 
   const register = await respository.deleteSchedule(schedule._id);
 

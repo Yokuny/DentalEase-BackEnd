@@ -13,5 +13,6 @@ patientRoute.post("/", validBody(patientSchema), controller.postPatient);
 patientRoute.post("/anamnesis", validBody(anamnesisSchema), controller.postPatientAnamnesis);
 patientRoute.post("/intra-oral", validBody(intraoralSchema), controller.potPatientIntraoral);
 patientRoute.put("/:id", validBody(patientSchema), validParams(idSchema), controller.putPatient);
+patientRoute.delete("/:id", validParams(idSchema), controller.deletePatient);
 
 export { patientRoute };
