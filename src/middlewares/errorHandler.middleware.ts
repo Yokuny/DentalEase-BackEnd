@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { badRespObj } from "helpers/responsePattern.helper";
+import { badRespObj } from "../helpers/responsePattern.helper";
 import { CustomError } from "../models";
 
 export const errorHandler = (err: any, _req: Request, res: Response, _next: NextFunction) => {

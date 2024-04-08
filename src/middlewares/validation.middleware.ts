@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Schema } from "zod";
-import { capitalize } from "helpers/convert.helper";
+import { capitalize } from "../helpers/convert.helper";
 import { CustomError } from "../models";
 
 const extractErrorMessage = (err: any) => {
