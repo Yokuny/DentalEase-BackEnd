@@ -79,6 +79,7 @@ export const postOdontogram = async (user: ClinicUser, data: NewOdontogram): Pro
 
   const newOdontogram: ClinicOdontogram = {
     ...data,
+    finished: false,
     Clinic: user.clinic,
   };
 
@@ -126,6 +127,6 @@ export const deleteOdontogram = async (user: ClinicUser, id: string): Promise<Se
 
   const register = await respository.deleteOdontogram(odontogram._id);
 
-  if (register.deletedCount === 1) return returnMessage("Odontograma deletado com sucesso");
+  if (register.deletedCount > 0) return returnMessage("Odontograma deletado com sucesso");
   else throw new CustomError("Odontograma não deletado", 406);
 };

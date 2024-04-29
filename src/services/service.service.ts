@@ -41,10 +41,36 @@ export const getServiceRegister = async (user: ClinicUser, query: QueryId): Prom
   if (query.Patient) return returnData(await getServiceByPatient(query.Patient, true));
   if (query.Doctor) return returnData(await getServiceByDoctor(query.Doctor, true));
 
-  const response = await getAllServices(user.clinic);
-  if (response) return returnData(response);
+  const services = await getAllServices(user.clinic);
 
-  throw new CustomError("Erro ao buscar serviços", 502);
+  if (!services || services.length === 0) return returnMessage("Nenhum serviço encontrado");
+  return returnData(services);
+};
+
+export const getPartialServiceRegister = async (user: ClinicUser): Promise<ServiceRes> => {
+  const services = await respository.getPartialServiceRegister(user.clinic);
+  if (!services) throw new CustomError("Nenhum serviço encontrado", 404);
+
+  const serviceStatus: { [key: string]: string } = {
+    pending: "Pendente",
+    paid: "Pago",
+    canceled: "Cancelado",
+  };
+
+  const partialServices = services.map((service) => ({
+    _id: service._id,
+    workToBeDone: service.workToBeDone,
+    price: service.price,
+    patient: service.patient.name,
+    patient_id: service.patient._id,
+    doctor: service.doctor.name,
+    doctor_id: service.doctor._id,
+    odontogram_id: service.Odontogram,
+    status: serviceStatus[service.status] || service.status,
+  }));
+
+  if (!partialServices || partialServices.length === 0) return returnMessage("Nenhum serviço encontrado");
+  return returnData(partialServices);
 };
 
 export const postService = async (user: ClinicUser, data: NewService): Promise<ServiceRes> => {
@@ -53,11 +79,13 @@ export const postService = async (user: ClinicUser, data: NewService): Promise<S
 
   if (data.Odontogram) {
     const odontogram = await getOdontogram(data.Odontogram);
-    if (odontogram.Patient !== data.Patient) throw new CustomError("Odontograma não pertence ao paciente", 406);
-    if (odontogram.Doctor !== data.Doctor) throw new CustomError("Odontograma não pertence ao dentista", 406);
+    if (odontogram.Patient.toString() !== data.Patient.toString())
+      throw new CustomError("Odontograma não pertence ao paciente", 406);
+    if (odontogram.Doctor.toString() !== data.Doctor.toString())
+      throw new CustomError("Odontograma não pertence ao dentista", 406);
     if (odontogram.finished === true) throw new CustomError("Odontograma já finalizado", 409);
 
-    if (data.workToBeDone) odontogram.workToBeDone = data.workToBeDone;
+    if (!data.workToBeDone) data.workToBeDone = odontogram.workToBeDone;
   }
 
   if (!data.workToBeDone) throw new CustomError("Trabalho a ser feito não informado", 406);
@@ -72,4 +100,14 @@ export const postService = async (user: ClinicUser, data: NewService): Promise<S
   if (response) return returnMessage("Serviço criado com sucesso");
 
   throw new CustomError("Erro ao criar serviço", 502);
+};
+
+export const deleteService = async (user: ClinicUser, id: string): Promise<ServiceRes> => {
+  const service = await getService(id, true);
+  if (service.Clinic.toString() !== user.clinic) throw new CustomError("Serviço não pertence a clínica", 406);
+
+  const response = await respository.deleteService(service._id);
+
+  if (response.deletedCount > 0) return returnMessage("Serviço deletado com sucesso");
+  throw new CustomError("Erro ao deletar serviço", 502);
 };
