@@ -1,4 +1,4 @@
-export const allowedOrigins = ["http://localhost:3000", "https://dental-ease.vercel.app"];
+export const allowedOrigins = ["http://localhost:3000", "https://dental-ease.vercel.app", "https://www.dentalease.com.br"];
 
 export const corsOptions = {
   credentials: true,
