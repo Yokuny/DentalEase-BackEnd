@@ -48,9 +48,9 @@ export const getScheduleRegister = async (user: ClinicUser, query: QueryId): Pro
 };
 
 const checkDate = (data: NewSchedule) => {
-  const initialDate = stringToData(data.initianDate);
-  const finalDate = stringToData(data.finalDate);
-  if (finalDate && initialDate > finalDate) throw new CustomError("Data inicial maior que a final", 406);
+  const startTime = stringToData(data.startTime);
+  const endTime = stringToData(data.endTime);
+  if (endTime && startTime > endTime) throw new CustomError("Data inicial maior que a final", 406);
 };
 
 export const postSchedule = async (user: ClinicUser, data: NewSchedule): Promise<ServiceRes> => {
@@ -58,15 +58,15 @@ export const postSchedule = async (user: ClinicUser, data: NewSchedule): Promise
   await getClinicDoctor(user.clinic, data.Doctor);
   await getService(data.Service);
 
-  const hasFinalDate = data.finalDate && data.finalDate !== "";
-  if (hasFinalDate) checkDate(data);
+  const hasEndTime = data.endTime && data.endTime !== "";
+  if (hasEndTime) checkDate(data);
 
   const newSchedule = {
     ...data,
     Clinic: user.clinic,
   };
 
-  if (hasFinalDate) newSchedule.finalDate = String(stringToData(data.finalDate));
+  if (hasEndTime) newSchedule.endTime = String(stringToData(data.endTime));
 
   const register = await respository.postSchedule(newSchedule);
   if (register) {
@@ -82,7 +82,7 @@ export const updateSchedule = async (user: ClinicUser, id: string, data: NewSche
 
   await getPatient(data.Patient);
 
-  data.finalDate && checkDate(data);
+  data.endTime && checkDate(data);
   delete data.Patient;
 
   const update = await respository.updateSchedule(schedule._id, data);

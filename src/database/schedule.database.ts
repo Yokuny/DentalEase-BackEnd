@@ -5,8 +5,8 @@ const scheduleSchema = new mongoose.Schema({
   Patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient", required: true },
   Doctor: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor", required: true },
   Service: { type: mongoose.Schema.Types.ObjectId, ref: "Service", required: true },
-  initianDate: { type: Date, required: true },
-  finalDate: { type: Date },
+  startTime: { type: Date, required: true },
+  endTime: { type: Date },
   createdAt: { type: Date, default: Date.now },
 });
 
