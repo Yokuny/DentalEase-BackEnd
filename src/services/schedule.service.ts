@@ -54,9 +54,7 @@ const checkDate = (data: NewSchedule) => {
 };
 
 export const postSchedule = async (user: ClinicUser, data: NewSchedule): Promise<ServiceRes> => {
-  await getPatient(data.Patient);
-  await getClinicDoctor(user.clinic, data.Doctor);
-  await getService(data.Service);
+  const serviceFount = await getService(data.Service);
 
   const hasEndTime = data.endTime && data.endTime !== "";
   if (hasEndTime) checkDate(data);
@@ -64,6 +62,8 @@ export const postSchedule = async (user: ClinicUser, data: NewSchedule): Promise
   const newSchedule = {
     ...data,
     Clinic: user.clinic,
+    Patient: serviceFount.Patient,
+    Doctor: serviceFount.Doctor,
   };
 
   if (hasEndTime) newSchedule.endTime = String(stringToData(data.endTime));
@@ -80,10 +80,7 @@ export const updateSchedule = async (user: ClinicUser, id: string, data: NewSche
   const schedule = await getSchedule(id);
   if (schedule.Clinic.toString() !== user.clinic) throw new CustomError("Agendamento não pertence a clínica", 406);
 
-  await getPatient(data.Patient);
-
   data.endTime && checkDate(data);
-  delete data.Patient;
 
   const update = await respository.updateSchedule(schedule._id, data);
   if (update) return returnMessage("Agendamento atualizado");
