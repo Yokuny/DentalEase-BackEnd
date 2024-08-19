@@ -47,6 +47,25 @@ export const getScheduleRegister = async (user: ClinicUser, query: QueryId): Pro
   return returnData(schedules);
 };
 
+export const getPartialScheduleRegister = async (user: ClinicUser): Promise<ServiceRes> => {
+  const schedules = await respository.getPartialSchedulesRegister(user.clinic);
+  if (!schedules || schedules.length === 0) return new CustomError("Nenhum agendamento encontrado", 404);
+
+  const partialSchedules = schedules.map((schedule) => {
+    return {
+      _id: schedule._id,
+      patient: schedule.patient.name,
+      doctor: schedule.doctor.name,
+      service: schedule.service.workToBeDone,
+      startTime: schedule.startTime,
+      endTime: schedule.endTime ? schedule.endTime : new Date(+schedule.startTime + 30 * 60000),
+    };
+  });
+
+  if (!partialSchedules || partialSchedules.length === 0) return returnMessage("Nenhum agendamento encontrado");
+  return returnData(partialSchedules);
+};
+
 const checkDate = (data: NewSchedule) => {
   const startTime = stringToData(data.startTime);
   const endTime = stringToData(data.endTime);

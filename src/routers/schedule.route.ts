@@ -8,6 +8,7 @@ scheduleRoute.use(validToken);
 scheduleRoute.use(clinicAssignmentCheck);
 
 scheduleRoute.get("/", validQuery(queryByIdSchema), controller.getSchedule);
+scheduleRoute.get("/partial", controller.getPartialScheduleRegister);
 scheduleRoute.post("/create", validBody(scheduleSchema), controller.postSchedule);
 scheduleRoute.put("/:id", validBody(scheduleSchema), validParams(idSchema), controller.putSchedule);
 scheduleRoute.delete("/:id", validParams(idSchema), controller.deleteSchedule);
