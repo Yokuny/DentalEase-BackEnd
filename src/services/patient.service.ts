@@ -10,8 +10,10 @@ import type {
   ClinicPatient,
   NewAnamnesis,
   DbAnamnesis,
+  UpdateAnamnesis,
   NewIntraoral,
   DbIntraoral,
+  UpdateIntraoral,
   Query,
   ClinicUser,
 } from "../models";
@@ -153,8 +155,12 @@ export const putPatientData = async (user: ClinicUser, id: string, data: ClinicP
 };
 
 const updatePatientAnamnesis = async (patient: ObjectId, data: NewAnamnesis) => {
-  const register = await respository.updatePatientAnamnesis(patient, data);
+  const newAnamnesis: UpdateAnamnesis = {
+    ...data,
+    lastUpdate: new Date(),
+  };
 
+  const register = await respository.updatePatientAnamnesis(patient, newAnamnesis);
   if (register.modifiedCount === 1) return returnMessage("Anamnese cadastrada com sucesso");
   else throw new CustomError("Erro ao cadastrar anamnese", 502);
 };
@@ -168,7 +174,12 @@ export const postPatientAnamnesis = async (user: ClinicUser, data: DbAnamnesis):
 };
 
 const updatePatientIntraoral = async (patient: ObjectId, data: NewIntraoral) => {
-  const register = await respository.updatePatientIntraoral(patient, data);
+  const newIntraoral: UpdateIntraoral = {
+    ...data,
+    lastUpdate: new Date(),
+  };
+
+  const register = await respository.updatePatientIntraoral(patient, newIntraoral);
   if (register.modifiedCount === 1) return returnMessage("Exame intraoral cadastrado com sucesso");
   else throw new CustomError("Erro ao cadastrar exame intraoral", 502);
 };

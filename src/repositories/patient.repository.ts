@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { Patient } from "../database";
-import type { ClinicPatient, DbPatient, NewAnamnesis, NewIntraoral } from "../models";
+import type { ClinicPatient, DbPatient, UpdateAnamnesis, UpdateIntraoral } from "../models";
 
 const projection = { Clinic: 0, __v: 0 };
 
@@ -40,11 +40,11 @@ export const updatePatient = (data: ClinicPatient, Clinic: string) => {
   return Patient.updateOne({ cpf: data.cpf, Clinic }, data, { upsert: true });
 };
 
-export const updatePatientAnamnesis = (_id: ObjectId, data: NewAnamnesis) => {
+export const updatePatientAnamnesis = (_id: ObjectId, data: UpdateAnamnesis) => {
   return Patient.updateOne({ _id }, { anamnese: data });
 };
 
-export const updatePatientIntraoral = (_id: ObjectId, data: NewIntraoral) => {
+export const updatePatientIntraoral = (_id: ObjectId, data: UpdateIntraoral) => {
   return Patient.updateOne({ _id }, { intraoral: data });
 };
 

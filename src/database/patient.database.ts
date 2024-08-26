@@ -31,6 +31,7 @@ const anamnesisSchema = new mongoose.Schema({
     otherIllnesses: { type: String, maxlength: 120, default: "" },
   },
   importantHealthInformation: { type: String, maxlength: 250 },
+  lastUpdate: { type: Date },
 });
 
 const intraoralSchema = new mongoose.Schema({
@@ -44,6 +45,7 @@ const intraoralSchema = new mongoose.Schema({
   oralFloor: { type: String, maxlength: 120 },
   lips: { type: String, maxlength: 120 },
   otherObservations: { type: String, maxlength: 250 },
+  lastUpdate: { type: Date },
 });
 
 const patientSchema = new mongoose.Schema({

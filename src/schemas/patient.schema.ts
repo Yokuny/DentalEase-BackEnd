@@ -65,3 +65,5 @@ export const intraoralSchema = z.object({
 export type NewPatient = z.infer<typeof patientSchema>;
 export type NewAnamnesis = z.infer<typeof anamnesisSchema>;
 export type NewIntraoral = z.infer<typeof intraoralSchema>;
+export type UpdateAnamnesis = z.infer<typeof anamnesisSchema> & { lastUpdate: Date | string };
+export type UpdateIntraoral = z.infer<typeof intraoralSchema> & { lastUpdate: Date | string };
