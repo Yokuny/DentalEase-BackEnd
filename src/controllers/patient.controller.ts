@@ -63,6 +63,16 @@ export const potPatientIntraoral = async (req: AuthReq, res: Response, next: Nex
   }
 };
 
+export const putPatientImage = async (req: AuthReq, res: Response, next: NextFunction) => {
+  try {
+    const resp = await service.putPatientImage(req.clinicUser, req.params.id, req.body.image);
+
+    return res.status(200).json(respObj(resp));
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const deletePatient = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
     const resp = await service.deletePatient(req.clinicUser, req.params.id);

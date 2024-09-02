@@ -35,5 +35,10 @@ export const signupSchema = z.object({
     .regex(passwordRegExp, passRegexMessage()),
 });
 
+export const imageSchema = z.object({
+  image: z.string().url(),
+});
+
 export type SignIn = z.infer<typeof signinSchema>;
 export type SignUp = z.infer<typeof signupSchema>;
+export type Image = z.infer<typeof imageSchema>;

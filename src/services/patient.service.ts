@@ -192,6 +192,15 @@ export const postPatientIntraoral = async (user: ClinicUser, data: DbIntraoral):
   return await updatePatientIntraoral(patient._id, data);
 };
 
+export const putPatientImage = async (user: ClinicUser, id: string, image: string): Promise<ServiceRes> => {
+  const patient = await getPatient(id);
+  if (patient.Clinic.toString() !== user.clinic) throw new CustomError("Paciente não pertence a clínica", 403);
+
+  const register = await respository.updatePatientImage(patient._id, image);
+  if (register.modifiedCount === 1) return returnMessage("Imagem do paciente atualizada com sucesso");
+  else throw new CustomError("Erro ao atualizar imagem do paciente", 502);
+};
+
 export const deletePatient = async (user: ClinicUser, id: string): Promise<ServiceRes> => {
   const patient = await getPatient(id);
   if (patient.Clinic.toString() !== user.clinic) throw new CustomError("Paciente não pertence a clínica", 403);

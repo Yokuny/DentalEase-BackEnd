@@ -1,5 +1,5 @@
 export { idSchema, idSchemaOptional } from "./id.schema";
-export { signinSchema, signupSchema } from "./user.schema";
+export { signinSchema, signupSchema, imageSchema } from "./user.schema";
 export { clinicSchema } from "./clinic.schema";
 export { patientSchema, intraoralSchema, anamnesisSchema } from "./patient.schema";
 export { odontogramSchema } from "./odontogram.schema";

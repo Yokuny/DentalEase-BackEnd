@@ -61,6 +61,7 @@ const patientSchema = new mongoose.Schema({
   address: { type: String, minlength: 5, maxlength: 50 },
   anamnese: anamnesisSchema,
   intraoral: intraoralSchema,
+  image: { type: String },
   createdAt: { type: Date, default: Date.now },
 });
 

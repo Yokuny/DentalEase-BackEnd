@@ -48,6 +48,10 @@ export const updatePatientIntraoral = (_id: ObjectId, data: UpdateIntraoral) => 
   return Patient.updateOne({ _id }, { intraoral: data });
 };
 
+export const updatePatientImage = (_id: ObjectId, image: string) => {
+  return Patient.updateOne({ _id }, { image });
+};
+
 export const deletePatient = (_id: ObjectId) => {
   return Patient.deleteOne({ _id });
 };
