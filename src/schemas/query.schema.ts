@@ -21,7 +21,7 @@ export const queryByIdSchema = z.object({
   Odontogram: z.string().refine(validObjectID, objectIdMessage()).optional(),
   Doctor: z.string().refine(validObjectID, objectIdMessage()).optional(),
   Clinic: z.string().refine(validObjectID, objectIdMessage()).optional(),
-  Service: z.string().refine(validObjectID, objectIdMessage()).optional(),
+  Financial: z.string().refine(validObjectID, objectIdMessage()).optional(),
 });
 
 export type Query = z.infer<typeof querySchema>;

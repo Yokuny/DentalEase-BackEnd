@@ -1,15 +1,6 @@
 import { ObjectId } from "mongodb";
 import { Schedule } from "../database";
-import type { NewSchedule, ClinicSchedule, DbSchedule } from "../models";
-
-type PartialReturn = {
-  _id: string;
-  startTime: string;
-  endTime: string;
-  patient: { name: string };
-  doctor: { name: string };
-  service: { workToBeDone: string };
-};
+import type { NewSchedule, ClinicSchedule, DbSchedule, PartialReturn } from "../models";
 
 const projection = { Clinic: 0, __v: 0 };
 
@@ -22,10 +13,10 @@ export const getPartialSchedulesRegister = (Clinic: string): Promise<PartialRetu
     { $match: { Clinic: new ObjectId(Clinic) } },
     { $lookup: { from: "patients", localField: "Patient", foreignField: "_id", as: "patient" } },
     { $lookup: { from: "users", localField: "Doctor", foreignField: "_id", as: "doctor" } },
-    { $lookup: { from: "services", localField: "Service", foreignField: "_id", as: "service" } },
+    { $lookup: { from: "Financials", localField: "Financial", foreignField: "_id", as: "Financial" } },
     { $unwind: "$patient" },
     { $unwind: "$doctor" },
-    { $unwind: "$service" },
+    { $unwind: "$financial" },
     {
       $project: {
         _id: 1,

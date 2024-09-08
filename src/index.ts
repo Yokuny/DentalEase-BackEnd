@@ -20,7 +20,7 @@ app
   .use("/clinic", route.clinicRoute)
   .use("/patient", route.patientRoute)
   .use("/odontogram", route.odontogramRoute)
-  .use("/service", route.serviceRoute)
+  .use("/financial", route.financialRoute)
   .use("/schedule", route.scheduleRoute);
 
 app.use("*", (_req: Request, res: Response) => res.status(404).send({ message: "Rota não encontrada! 🤷‍♂️" }));

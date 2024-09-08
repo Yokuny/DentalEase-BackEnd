@@ -1,7 +1,7 @@
 import * as respository from "../repositories/schedule.repository";
 import { getPatient } from "./patient.service";
 import { getClinicDoctor } from "./clinic.service";
-import { getService } from "./service.service";
+import { getFinancial } from "./financial.service";
 import { stringToData } from "../helpers/convert.helper";
 import { returnMessage, returnData, returnDataMessage } from "../helpers/responsePattern.helper";
 import type { ServiceRes } from "../helpers/responsePattern.helper";
@@ -73,7 +73,7 @@ const checkDate = (data: NewSchedule) => {
 };
 
 export const postSchedule = async (user: ClinicUser, data: NewSchedule): Promise<ServiceRes> => {
-  const serviceFount = await getService(data.Service);
+  const financialFount = await getFinancial(data.Financial);
 
   const hasEndTime = data.endTime && data.endTime !== "";
   if (hasEndTime) checkDate(data);
@@ -81,8 +81,8 @@ export const postSchedule = async (user: ClinicUser, data: NewSchedule): Promise
   const newSchedule = {
     ...data,
     Clinic: user.clinic,
-    Patient: serviceFount.Patient,
-    Doctor: serviceFount.Doctor,
+    Patient: financialFount.Patient,
+    Doctor: financialFount.Doctor,
   };
 
   if (hasEndTime) newSchedule.endTime = String(stringToData(data.endTime));

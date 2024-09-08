@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { Odontogram } from "../database";
-import type { DbOdontogram, ClinicOdontogram } from "../models";
+import type { DbOdontogram, ClinicOdontogram, PartialOdontogram } from "../models";
 
 const projection = { Clinic: 0, __v: 0 };
 
@@ -12,7 +12,7 @@ export const getPatientOdontograms = async (Patient: ObjectId): Promise<DbOdonto
   return Odontogram.find({ Patient }, projection);
 };
 
-export const getPartialOdontogramRegister = async (Clinic: string): Promise<any[]> => {
+export const getPartialOdontogramRegister = async (Clinic: string): Promise<PartialOdontogram[] | null> => {
   return Odontogram.aggregate([
     { $match: { Clinic: new ObjectId(Clinic) } },
     { $lookup: { from: "patients", localField: "Patient", foreignField: "_id", as: "patient" } },

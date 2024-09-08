@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const serviceSchema = new mongoose.Schema({
+const financialSchema = new mongoose.Schema({
   Clinic: { type: mongoose.Schema.Types.ObjectId, ref: "Clinic", required: true },
   Patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient", required: true },
   Doctor: { type: mongoose.Schema.Types.ObjectId, ref: "Doctor", required: true },
@@ -11,4 +11,4 @@ const serviceSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-export const Service = mongoose.model("Service", serviceSchema);
+export const Financial = mongoose.model("Financial", financialSchema);
