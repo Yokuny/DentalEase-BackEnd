@@ -5,7 +5,8 @@ import * as respository from "../repositories/user.repository";
 import { env } from "../config/env.config";
 import { returnMessage, returnData } from "../helpers/responsePattern.helper";
 import type { ServiceRes } from "../helpers/responsePattern.helper";
-import { CustomError, SignUp, SignIn } from "../models";
+import type { SignUp, SignIn, ClinicUser, PartialUser, UserUpdate, PasswordUpdate } from "../models";
+import { CustomError } from "../models/error.type";
 
 const getUserByEmail = async (email: string) => {
   return await respository.getUserByEmail(email);
@@ -48,8 +49,44 @@ export const signin = async (data: SignIn): Promise<ServiceRes> => {
     name: user.name,
     email: user.email,
     clinic: user.clinic?.toString(),
-    avatar: user.avatar,
-  };
+    image: user.image,
+  } as PartialUser;
 
   return returnData({ user: secureUser, token });
+};
+
+export const getPartialUserRegister = async (clinicUser: ClinicUser): Promise<ServiceRes> => {
+  const user = await getUserById(clinicUser.user);
+
+  return returnData({
+    name: user.name,
+    email: user.email,
+    clinic: user.clinic?.toString(),
+    image: user.image,
+  } as PartialUser);
+};
+
+export const updateUser = async (clinicUser: ClinicUser, data: UserUpdate): Promise<ServiceRes> => {
+  const user = await getUserById(clinicUser.user);
+
+  const register = await respository.updateUser(user._id.toString(), data);
+
+  if (register.modifiedCount === 1) return returnMessage("Usuário atualizado com sucesso");
+  return returnMessage("Usuário não atualizado");
+};
+
+export const changePassword = async (clinicUser: ClinicUser, data: PasswordUpdate): Promise<ServiceRes> => {
+  const user = await getUserById(clinicUser.user);
+
+  const matchOldPassword = await bcrypt.compare(data.oldPassword, user.password);
+  if (!matchOldPassword) throw new CustomError("Senha incorreta", 403);
+
+  const isValidPassword = await bcrypt.compare(data.newPassword, user.password);
+  if (isValidPassword) throw new CustomError("Nova senha não pode ser igual a anterior", 409);
+
+  const cryptPassword = await bcrypt.hash(data.newPassword, 10);
+  const register = await respository.changePassword(user._id.toString(), cryptPassword);
+
+  if (register.modifiedCount === 1) return returnMessage("Senha alterada com sucesso");
+  return returnMessage("Senha não alterada");
 };

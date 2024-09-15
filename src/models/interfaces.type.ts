@@ -13,11 +13,18 @@ type Patient = { Patient: string };
 export type ClinicUser = { clinic: string; user: string };
 export type AuthReq = Request & { clinicUser: ClinicUser };
 
+export type PartialUser = {
+  name: string;
+  email: string;
+  clinic: string;
+  image: string | null;
+};
+
 export type UserWithoutPassword = {
   _id: ObjectId;
   name: string;
   email: string;
-  avatar: string;
+  image: string;
   clinic: string;
   createdAt: Date;
 };

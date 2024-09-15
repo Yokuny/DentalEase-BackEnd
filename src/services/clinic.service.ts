@@ -50,7 +50,7 @@ export const getDoctors = async (user: ClinicUser): Promise<ServiceRes> => {
     _id: doctor._id,
     name: doctor.name,
     email: doctor.email,
-    avatar: doctor.avatar,
+    image: doctor.image,
   }));
 
   if (!secureDoctors) return returnMessage("Nenhum médico encontrado");
