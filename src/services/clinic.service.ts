@@ -36,10 +36,13 @@ const getClinicByEmail = async (email: string, required?: boolean) => {
 };
 
 export const getClinic = async (user: ClinicUser): Promise<ServiceRes> => {
-  const clinic = await getClinicById(user.clinic, true);
+  const clinic = await respository.getPartialClinic(user.clinic);
+  console.log(clinic);
+  if (!clinic) throw new CustomError("Clínica não encontrada", 404);
 
   return returnData(clinic);
 };
+
 
 export const getDoctors = async (user: ClinicUser): Promise<ServiceRes> => {
   const clinicData = await getClinicById(user.clinic, true);

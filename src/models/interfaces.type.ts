@@ -20,6 +20,15 @@ export type PartialUser = {
   image: string | null;
 };
 
+export type PartialClinic = {
+  _id: string;
+  name: string;
+  email: string;
+  code: string;
+  cnpj: string;
+  users: { name: string; email: string; role: "admin" | "doctor" | "assistant" }[];
+};
+
 export type UserWithoutPassword = {
   _id: ObjectId;
   name: string;

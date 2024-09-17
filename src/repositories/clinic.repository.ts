@@ -1,6 +1,7 @@
+import { ObjectId } from "mongodb";
 import { Clinic } from "../database";
 import { updateUserWithClinic } from "./user.repository";
-import type { ClinicWithUser } from "../models";
+import type { ClinicWithUser, PartialClinic } from "../models";
 
 const projection = { __v: 0 };
 
@@ -22,6 +23,25 @@ export const getClinicByEmail = async (email: string) => {
 
 export const getClinicDoctor = async (clinic: string, doctor: string) => {
   return await Clinic.findOne({ $and: [{ "users.user": doctor }, { _id: clinic }] }, projection);
+};
+
+export const getPartialClinic = async (id: string): Promise<PartialClinic | null> => {
+  const result = await Clinic.aggregate([
+    { $match: { _id: new ObjectId(id) } },
+    { $lookup: { from: "users", localField: "users.user", foreignField: "_id", as: "users_details" } },
+    { $unwind: "$users_details" },
+    {
+      $project: {
+        name: 1,
+        email: 1,
+        code: 1,
+        cnpj: 1,
+        users: { role: 1, name: "$users_details.name", email: "$users_details.email" },
+      },
+    },
+  ]).exec();
+
+  return result.length > 0 ? (result[0] as PartialClinic) : null;
 };
 
 export const postClinic = async (data: ClinicWithUser, user: string) => {
