@@ -29,14 +29,36 @@ export const getPartialClinic = async (id: string): Promise<PartialClinic | null
   const result = await Clinic.aggregate([
     { $match: { _id: new ObjectId(id) } },
     { $lookup: { from: "users", localField: "users.user", foreignField: "_id", as: "users_details" } },
-    { $unwind: "$users_details" },
     {
       $project: {
         name: 1,
         email: 1,
         code: 1,
         cnpj: 1,
-        users: { role: 1, name: "$users_details.name", email: "$users_details.email" },
+        users: {
+          $map: {
+            input: "$users_details",
+            as: "users_details",
+            in: {
+              name: "$$users_details.name",
+              email: "$$users_details.email",
+              role: {
+                $arrayElemAt: [
+                  {
+                    $map: {
+                      input: {
+                        $filter: { input: "$users", as: "user", cond: { $eq: ["$$user.user", "$$users_details._id"] } },
+                      },
+                      as: "user",
+                      in: "$$user.role",
+                    },
+                  },
+                  0,
+                ],
+              },
+            },
+          },
+        },
       },
     },
   ]).exec();
