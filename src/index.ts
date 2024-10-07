@@ -21,7 +21,8 @@ app
   .use("/patient", route.patientRoute)
   .use("/odontogram", route.odontogramRoute)
   .use("/financial", route.financialRoute)
-  .use("/schedule", route.scheduleRoute);
+  .use("/schedule", route.scheduleRoute)
+  .use("/procedure", route.procedureRoute);
 
 app.use("*", (_req: Request, res: Response) => res.status(404).send({ message: "Rota não encontrada! 🤷‍♂️" }));
 app.use(errorHandler);

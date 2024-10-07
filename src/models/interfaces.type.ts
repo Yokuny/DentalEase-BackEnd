@@ -6,6 +6,7 @@ import { NewPatient, NewAnamnesis, NewIntraoral } from "../schemas/patient.schem
 import { NewOdontogram } from "../schemas/odontogram.schema";
 import { NewFinancial } from "../schemas/financial.schema";
 import { NewSchedule } from "../schemas/schedule.schema";
+import { NewProcedure } from "../schemas/procedure.schema";
 
 type Clinic = { Clinic: string };
 type Patient = { Patient: string };
@@ -81,3 +82,5 @@ export type PartialReturn = {
 
 export type ClinicSchedule = NewSchedule & Clinic;
 export type DbSchedule = ClinicSchedule & { _id: ObjectId; createdAt: Date };
+
+export type ClinicProcedure = NewProcedure & Clinic & { updatedAt: Date };
