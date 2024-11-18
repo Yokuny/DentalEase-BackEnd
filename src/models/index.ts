@@ -5,6 +5,6 @@ export { NewPatient, NewAnamnesis, NewIntraoral, UpdateAnamnesis, UpdateIntraora
 export { NewOdontogram } from "../schemas/odontogram.schema";
 export { NewFinancial } from "../schemas/financial.schema";
 export { NewSchedule } from "../schemas/schedule.schema";
-export { NewProcedure } from "../schemas/procedure.schema";
+export { NewProcedures } from "../schemas/procedure.schema";
 export { Query, QueryId } from "../schemas/query.schema";
 export * from "./interfaces.type";

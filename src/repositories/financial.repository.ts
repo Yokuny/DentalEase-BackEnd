@@ -35,13 +35,13 @@ export const getPartialFinancialRegister = (Clinic: string): Promise<PartialFina
         Odontogram: 1,
         status: 1,
         price: 1,
-        workToBeDone: 1,
+        procedures: 1,
       },
     },
   ]).exec();
 };
 
-export const postFinancial = (data: ClinicFinancial) => {
+export const postFinancial = async (data: ClinicFinancial) => {
   return Financial.create(data);
 };
 

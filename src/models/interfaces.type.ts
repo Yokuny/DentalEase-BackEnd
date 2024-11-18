@@ -6,7 +6,7 @@ import { NewPatient, NewAnamnesis, NewIntraoral } from "../schemas/patient.schem
 import { NewOdontogram } from "../schemas/odontogram.schema";
 import { NewFinancial } from "../schemas/financial.schema";
 import { NewSchedule } from "../schemas/schedule.schema";
-import { NewProcedure } from "../schemas/procedure.schema";
+import { NewProcedures } from "../schemas/procedure.schema";
 
 type Clinic = { Clinic: string };
 type Patient = { Patient: string };
@@ -44,14 +44,20 @@ type ClinicUsers = { user: string; role: string };
 export type ClinicWithUser = NewClinic & { users: ClinicUsers[] };
 export type DbClinic = NewClinic & { _id: ObjectId; users: ClinicUsers[]; createdAt: Date };
 
-export type ClinicPatient = NewPatient & Clinic & { anamnese: NewAnamnesis; intraoral: NewIntraoral };
+export type ClinicPatient = NewPatient & Clinic & { image: string; anamnese: NewAnamnesis; intraoral: NewIntraoral };
 export type DbPatient = ClinicPatient & { _id: ObjectId; createdAt: Date };
 export type DbAnamnesis = NewAnamnesis & Patient;
 export type DbIntraoral = NewIntraoral & Patient;
 
+export type procedureData = {
+  procedure: string;
+  price: number;
+  status: "pending" | "paid" | "canceled";
+};
+
 export type PartialOdontogram = {
   _id: string;
-  workToBeDone: string;
+  procedures: procedureData[];
   finished: boolean;
   patient: { name: string; _id: string };
   doctor: { name: string; _id: string };
@@ -61,7 +67,7 @@ export type DbOdontogram = ClinicOdontogram & { _id: ObjectId; createdAt: Date }
 
 export type PartialFinancial = {
   _id: string;
-  workToBeDone: string;
+  procedures: procedureData[];
   price: number;
   patient: { name: string; _id: string };
   doctor: { name: string; _id: string };
@@ -71,16 +77,16 @@ export type PartialFinancial = {
 export type ClinicFinancial = NewFinancial & Clinic;
 export type DbFinancial = ClinicFinancial & { _id: ObjectId; createdAt: Date };
 
-export type PartialReturn = {
+export type PartialSchedule = {
   _id: string;
   startTime: string;
   endTime: string;
   patient: { name: string };
   doctor: { name: string };
-  service: { workToBeDone: string };
+  service: { procedures: procedureData[] };
 };
 
 export type ClinicSchedule = NewSchedule & Clinic;
 export type DbSchedule = ClinicSchedule & { _id: ObjectId; createdAt: Date };
 
-export type ClinicProcedure = NewProcedure & Clinic & { updatedAt: Date };
+export type ClinicProcedures = NewProcedures & Clinic & { updatedAt: Date };

@@ -1,11 +1,17 @@
 import { z } from "zod";
-import { lengthMessage, objectIdMessage, validObjectID } from "../helpers";
+import { objectIdMessage, validObjectID } from "../helpers";
 
 export const odontogramSchema = z
   .object({
     Patient: z.string().refine(validObjectID, objectIdMessage()),
     Doctor: z.string().refine(validObjectID, objectIdMessage()),
-    workToBeDone: z.string().trim().max(250, lengthMessage(0, 250)),
+    procedures: z.array(
+      z.object({
+        procedure: z.string(),
+        price: z.number().positive(),
+        status: z.enum(["pending", "paid", "canceled"]),
+      })
+    ),
     finished: z.boolean().default(false),
     teeth: z.array(
       z.object({

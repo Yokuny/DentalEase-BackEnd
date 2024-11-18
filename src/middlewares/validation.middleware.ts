@@ -24,6 +24,7 @@ const validate = (schema: Schema, type: "body" | "params" | "query") => {
     } catch (error) {
       if (error.errors) {
         const errArray = error.errors;
+        console.log(errArray);
         for (const err of errArray) {
           const errMessage = extractErrorMessage(err);
 

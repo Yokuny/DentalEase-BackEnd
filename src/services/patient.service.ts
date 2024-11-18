@@ -78,12 +78,12 @@ export const getPartialPatientRegister = async (user: ClinicUser): Promise<Servi
   if (!patients) throw new CustomError("Nenhum paciente encontrado", 404);
 
   const partialPatients = patients.map((patient) => {
-    const { _id, name, phone, email, sex, anamnese, intraoral } = patient;
+    const { _id, name, image, phone, email, sex, anamnese, intraoral } = patient;
 
     const anamneseCheck = anamnese?.mainComplaint || anamnese?.mainComplaint === "" ? true : false;
     const intraoralCheck = intraoral?.hygiene ? true : false;
 
-    return { _id, name, phone, email, sex, anamnese: anamneseCheck, intraoral: intraoralCheck };
+    return { _id, name, image, phone, email, sex, anamnese: anamneseCheck, intraoral: intraoralCheck };
   });
 
   if (partialPatients.length === 0) return returnMessage("Nenhum paciente encontrado");
@@ -117,6 +117,7 @@ export const postPatientData = async (user: ClinicUser, data: NewPatient): Promi
     ...data,
     Clinic: user.clinic,
     birthdate: String(stringToData(data.birthdate)),
+    image: "",
     anamnese: {} as NewAnamnesis,
     intraoral: {} as NewIntraoral,
   };

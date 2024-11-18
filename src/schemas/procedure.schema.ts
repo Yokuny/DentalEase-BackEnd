@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const procedureSchema = z.object({
-  procedure: z.string().min(3),
+  procedures: z.string().min(3),
 });
 
-export type NewProcedure = z.infer<typeof procedureSchema>;
+export type NewProcedures = z.infer<typeof procedureSchema>;

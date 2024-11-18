@@ -5,7 +5,13 @@ export const financialSchema = z.object({
   Patient: z.string().refine(validObjectID, objectIdMessage()),
   Doctor: z.string().refine(validObjectID, objectIdMessage()),
   Odontogram: z.string().refine(validObjectID, objectIdMessage()).optional(),
-  workToBeDone: z.string().trim().optional(),
+  procedures: z.array(
+    z.object({
+      procedure: z.string(),
+      price: z.number().positive(),
+      status: z.enum(["pending", "paid", "canceled"]),
+    })
+  ),
   price: z.number().positive().optional(),
   status: z.enum(["pending", "paid", "canceled"]).default("pending"),
 });

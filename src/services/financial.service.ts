@@ -59,7 +59,7 @@ export const getPartialFinancialRegister = async (user: ClinicUser): Promise<Ser
 
   const partialFinancials = financial.map((financial) => ({
     _id: financial._id,
-    workToBeDone: financial.workToBeDone,
+    procedures: financial.procedures,
     price: financial.price,
     patient: financial.patient.name,
     patient_id: financial.patient._id,
@@ -86,10 +86,10 @@ export const postFinancial = async (user: ClinicUser, data: NewFinancial): Promi
       throw new CustomError("Odontograma não pertence ao dentista", 406);
     if (odontogram.finished === true) throw new CustomError("Odontograma já finalizado", 409);
 
-    if (!data.workToBeDone) data.workToBeDone = odontogram.workToBeDone;
+    if (!data.procedures) data.procedures = odontogram.procedures;
   }
 
-  if (!data.workToBeDone) throw new CustomError("Trabalho a ser feito não informado", 406);
+  if (!data.procedures) throw new CustomError("Procedimentos não informados", 406);
   if (data.price < 1) throw new CustomError("Preço inválido", 406);
 
   const newFinancial = {

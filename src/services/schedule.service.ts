@@ -56,7 +56,7 @@ export const getPartialScheduleRegister = async (user: ClinicUser): Promise<Serv
       _id: schedule._id,
       patient: schedule.patient.name,
       doctor: schedule.doctor.name,
-      service: schedule.service.workToBeDone,
+      service: schedule.service.procedures,
       startTime: schedule.startTime,
       endTime: schedule.endTime ? schedule.endTime : new Date(+schedule.startTime + 30 * 60000),
     };

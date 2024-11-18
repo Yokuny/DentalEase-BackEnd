@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { Schedule } from "../database";
-import type { NewSchedule, ClinicSchedule, DbSchedule, PartialReturn } from "../models";
+import type { NewSchedule, ClinicSchedule, DbSchedule, PartialSchedule } from "../models";
 
 const projection = { Clinic: 0, __v: 0 };
 
@@ -8,7 +8,7 @@ export const getAllSchedules = (Clinic: string) => {
   return Schedule.find({ Clinic }, projection);
 };
 
-export const getPartialSchedulesRegister = (Clinic: string): Promise<PartialReturn[] | null> => {
+export const getPartialSchedulesRegister = (Clinic: string): Promise<PartialSchedule[] | null> => {
   return Schedule.aggregate([
     { $match: { Clinic: new ObjectId(Clinic) } },
     { $lookup: { from: "patients", localField: "Patient", foreignField: "_id", as: "patient" } },
@@ -24,7 +24,7 @@ export const getPartialSchedulesRegister = (Clinic: string): Promise<PartialRetu
         endTime: 1,
         patient: { name: 1 },
         doctor: { name: 1 },
-        service: { workToBeDone: 1 },
+        service: { procedures: 1 },
       },
     },
   ]).exec();

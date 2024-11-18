@@ -22,7 +22,7 @@ export const getPartialOdontogramRegister = async (Clinic: string): Promise<Part
     {
       $project: {
         _id: 1,
-        workToBeDone: 1,
+        procedures: 1,
         finished: 1,
         patient: { _id: 1, name: 1 },
         doctor: { _id: 1, name: 1 },

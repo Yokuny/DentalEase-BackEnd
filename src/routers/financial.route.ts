@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import * as controller from "../controllers/financial.controller";
 import { financialSchema, queryByIdSchema, idSchema } from "../schemas";
 import { validBody, validQuery, validToken, clinicAssignmentCheck, validParams } from "../middlewares";
