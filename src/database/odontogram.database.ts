@@ -17,6 +17,7 @@ const odontogramSchema = new mongoose.Schema({
   teeth: [
     {
       number: { type: Number, maxlength: 3, required: true },
+      // Procedures here
       faces: {
         facial: { type: Boolean, default: false },
         incisal: { type: Boolean, default: false },

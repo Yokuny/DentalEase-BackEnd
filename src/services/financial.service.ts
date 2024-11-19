@@ -5,7 +5,7 @@ import { getOdontogram } from "./odontogram.service";
 import { returnMessage, returnData } from "../helpers/responsePattern.helper";
 import type { ServiceRes } from "../helpers/responsePattern.helper";
 import { CustomError, QueryId } from "../models";
-import type { ClinicUser, NewFinancial } from "../models";
+import type { ClinicUser, NewFinancial, procedureData } from "../models";
 
 export const getFinancial = async (id: string, required?: boolean) => {
   const financial = await respository.getFinancialById(id);
@@ -86,15 +86,19 @@ export const postFinancial = async (user: ClinicUser, data: NewFinancial): Promi
       throw new CustomError("Odontograma não pertence ao dentista", 406);
     if (odontogram.finished === true) throw new CustomError("Odontograma já finalizado", 409);
 
-    if (!data.procedures) data.procedures = odontogram.procedures;
+    data.procedures = odontogram.procedures; // percorrer array procedures do odontograma
   }
 
   if (!data.procedures) throw new CustomError("Procedimentos não informados", 406);
-  if (data.price < 1) throw new CustomError("Preço inválido", 406);
+
+  const price = data.procedures.reduce((acc, p) => acc + p.price, 0);
+  if (price < 1) throw new CustomError("Preço inválido", 406);
 
   const newFinancial = {
     ...data,
     Clinic: user.clinic,
+    status: getFinancialStatus(data.procedures),
+    price: price,
   };
 
   const response = await respository.postFinancial(newFinancial);
@@ -112,4 +116,11 @@ export const deleteFinancial = async (user: ClinicUser, id: string): Promise<Ser
 
   if (response.deletedCount > 0) return returnMessage("Registro financeiro deletado com sucesso");
   throw new CustomError("Erro ao deletar registro financeiro", 502);
+};
+
+const getFinancialStatus = (procedures: procedureData[]): "pending" | "paid" | "partial" => {
+  if (!procedures) return "pending";
+  const paymentStatus = procedures.filter((p) => p.status === "paid").length;
+  if (paymentStatus === procedures.length) return "paid";
+  return paymentStatus === 0 ? "pending" : "partial";
 };

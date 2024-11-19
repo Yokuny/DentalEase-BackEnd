@@ -50,9 +50,9 @@ export type DbAnamnesis = NewAnamnesis & Patient;
 export type DbIntraoral = NewIntraoral & Patient;
 
 export type procedureData = {
-  procedure: string;
-  price: number;
-  status: "pending" | "paid" | "canceled";
+  procedure?: string;
+  price?: number;
+  status?: "pending" | "paid" | "canceled";
 };
 
 export type PartialOdontogram = {
@@ -72,7 +72,7 @@ export type PartialFinancial = {
   patient: { name: string; _id: string };
   doctor: { name: string; _id: string };
   Odontogram: string;
-  status: "Pendente" | "Pago" | "Cancelado";
+  status: "Pendente" | "Pago" | "Parcial" | "Cancelado";
 };
 export type ClinicFinancial = NewFinancial & Clinic;
 export type DbFinancial = ClinicFinancial & { _id: ObjectId; createdAt: Date };

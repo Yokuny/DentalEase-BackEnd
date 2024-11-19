@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const procedureSchema = new mongoose.Schema({
   procedure: { type: String, maxlength: 250, required: true },
   price: { type: Number, required: true },
-  status: { type: String, default: "pending", enum: ["pending", "paid", "canceled"], required: true },
+  status: { type: String, default: "pending", enum: ["pending", "partial", "paid", "canceled"], required: true },
 });
 
 const financialSchema = new mongoose.Schema({

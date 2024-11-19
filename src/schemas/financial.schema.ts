@@ -13,7 +13,7 @@ export const financialSchema = z.object({
     })
   ),
   price: z.number().positive().optional(),
-  status: z.enum(["pending", "paid", "canceled"]).default("pending"),
+  status: z.enum(["pending", "partial", "paid", "canceled"]).default("pending"),
 });
 
 export type NewFinancial = z.infer<typeof financialSchema>;
