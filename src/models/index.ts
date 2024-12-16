@@ -3,7 +3,7 @@ export { SignIn, SignUp, Image, PasswordUpdate, UserUpdate } from "../schemas/us
 export { NewClinic } from "../schemas/clinic.schema";
 export { NewPatient, NewAnamnesis, NewIntraoral, UpdateAnamnesis, UpdateIntraoral } from "../schemas/patient.schema";
 export { NewOdontogram } from "../schemas/odontogram.schema";
-export { NewFinancial } from "../schemas/financial.schema";
+export { NewFinancial, FinancialState } from "../schemas/financial.schema";
 export { NewSchedule } from "../schemas/schedule.schema";
 export { NewProcedures } from "../schemas/procedure.schema";
 export { Query, QueryId } from "../schemas/query.schema";

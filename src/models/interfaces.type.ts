@@ -67,15 +67,28 @@ export type DbOdontogram = ClinicOdontogram & { _id: ObjectId; createdAt: Date }
 
 export type PartialFinancial = {
   _id: string;
-  procedures: procedureData[];
-  price: number;
   patient: { name: string; _id: string };
   doctor: { name: string; _id: string };
-  Odontogram: string;
+  price: number;
   status: "Pendente" | "Pago" | "Parcial" | "Cancelado";
+  createdAt: Date;
 };
 export type ClinicFinancial = NewFinancial & Clinic;
 export type DbFinancial = ClinicFinancial & { _id: ObjectId; createdAt: Date };
+export type detailedFinancialRegister = DbFinancial & {
+  patient: {
+    _id: ObjectId;
+    name: string;
+    image: string;
+    email: string;
+    phone: string;
+    cpf: string;
+    rg: string;
+    sex: string;
+    birthdate: Date;
+  };
+  doctor: { _id: ObjectId; name: string; image: string };
+};
 
 export type PartialSchedule = {
   _id: string;

@@ -5,6 +5,11 @@ import type { AuthReq } from "../models/interfaces.type";
 
 export const getFinancial = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {
+    if (req.params.id) {
+      const resp = await service.getDetailedFinancialRegister(req.clinicUser, req.params.id);
+      return res.status(200).json(respObj(resp));
+    }
+
     const resp = await service.getFinancialRegister(req.clinicUser, req.query);
 
     return res.status(200).json(respObj(resp));
@@ -32,6 +37,17 @@ export const postFinancial = async (req: AuthReq, res: Response, next: NextFunct
     next(err);
   }
 };
+
+export const updateFinancialStatus = async (req: AuthReq, res: Response, next: NextFunction) => {
+  try {
+    const resp = await service.updateFinancialStatus(req.clinicUser, req.params.id, req.body);
+
+    return res.status(200).json(respObj(resp));
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 export const deleteFinancial = async (req: AuthReq, res: Response, next: NextFunction) => {
   try {

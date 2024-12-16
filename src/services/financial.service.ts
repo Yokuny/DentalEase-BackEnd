@@ -5,7 +5,7 @@ import { getOdontogram } from "./odontogram.service";
 import { returnMessage, returnData } from "../helpers/responsePattern.helper";
 import type { ServiceRes } from "../helpers/responsePattern.helper";
 import { CustomError, QueryId } from "../models";
-import type { ClinicUser, NewFinancial, procedureData } from "../models";
+import type { ClinicUser, NewFinancial, FinancialState, procedureData } from "../models";
 
 export const getFinancial = async (id: string, required?: boolean) => {
   const financial = await respository.getFinancialById(id);
@@ -53,25 +53,35 @@ export const getPartialFinancialRegister = async (user: ClinicUser): Promise<Ser
 
   const financialStatus: { [key: string]: string } = {
     pending: "Pendente",
+    partial: "Parcial",
     paid: "Pago",
+    refund: "Reembolsado",
     canceled: "Cancelado",
   };
 
   const partialFinancials = financial.map((financial) => ({
     _id: financial._id,
-    procedures: financial.procedures,
-    price: financial.price,
     patient: financial.patient.name,
     patient_id: financial.patient._id,
     doctor: financial.doctor.name,
     doctor_id: financial.doctor._id,
-    odontogram_id: financial.Odontogram,
+    price: financial.price,
     status: financialStatus[financial.status] || financial.status,
+    date: financial.createdAt,
   }));
 
   if (!partialFinancials || partialFinancials.length === 0)
     return returnMessage("Nenhum registro financeiro encontrado");
   return returnData(partialFinancials);
+};
+
+export const getDetailedFinancialRegister = async (user: ClinicUser, id: string): Promise<ServiceRes> => {
+  const financial = await respository.getDetailedFinancialRegister(id);
+  if (!financial) throw new CustomError("Registro financeiro não encontrado", 404);
+  if (financial.Clinic.toString() !== user.clinic)
+    throw new CustomError("Registro financeiro não pertence à clínica", 406);
+
+  return returnData(financial);
 };
 
 export const postFinancial = async (user: ClinicUser, data: NewFinancial): Promise<ServiceRes> => {
@@ -105,6 +115,21 @@ export const postFinancial = async (user: ClinicUser, data: NewFinancial): Promi
   if (response) return returnMessage("Registro financeiro criado com sucesso");
 
   throw new CustomError("Erro ao criar registro financeiro", 502);
+};
+
+export const updateFinancialStatus = async (
+  user: ClinicUser,
+  id: string,
+  status: FinancialState
+): Promise<ServiceRes> => {
+  const financial = await getFinancial(id, true);
+  if (financial.Clinic.toString() !== user.clinic)
+    throw new CustomError("Registro financeiro não pertence à clínica", 406);
+
+  const response = await respository.updateFinancialStatus(id, status.status);
+  if (response.modifiedCount > 0) return returnMessage("Status do registro financeiro atualizado com sucesso");
+
+  throw new CustomError("Erro ao atualizar status do registro financeiro", 502);
 };
 
 export const deleteFinancial = async (user: ClinicUser, id: string): Promise<ServiceRes> => {
